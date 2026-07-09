@@ -165,7 +165,7 @@ const PricingMatrix = {
   template: `
     <div class="pricing-view">
       <h1 class="view-title">价格矩阵</h1>
-      <p class="view-sub">当前所有 coding plan 的价格对比</p>
+      <p class="view-sub">当前所有 coding plan 与模型 API 的价格对比</p>
 
       <div class="pricing-meta">
         价格核对于 <strong>{{ meta.updatedAt }}</strong> · {{ meta.note }}
@@ -187,7 +187,10 @@ const PricingMatrix = {
             </thead>
             <tbody>
               <tr v-for="(p, i) in g.items" :key="p.product + p.plan + i">
-                <td class="pt-name">{{ p.product }}</td>
+                <td class="pt-name">
+                  <a v-if="linkFor(p.product)" :href="linkFor(p.product)" target="_blank" rel="noopener" class="pt-link">{{ p.product }} <span class="pt-ext">↗</span></a>
+                  <span v-else>{{ p.product }}</span>
+                </td>
                 <td>{{ p.vendor }}</td>
                 <td>{{ p.plan }}</td>
                 <td class="pt-price" :class="priceClass(p)">{{ p.price }}</td>
@@ -203,7 +206,8 @@ const PricingMatrix = {
   data() {
     return {
       pricings: pricings,
-      meta: pricingMeta
+      meta: pricingMeta,
+      links: pricingLinks
     };
   },
   computed: {
@@ -217,6 +221,9 @@ const PricingMatrix = {
     }
   },
   methods: {
+    linkFor(product) {
+      return this.links[product] || '';
+    },
     priceClass(p) {
       if (p.price === '¥0' || p.price === '免费' || p.price === '$0') return 'price-free';
       if (p.price === '待确认' || p.price === '按量') return 'price-unknown';

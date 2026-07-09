@@ -476,6 +476,9 @@ button {
 }
 
 .pt-name { font-weight: 800; color: var(--text); white-space: nowrap; }
+.pt-link { color: var(--accent); text-decoration: none; font-weight: 800; white-space: nowrap; }
+.pt-link:hover { text-decoration: underline; }
+.pt-link .pt-ext { font-size: .8em; opacity: .7; }
 .pt-note { color: var(--muted); font-size: .8rem; }
 .pt-price { font-weight: 800; white-space: nowrap; }
 .price-free { color: var(--green); }
