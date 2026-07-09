@@ -241,7 +241,7 @@ const app = createApp({
         { id: 'notes', title: '笔记中心', icon: '📒' },
         { id: 'pricing', title: '价格矩阵', icon: '💲' }
       ],
-      activeTab: 'notes',
+      activeTab: 'pricing',
       sidebarOpen: false
     };
   },
