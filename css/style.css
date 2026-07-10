@@ -391,6 +391,22 @@ button {
   border-radius: 4px;
 }
 .note-detail-body strong { font-weight: 800; }
+.note-detail-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: .5rem 0;
+  font-size: .84rem;
+}
+.note-detail-body th,
+.note-detail-body td {
+  padding: .35rem .6rem;
+  border: 1px solid var(--line);
+  text-align: left;
+}
+.note-detail-body th {
+  background: var(--surface-soft);
+  font-weight: 800;
+}
 
 .note-links {
   display: flex;

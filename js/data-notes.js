@@ -82,5 +82,78 @@ const notes = [
     links: [
       { title: '通义灵码', url: 'https://lingma.aliyun.com' }
     ]
+  },
+  {
+    id: 'static-five-layers',
+    product: '个人站点',
+    stacks: ['前端', '全栈'],
+    langs: ['JavaScript'],
+    type: '心得',
+    title: '纯静态站点的五层渲染模型',
+    date: '2026-07-07',
+    body: `<h2>层级</h2>
+<p><code>Page → Tab → Section（X 样式）→ Item（Y 样式）→ 点击行为</code></p>
+<p>三层数据和两层样式完全解耦：</p>
+<table>
+  <thead><tr><th>层</th><th>角色</th><th>谁决定</th></tr></thead>
+  <tbody>
+    <tr><td>Page</td><td>整个页面</td><td>唯一</td></tr>
+    <tr><td>Tab</td><td>功能视图切换</td><td>数据文件</td></tr>
+    <tr><td>Section</td><td>数据分组容器</td><td>数据 + 渲染样式</td></tr>
+    <tr><td>Item</td><td>单条数据记录</td><td>数据 + 渲染样式</td></tr>
+    <tr><td>点击</td><td>Item 被点击后做什么</td><td>交互逻辑</td></tr>
+  </tbody>
+</table>
+<h2>Section 渲染形式</h2>
+<ul>
+  <li><strong>Accordion</strong> — 手风琴折叠面板，点标题展开/收起</li>
+  <li><strong>Summary Grid</strong> — 横排大数字统计卡片</li>
+  <li><strong>Plain Container</strong> — 无额外壳，直接装 Item</li>
+</ul>
+<h2>Item 渲染形式</h2>
+<ul>
+  <li><strong>Card Grid</strong> — 卡片网格，名称 + 描述，2~3 列</li>
+  <li><strong>Pill Bar</strong> — 横向圆角胶囊标签，可换行</li>
+  <li><strong>Photo Card</strong> — 图片 + 名称，网格排列</li>
+  <li><strong>Table Row</strong> — 紧凑多列表格行</li>
+</ul>
+<h2>点击行为</h2>
+<ul>
+  <li><strong>外链跳转</strong> — <code>&lt;a target="_blank"&gt;</code></li>
+  <li><strong>打开抽屉</strong> — 同页侧滑面板显示详情</li>
+  <li><strong>筛选</strong> — 点击后过滤其它区域数据</li>
+</ul>
+<h2>实例</h2>
+<h3>猫猫手册首页</h3>
+<p><code>Page（猫猫首页）→ Tab（首页/编年史/物资…）→ Section[Summary Grid]（统计卡片）→ 点击[筛选]</code></p>
+<p><code>→ Section[Plain] → Item[Photo Card]（每只猫）→ 点击[打开抽屉]</code></p>
+<h3>熊窝路由表</h3>
+<p><code>Page（熊窝）→ Tab（路由表/日历/支出…）→ Section[Accordion]（🏠 个人站点）→ Item[Card Grid]（猪窝/猫猫…）→ 点击[外链跳转]</code></p>
+<h2>使用心得</h2>
+<ol>
+  <li>原本是表格的数据，倾向于直接用表格渲染。参考猫猫网站的物资管理页面。</li>
+  <li>站点跳转的统筹，如果不想暴露裸链接、也不想排版全堆在左侧，可以试网格卡片。参考个人网站路由表。</li>
+</ol>`
+  },
+  {
+    id: 'deploy-tencent-vercel',
+    product: 'Vercel',
+    stacks: ['部署', '运维'],
+    langs: [],
+    type: '经验',
+    title: '从域名到上线：腾讯云 + GitHub + Vercel 部署全流程',
+    date: '2026-07-05',
+    body: `<h2>步骤</h2>
+<ol>
+  <li>在腾讯云购买域名 thebear617.cn，记得勾选禁止转移锁，完成实名认证</li>
+  <li>在 GitHub 创建想要部署的仓库，push 代码</li>
+  <li>在 Vercel 上 Import 对应代码仓库，然后创建 Project，直接部署</li>
+  <li>在 Vercel 项目 Settings → Domains 添加 www.thebear617.cn 和 thebear617.cn</li>
+  <li>在腾讯云 DNS 添加 A 记录和 CNAME 记录，按 Vercel 给的配即可，等待 Vercel 验证通过，自动签发 SSL，域名上线</li>
+</ol>
+<h2>参考</h2>
+<ul>
+  <li><a href="https://blog.csdn.net/qq_57376018/article/details/160097635" target="_blank" rel="noopener">CSDN · 2026 最新 Vercel 自动化部署与自定义域名配置教程</a></li>
+</ul>`
   }
 ];
