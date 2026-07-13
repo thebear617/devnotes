@@ -192,5 +192,45 @@ const notes = [
   <li><strong>系统级复活</strong>——macOS 的服务管理器 <code>launchd</code> 一直在监控核心进程，一旦发现 <code>mds</code> 意外死亡，会<strong>立刻自动拉起一个新的 <code>mds</code> 进程</strong>。</li>
 </ol>
 <p>新启动的 <code>mds</code> 头脑清醒，重新连接到硬盘上的索引数据库，顺利读到你那个应用程序的真实元数据，搜索功能自然就恢复了。</p>`
+  },
+  {
+    id: 'mfa-2fa-keys',
+    product: '账户安全',
+    stacks: ['安全', '运维'],
+    langs: [],
+    type: '心得',
+    title: '2FA 与 MFA：双因素 / 多因素认证，以及三种验证密钥的区别',
+    date: '2026-07-13',
+    body: `<h2>① 2FA 与 MFA 是什么关系</h2>
+<p><strong>2FA（双因素认证）</strong>：登录时使用<strong>两种不同类型</strong>的验证因素。例如：</p>
+<ul>
+  <li>密码 + 手机验证码</li>
+  <li>密码 + 验证器动态码</li>
+  <li>密码 + 指纹</li>
+  <li>密码 + 实体安全密钥</li>
+</ul>
+<p><strong>MFA（多因素认证）</strong>：使用<strong>两种或两种以上</strong>不同类型的验证因素。因此，<strong>2FA 其实属于 MFA 的一种</strong>。</p>
+
+<h2>② 关键：是"不同因素"，不是"验证两次"</h2>
+<p>判断是否为真正的多因素，看的是因素类型是否不同，而不是验证步骤走了几遍。</p>
+<p>比如"密码 + 安全问题"通常都属于"你知道的信息"这一同一类，<strong>未必算真正的双因素认证</strong>。</p>
+<p>常见因素分三类：</p>
+<ul>
+  <li><strong>你知道的</strong>：密码、PIN</li>
+  <li><strong>你拥有的</strong>：手机、验证器、安全密钥</li>
+  <li><strong>你本人的特征</strong>：指纹、面容、虹膜</li>
+</ul>
+
+<h2>③ MFA 密钥的三种常见类型</h2>
+<p>"MFA 密钥"通常指<strong>多重身份验证密钥</strong>，用于在密码之外再验证一次身份。常见有三种：</p>
+<ul>
+  <li><strong>验证器密钥 / Secret Key</strong>：一串字母和数字，用来把账号添加到 Google Authenticator、Microsoft Authenticator 等应用。<strong>不要分享给任何人</strong>。</li>
+  <li><strong>安全密钥</strong>：像 YubiKey 这样的实体 USB / NFC 设备。</li>
+  <li><strong>恢复密钥 / 备用代码</strong>：手机丢失或无法验证时，用来恢复登录。</li>
+</ul>
+
+<h2>④ 安全提醒</h2>
+<p>如果你在绑定验证器时看到<strong>二维码旁边的一串字符</strong>，那通常是<strong>验证器的 Secret Key</strong>。它一旦泄露，别人就能生成你的动态验证码——所以务必妥善保管，别截图外传。</p>`,
+    links: []
   }
 ];
