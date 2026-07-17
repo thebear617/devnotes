@@ -16,6 +16,62 @@ function stripHtml(html) {
   return d.textContent || '';
 }
 
+function escapeHtml(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function renderMarkdown(markdown) {
+  const lines = markdown.trim().split('\n');
+  const output = [];
+  let inOrderedList = false;
+
+  const closeOrderedList = () => {
+    if (!inOrderedList) return;
+    output.push('</ol>');
+    inOrderedList = false;
+  };
+
+  const inline = (text) => escapeHtml(text)
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`(.+?)`/g, '<code>$1</code>');
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+
+    if (!line) {
+      closeOrderedList();
+      continue;
+    }
+
+    if (line.startsWith('## ')) {
+      closeOrderedList();
+      output.push(`<h3>${inline(line.slice(3))}</h3>`);
+      continue;
+    }
+
+    const orderedItem = line.match(/^\d+\.\s+(.+)$/);
+    if (orderedItem) {
+      if (!inOrderedList) {
+        output.push('<ol>');
+        inOrderedList = true;
+      }
+      output.push(`<li>${inline(orderedItem[1])}</li>`);
+      continue;
+    }
+
+    closeOrderedList();
+    output.push(`<p>${inline(line)}</p>`);
+  }
+
+  closeOrderedList();
+  return output.join('');
+}
+
 /* ─── Note Center ─── */
 
 const NoteCenter = {
@@ -232,6 +288,112 @@ const PricingMatrix = {
   }
 };
 
+/* ─── Operating System Guide ─── */
+
+const OperatingSystemGuide = {
+  template: `
+    <div class="os-view">
+      <header class="os-hero">
+        <div>
+          <p class="os-eyebrow">Computer Science · Learning Path</p>
+          <h1 class="view-title">{{ guide.title }}</h1>
+          <p class="view-sub">{{ guide.subtitle }}</p>
+        </div>
+        <div class="os-hero-mark" aria-hidden="true">OS</div>
+      </header>
+
+      <nav class="os-section-nav" aria-label="操作系统章节">
+        <button
+          v-for="section in guide.sections"
+          :key="section.id"
+          class="os-section-tab"
+          :class="{ active: activeSection === section.id }"
+          @click="selectSection(section.id)"
+        >
+          <span>{{ section.number }}</span>
+          <strong>{{ section.title }}</strong>
+        </button>
+      </nav>
+
+      <article class="os-chapter" :key="current.id">
+        <header class="os-chapter-header">
+          <div class="os-chapter-number">{{ current.number }}</div>
+          <div>
+            <h2>{{ current.title }}</h2>
+            <p>{{ current.summary }}</p>
+          </div>
+        </header>
+
+        <div class="os-takeaway"><span>本章主线</span>{{ current.takeaway }}</div>
+
+        <div v-if="current.groups" class="os-accordion-sections">
+          <section v-for="group in current.groups" :key="group.id" class="os-accordion-section">
+            <h3 class="os-accordion-section-title">{{ group.title }}</h3>
+            <div class="os-accordion-list">
+              <article v-for="card in group.cards" :key="card.id" class="os-accordion-card">
+                <button
+                  class="os-accordion-trigger"
+                  :aria-expanded="isCardOpen(group.id, card.id)"
+                  @click="toggleCard(group.id, card.id)"
+                >
+                  <span>{{ card.title }}</span>
+                  <span class="os-accordion-chevron" aria-hidden="true">⌄</span>
+                </button>
+                <div
+                  v-show="isCardOpen(group.id, card.id)"
+                  class="os-markdown-body"
+                  v-html="renderCardMarkdown(card.markdown)"
+                ></div>
+              </article>
+            </div>
+          </section>
+        </div>
+        <div v-else class="os-content" v-html="current.body"></div>
+
+        <footer class="os-chapter-actions">
+          <button @click="move(-1)" :disabled="currentIndex === 0">← 上一章</button>
+          <span>{{ currentIndex + 1 }} / {{ guide.sections.length }}</span>
+          <button @click="move(1)" :disabled="currentIndex === guide.sections.length - 1">下一章 →</button>
+        </footer>
+      </article>
+    </div>
+  `,
+  data() {
+    return {
+      guide: osGuide,
+      activeSection: osGuide.sections[0].id,
+      openCards: {}
+    };
+  },
+  computed: {
+    currentIndex() {
+      return this.guide.sections.findIndex(s => s.id === this.activeSection);
+    },
+    current() {
+      return this.guide.sections[this.currentIndex] || this.guide.sections[0];
+    }
+  },
+  methods: {
+    renderCardMarkdown(markdown) {
+      return renderMarkdown(markdown);
+    },
+    isCardOpen(groupId, cardId) {
+      return this.openCards[groupId] === cardId;
+    },
+    toggleCard(groupId, cardId) {
+      this.openCards[groupId] = this.isCardOpen(groupId, cardId) ? null : cardId;
+    },
+    selectSection(id) {
+      this.activeSection = id;
+      document.querySelector('.main-area')?.scrollTo({ top: 0, behavior: 'smooth' });
+    },
+    move(offset) {
+      const next = this.guide.sections[this.currentIndex + offset];
+      if (next) this.selectSection(next.id);
+    }
+  }
+};
+
 /* ─── App ─── */
 
 const app = createApp({
@@ -239,9 +401,10 @@ const app = createApp({
     return {
       tabs: [
         { id: 'notes', title: '笔记中心', icon: '📒' },
-        { id: 'pricing', title: '价格矩阵', icon: '💲' }
+        { id: 'pricing', title: '价格矩阵', icon: '💲' },
+        { id: 'os', title: '操作系统', icon: '⚙️' }
       ],
-      activeTab: 'pricing',
+      activeTab: 'os',
       sidebarOpen: false
     };
   },
@@ -265,4 +428,5 @@ const app = createApp({
 
 app.component('note-center', NoteCenter);
 app.component('pricing-matrix', PricingMatrix);
+app.component('operating-system-guide', OperatingSystemGuide);
 app.mount('#app');

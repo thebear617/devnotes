@@ -2,7 +2,7 @@
 
 个人开发知识库：跨产品、跨技术栈、跨语言的**使用心得 / 经验 / 官方与社区链接 / 价格矩阵**。
 
-> 初版范围：笔记中心 + 价格矩阵（链接聚合模块留待后续扩展）。
+> 当前范围：笔记中心 + 价格矩阵 + 操作系统学习页（链接聚合模块留待后续扩展）。
 
 ## 技术栈
 
@@ -22,7 +22,8 @@ devnotes/
 │   ├── vendor/vue.global.prod.js   # Vue 3 自托管（164KB）
 │   ├── data-notes.js        # 笔记数据：const notes
 │   ├── data-pricing.js      # 价格数据：const pricings + pricingMeta
-│   └── app.js               # Vue 应用：NoteCenter + PricingMatrix 组件
+│   ├── data-os.js           # 操作系统学习页：四章节内容
+│   └── app.js               # Vue 应用：笔记、价格与操作系统组件
 └── README.md
 ```
 

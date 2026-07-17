@@ -232,5 +232,40 @@ const notes = [
 <h2>④ 安全提醒</h2>
 <p>如果你在绑定验证器时看到<strong>二维码旁边的一串字符</strong>，那通常是<strong>验证器的 Secret Key</strong>。它一旦泄露，别人就能生成你的动态验证码——所以务必妥善保管，别截图外传。</p>`,
     links: []
+  },
+  {
+    id: 'macos-timed-reminder-cheatsheet',
+    product: 'macOS',
+    stacks: ['运维', '调试'],
+    langs: ['Shell'],
+    type: '经验',
+    title: '定时提醒速查指南',
+    date: '2026-07-14',
+    body: `<h2>① 关联文件与触发频率</h2>
+<p>定时提醒的内容来自一个 Markdown 文件，手动编辑它就是编辑提醒清单：</p>
+<ul>
+  <li><strong>关联文件</strong>：<code>/Users/mokaiche/.hermes/reminder-today.md</code>（即 <code>~/.hermes/reminder-today.md</code>）</li>
+  <li><strong>触发频率</strong>：每 <strong>20 分钟</strong>一次（launchd <code>StartInterval</code> = 1200 秒）</li>
+</ul>
+
+<h2>② 触发逻辑</h2>
+<p>由 launchd LaunchAgent <code>com.user.reminder-today</code> 驱动：</p>
+<ol>
+  <li>launchd 每 20 分钟执行脚本 <code>/Users/mokaiche/scripts/reminder-today.sh</code>；</li>
+  <li>脚本 <code>cat</code> 读取上面的 md 文件内容；</li>
+  <li>先调 <code>terminal-notifier</code> 响铃 + 右上角横幅（吸引注意）；</li>
+  <li>再用 <code>osascript display dialog</code> 弹出对话框，<strong>完整显示</strong> Markdown 内容（长清单不被横幅截断）。</li>
+</ol>
+<p>改提醒内容只需编辑 md 文件，下一次 20 分钟触发会自动读最新版，无需重载任务。</p>
+
+<h2>③ 速查指令</h2>
+<p><strong>立刻触发一次（已验证可用）</strong>——直接跑脚本本身：</p>
+<p><code>bash /Users/mokaiche/scripts/reminder-today.sh</code></p>
+<p><strong>禁用定时任务</strong>——卸载 launchd 任务，不再自动触发：</p>
+<p><code>launchctl unload ~/Library/LaunchAgents/com.user.reminder-today.plist</code></p>
+<p><strong>启用定时任务</strong>——重新加载，恢复每 20 分钟触发：</p>
+<p><code>launchctl load ~/Library/LaunchAgents/com.user.reminder-today.plist</code></p>
+<p>说明：修改频率（plist 的 StartInterval）后需先 unload 再 load 才能生效，直接编辑 plist 不会被 launchd 自动感知。</p>`,
+    links: []
   }
 ];
