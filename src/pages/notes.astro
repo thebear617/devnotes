@@ -1,0 +1,155 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { notes } from '../data/notes.js';
+
+const sortedNotes = [...notes].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+const allProducts = [...new Set(notes.map(n => n.product))].sort();
+const allStacks = [...new Set(notes.flatMap(n => n.stacks))].sort();
+const allLangs = [...new Set(notes.flatMap(n => n.langs).filter(Boolean))].sort();
+const allTypes = [...new Set(notes.map(n => n.type))].sort();
+
+const noteDataForClient = sortedNotes.map(n => ({
+  id: n.id, title: n.title, date: n.date, product: n.product,
+  body: n.body, links: n.links || [],
+  stacks: n.stacks, langs: n.langs, type: n.type
+}));
+---
+
+<Layout>
+  <main class="app-shell">
+    <h2 class="view-title">笔记中心</h2>
+    <p class="view-sub">开发相关的使用心得、经验与排雷</p>
+
+    <div class="filter-bar" id="filterBar">
+      <div class="filter-row">
+        <span class="filter-label">产品</span>
+        <div class="filter-tags" data-filter="product">
+          {allProducts.map(p => <button class="filter-tag">{p}</button>)}
+        </div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">技术栈</span>
+        <div class="filter-tags" data-filter="stacks">
+          {allStacks.map(s => <button class="filter-tag">{s}</button>)}
+        </div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">语言</span>
+        <div class="filter-tags" data-filter="langs">
+          {allLangs.map(l => <button class="filter-tag">{l}</button>)}
+        </div>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">类型</span>
+        <div class="filter-tags" data-filter="type">
+          {allTypes.map(t => <button class="filter-tag">{t}</button>)}
+          <button class="filter-clear" id="filterClear">清除筛选</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-list" id="noteList">
+      {sortedNotes.map(n => (
+        <button class="note-card" data-id={n.id} data-product={n.product} data-stacks={n.stacks.join(',')} data-langs={n.langs.join(',')} data-type={n.type}>
+          <div class="note-card-title">{n.title}</div>
+          <div class="note-tags">
+            {n.stacks.map(s => <span class="note-tag">{s}</span>)}
+            {n.langs.filter(Boolean).map(l => <span class="note-tag">{l}</span>)}
+            <span class="note-tag type">{n.type}</span>
+          </div>
+          <p class="note-card-meta">{n.date} · {n.product}</p>
+        </button>
+      ))}
+    </div>
+
+    <section class="empty-state" id="emptyState" style="display:none">没有匹配的笔记</section>
+
+    <div id="noteDetail" style="display:none"></div>
+  </main>
+</Layout>
+
+<script define:vars={{ noteData: noteDataForClient }}>
+  function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function renderNoteTagsObj(note) {
+    return note.stacks.map(s => '<span class="note-tag">' + escapeHtml(s) + '</span>').join('')
+      + note.langs.filter(Boolean).map(l => '<span class="note-tag">' + escapeHtml(l) + '</span>').join('')
+      + '<span class="note-tag type">' + escapeHtml(note.type) + '</span>';
+  }
+
+  function renderNoteDetail(note) {
+    let linksHtml = '';
+    if (note.links.length) {
+      linksHtml = '<div class="note-links">' + note.links.map(l =>
+        '<a href="' + l.url + '" class="note-link" target="_blank" rel="noopener">↗ ' + escapeHtml(l.title) + '</a>'
+      ).join('') + '</div>';
+    }
+    return '<div class="note-detail" id="noteDetailInner">' +
+      '<div class="note-detail-header">' +
+        '<span class="note-detail-title">' + escapeHtml(note.title) + '</span>' +
+        '<button class="note-detail-close" id="noteDetailClose">✕</button>' +
+      '</div>' +
+      '<div class="note-detail-meta">' + renderNoteTagsObj(note) + '</div>' +
+      '<div class="note-detail-body">' + note.body + '</div>' +
+      linksHtml +
+    '</div>';
+  }
+
+  let filters = {};
+  document.querySelectorAll('.filter-bar .filter-tag').forEach(tag => {
+    tag.addEventListener('click', () => {
+      const row = tag.closest('.filter-row');
+      const filterKey = row.querySelector('.filter-tags').dataset.filter;
+      const on = tag.classList.toggle('on');
+      if (on) {
+        row.querySelectorAll('.filter-tag').forEach(t => { if (t !== tag) t.classList.remove('on'); });
+        filters[filterKey] = tag.textContent;
+      } else {
+        delete filters[filterKey];
+      }
+      applyFilters();
+    });
+  });
+
+  document.getElementById('filterClear').addEventListener('click', () => {
+    document.querySelectorAll('.filter-bar .filter-tag.on').forEach(t => t.classList.remove('on'));
+    filters = {};
+    applyFilters();
+  });
+
+  function applyFilters() {
+    const visible = [];
+    document.querySelectorAll('.note-card').forEach(card => {
+      let show = true;
+      if (filters.product && card.dataset.product !== filters.product) show = false;
+      if (filters.stacks && !card.dataset.stacks.split(',').includes(filters.stacks)) show = false;
+      if (filters.langs && !card.dataset.langs.split(',').includes(filters.langs)) show = false;
+      if (filters.type && card.dataset.type !== filters.type) show = false;
+      card.style.display = show ? '' : 'none';
+      if (show) visible.push(card);
+    });
+    document.getElementById('emptyState').style.display = visible.length ? 'none' : '';
+  }
+
+  document.getElementById('noteList').addEventListener('click', (e) => {
+    const card = e.target.closest('.note-card');
+    if (!card) return;
+    const id = card.dataset.id;
+    const note = noteData.find(n => n.id === id);
+    if (!note) return;
+    const detail = document.getElementById('noteDetail');
+    detail.innerHTML = renderNoteDetail(note);
+    detail.style.display = '';
+    detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  document.getElementById('noteDetail').addEventListener('click', (e) => {
+    if (e.target.id === 'noteDetailClose') {
+      document.getElementById('noteDetail').style.display = 'none';
+    }
+  });
+</script>

@@ -1,0 +1,11 @@
+import { defineConfig } from 'astro/config';
+
+export default defineConfig({
+  base: process.env.SITE_BASE || '/',
+  build: {
+    format: 'directory',
+  },
+  redirects: {
+    '/': '/notes/',
+  },
+});

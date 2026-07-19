@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { pricingMeta, pricingLinks, pricings } from '../data/pricing.js';
+
+const tracks = [...new Set(pricings.map(p => p.track))];
+
+function priceClass(price) {
+  if (price === '¥0' || price === '$0') return 'price-free';
+  if (price === '待确认') return 'price-unknown';
+  return 'price-paid';
+}
+---
+
+<Layout>
+  <main class="app-shell">
+    <h2 class="view-title">价格矩阵</h2>
+    <p class="view-sub">AI 编程工具 Coding Plan / Token Plan 订阅价一览</p>
+
+    <div class="pricing-meta">
+      <strong>核对于 {pricingMeta.updatedAt}</strong> · {pricingMeta.note}
+    </div>
+
+    {tracks.map(track => (
+      <section class="price-section">
+        <h3 class="price-section-title">{track}（{pricings.filter(p => p.track === track).map(p => p.product).filter((v, i, a) => a.indexOf(v) === i).length} 款产品）</h3>
+        <div class="table-wrap">
+          <table class="pricing-table">
+            <thead>
+              <tr>
+                <th>产品</th>
+                <th>厂商</th>
+                <th>方案</th>
+                <th>价格</th>
+                <th>周期</th>
+                <th>备注</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pricings.filter(p => p.track === track).map(p => {
+                const url = pricingLinks[p.product];
+                return (
+                  <tr>
+                    <td class="pt-name">
+                      {url ? <a href={url} class="pt-link" target="_blank" rel="noopener">{p.product} <span class="pt-ext">↗</span></a> : p.product}
+                    </td>
+                    <td>{p.vendor}</td>
+                    <td><strong>{p.plan}</strong></td>
+                    <td class={`pt-price ${priceClass(p.price)}`}>{p.price}</td>
+                    <td>{p.billing}</td>
+                    <td class="pt-note">{p.note}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    ))}
+  </main>
+</Layout>

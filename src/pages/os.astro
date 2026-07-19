@@ -1,0 +1,133 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { osGuide } from '../data/os.js';
+
+function renderMarkdown(md) {
+  const lines = md.trim().split('\n');
+  const out = [];
+  let inOl = false;
+
+  const closeOl = () => { if (inOl) { out.push('</ol>'); inOl = false; } };
+
+  const inline = (text) => text
+    .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/`(.+?)`/g, '<code>$1</code>');
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) { closeOl(); continue; }
+    if (line.startsWith('## ')) { closeOl(); out.push(`<h3>${inline(line.slice(3))}</h3>`); continue; }
+    const m = line.match(/^\d+\.\s+(.+)$/);
+    if (m) { if (!inOl) { out.push('<ol>'); inOl = true; } out.push(`<li>${inline(m[1])}</li>`); continue; }
+    closeOl(); out.push(`<p>${inline(line)}</p>`);
+  }
+  closeOl();
+  return out.join('');
+}
+---
+
+<Layout>
+  <main class="app-shell">
+    <div class="os-hero">
+      <div>
+        <p class="os-eyebrow">系统入门</p>
+        <h2 class="view-title">{osGuide.title}</h2>
+        <p class="view-sub">{osGuide.subtitle}</p>
+      </div>
+      <div class="os-hero-mark">&lt;/&gt;</div>
+    </div>
+
+    <nav class="os-section-nav" id="osNav">
+      {osGuide.sections.map((s, i) => (
+        <button class={`os-section-tab${i === 0 ? ' active' : ''}`} data-index={i}>
+          <span>{s.number}</span>
+          <strong>{s.title}</strong>
+        </button>
+      ))}
+    </nav>
+
+    <div id="osChapters">
+      {osGuide.sections.map((s, i) => (
+        <div class="os-chapter" data-chapter={i} style={i !== 0 ? 'display:none' : ''}>
+          <div class="os-chapter-header">
+            <div class="os-chapter-number">{s.number}</div>
+            <div>
+              <h2>{s.title}</h2>
+              <p>{s.summary}</p>
+            </div>
+          </div>
+          <div class="os-takeaway">
+            <span>本章主线</span>{s.takeaway}
+          </div>
+
+          {s.body ? (
+            <div class="os-content" set:html={s.body} />
+          ) : null}
+
+          {s.groups ? (
+            <div class="os-accordion-sections">
+              {s.groups.map(g => (
+                <div class="os-accordion-section os-concept-group">
+                  <h3 class="os-accordion-section-title">{g.title}</h3>
+                  <div class="os-accordion-list">
+                    {g.cards.map(c => (
+                      <div class="os-accordion-card">
+                        <button class="os-accordion-trigger" aria-expanded="false">
+                          <span>{c.title}</span>
+                          <span class="os-accordion-chevron">▾</span>
+                        </button>
+                        <div class="os-markdown-body" set:html={renderMarkdown(c.markdown)} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          <div class="os-chapter-actions">
+            <button id={`osPrev-${i}`} disabled={i === 0}>← 上一章</button>
+            <span>{s.number} / {String(osGuide.sections.length).padStart(2, '0')}</span>
+            <button id={`osNext-${i}`} disabled={i === osGuide.sections.length - 1}>下一章 →</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </main>
+</Layout>
+
+<script define:vars={{ osTotal: osGuide.sections.length }}>
+  const total = osTotal;
+
+  function switchChapter(index) {
+    document.querySelectorAll('.os-chapter').forEach(function(el, i) {
+      el.style.display = i === index ? '' : 'none';
+    });
+    document.querySelectorAll('.os-section-tab').forEach(function(el, i) {
+      if (i === index) { el.classList.add('active'); } else { el.classList.remove('active'); }
+    });
+  }
+
+  document.getElementById('osNav').addEventListener('click', function(e) {
+    var tab = e.target.closest('.os-section-tab');
+    if (!tab) return;
+    switchChapter(parseInt(tab.dataset.index));
+  });
+
+  for (var i = 0; i < total; i++) {
+    (function(idx) {
+      var prev = document.getElementById('osPrev-' + idx);
+      var next = document.getElementById('osNext-' + idx);
+      if (prev) prev.addEventListener('click', function() { switchChapter(idx - 1); });
+      if (next) next.addEventListener('click', function() { switchChapter(idx + 1); });
+    })(i);
+  }
+
+  document.getElementById('osChapters').addEventListener('click', function(e) {
+    var trigger = e.target.closest('.os-accordion-trigger');
+    if (!trigger) return;
+    var expanded = trigger.getAttribute('aria-expanded') === 'true';
+    trigger.setAttribute('aria-expanded', String(!expanded));
+  });
+</script>

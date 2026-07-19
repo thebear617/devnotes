@@ -1,18 +1,4 @@
-// 开发笔记 · 笔记数据
-// 字段说明：
-//   id        唯一标识
-//   product   产品名（与 data-pricing.js 的 product 对应）
-//   stacks    技术栈数组，如 ['前端','全栈']
-//   langs     编程语言数组，如 ['TypeScript','Python']
-//   type      笔记类型：心得 / 经验 / 文档 / 社区
-//   title     标题
-//   date      记录日期 YYYY-MM-DD
-//   body      HTML 字符串，支持 <p> <ul> <ol> <li> <code> <strong> <a> 等
-//   links     相关链接 [{ title, url }]
-//
-// 新增笔记：直接在此数组追加一个对象即可。
-
-const notes = [
+export const notes = [
   {
     id: 'qoder-agent-first',
     product: 'Qoder',

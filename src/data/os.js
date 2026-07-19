@@ -1,7 +1,4 @@
-// 开发笔记 · 操作系统学习页数据
-// 四个章节使用 HTML 字符串承载讲解内容，由 app.js 的 OperatingSystemGuide 组件渲染。
-
-const osGuide = {
+export const osGuide = {
   title: '操作系统入门',
   subtitle: '从身边正在运行的应用出发，逐步理解操作系统怎样组织软件与硬件',
   sections: [
@@ -110,7 +107,7 @@ const osGuide = {
       takeaway: '操作系统向上提供抽象和接口，向下管理 CPU、内存、存储与设备。',
       body: `
         <div class="os-stack" aria-label="操作系统组成架构">
-          <div class="os-layer os-layer-app"><span>应用层</span><strong>浏览器 · 编辑器 · 微信 · 终端</strong><small>提出“打开文件、创建进程、发送数据”等请求</small></div>
+          <div class="os-layer os-layer-app"><span>应用层</span><strong>浏览器 · 编辑器 · 微信 · 终端</strong><small>提出"打开文件、创建进程、发送数据"等请求</small></div>
           <div class="os-layer os-layer-api"><span>接口层</span><strong>系统调用</strong><small>用户程序进入内核服务的安全入口</small></div>
           <div class="os-layer os-layer-kernel"><span>内核层</span><strong>进程调度 · 内存管理 · 文件系统 · 网络 · 驱动</strong><small>决定谁能使用什么资源，以及何时使用</small></div>
           <div class="os-layer os-layer-hardware"><span>硬件层</span><strong>CPU · 内存 · 磁盘 · 网卡 · 屏幕</strong><small>真正完成计算、存储、通信与输入输出</small></div>
@@ -123,7 +120,7 @@ const osGuide = {
           <article class="os-card"><p class="os-card-kicker">I/O</p><h3>设备与通信</h3><p>通过驱动使用硬件，通过管道、套接字和 Mach Port 等机制帮助进程安全通信。</p></article>
         </div>
 
-        <div class="os-note"><strong>一个容易混淆的点</strong><p>活动监视器里的“端口”主要指 macOS 用于进程间通信的 <strong>Mach Port</strong>，不是网站常说的 80、443、8000 等 TCP/UDP 网络端口。</p></div>
+        <div class="os-note"><strong>一个容易混淆的点</strong><p>活动监视器里的"端口"主要指 macOS 用于进程间通信的 <strong>Mach Port</strong>，不是网站常说的 80、443、8000 等 TCP/UDP 网络端口。</p></div>
       `
     },
     {
@@ -172,7 +169,7 @@ const osGuide = {
 
         <div class="os-observe">
           <div><span class="os-observe-label">下一步练习</span><strong>追踪一次真实操作</strong></div>
-          <p>从上面任选一个案例，用“谁发起请求 → 哪个进程处理 → 哪些线程工作 → 操作系统管理什么资源”的顺序，画一张自己的流程图。</p>
+          <p>从上面任选一个案例，用"谁发起请求 → 哪个进程处理 → 哪些线程工作 → 操作系统管理什么资源"的顺序，画一张自己的流程图。</p>
         </div>
       `
     }
