@@ -631,6 +631,29 @@ button {
   font-size: .85rem;
 }
 
+.blog-article-body table {
+  display: block;
+  width: 100%;
+  margin: .8rem 0;
+  border-collapse: collapse;
+  overflow-x: auto;
+  font-size: .84rem;
+}
+
+.blog-article-body th,
+.blog-article-body td {
+  padding: .5rem .65rem;
+  border: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.blog-article-body th {
+  background: var(--surface-soft);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .blog-back {
   display: inline-flex;
   align-items: center;

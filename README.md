@@ -1,92 +1,159 @@
 # 开发笔记 · DevNotes
 
-个人开发知识库：跨产品、跨技术栈、跨语言的**使用心得 / 经验 / 官方与社区链接 / 价格矩阵**。
+个人开发知识库，用于整理跨产品、跨技术栈和跨语言的使用心得、实践经验、学习内容与价格信息。
 
-> 当前范围：笔记中心 + 价格矩阵 + 操作系统学习页（链接聚合模块留待后续扩展）。
+当前站点包含四个板块：
+
+- **笔记中心**：开发工具使用心得、经验和排雷记录，支持按产品、技术栈、语言和类型筛选；
+- **博客**：使用 Markdown 编写的技术文章与随想；
+- **价格矩阵**：AI 编程产品及模型服务的订阅价格对比；
+- **操作系统**：按章节组织的操作系统入门内容与交互式案例。
 
 ## 技术栈
 
 | 层面 | 选型 |
 |------|------|
-| 框架 | **Vue 3**（全局构建，自托管 `js/vendor/vue.global.prod.js`，不依赖 CDN） |
-| 样式 | 独立配色（石板灰 + 青绿 `#0d9488`），纯 CSS，单一样式表 |
-| 构建 | **无**。纯静态 HTML + CSS + JS，零依赖 |
+| 框架 | Astro 5 |
+| 内容 | Astro Content Collections + Markdown + JavaScript 数据文件 |
+| 样式 | 原生 CSS，石板灰与青绿色主题 |
+| 交互 | Astro 页面脚本 + 原生 JavaScript |
+| 输出 | 静态 HTML、CSS 和 JavaScript |
 
-## 架构
+项目需要 Node.js 和 npm。构建产物输出到 `dist/`，该目录不提交到 Git。
 
-```
+## 目录结构
+
+```text
 devnotes/
-├── index.html              # 入口，Vue 挂载点
-├── css/style.css           # 单一样式表
-├── js/
-│   ├── vendor/vue.global.prod.js   # Vue 3 自托管（164KB）
-│   ├── data-notes.js        # 笔记数据：const notes
-│   ├── data-pricing.js      # 价格数据：const pricings + pricingMeta
-│   ├── data-os.js           # 操作系统学习页：四章节内容
-│   └── app.js               # Vue 应用：笔记、价格与操作系统组件
-└── README.md
+├── astro.config.mjs          # Astro 配置、基础路径与首页重定向
+├── package.json              # 开发、构建和预览命令
+├── src/
+│   ├── content/
+│   │   ├── config.ts         # 博客内容集合及 frontmatter 约束
+│   │   └── blog/             # Markdown 博客文章
+│   ├── data/
+│   │   ├── notes.js          # 笔记中心数据
+│   │   ├── pricing.js        # 价格矩阵数据与来源链接
+│   │   └── os.js             # 操作系统学习内容
+│   ├── layouts/
+│   │   └── Layout.astro      # 全站布局、侧栏与移动端导航
+│   ├── pages/
+│   │   ├── notes.astro       # 笔记中心
+│   │   ├── pricing.astro     # 价格矩阵
+│   │   ├── os.astro          # 操作系统学习页
+│   │   └── blog/             # 博客列表与文章详情页
+│   └── styles/
+│       └── global.css        # 全站样式
+└── dist/                     # 构建产物，已被 .gitignore 忽略
 ```
 
-数据驱动：先加载 `data-*.js`（定义全局 `notes` / `pricings`），再加载 Vue，最后 `app.js` 挂载。
-组件用全局 `app.component(...)` 注册，`template` 为字符串模板。
+## 本地开发
 
-## 本地运行
+首次运行先安装依赖：
 
 ```bash
 cd devnotes
-python3 -m http.server 8000
-# 打开 http://localhost:8000
+npm install
 ```
 
-## 添加内容
+启动开发服务器：
 
-### 新增一篇笔记
-编辑 `js/data-notes.js`，在 `notes` 数组追加一个对象：
+```bash
+npm run dev
+```
+
+Astro 默认使用 `http://localhost:4321`。访问根路径后会进入笔记中心。
+
+构建并检查生产版本：
+
+```bash
+npm run build
+npm run preview
+```
+
+## 添加博客文章
+
+在 `src/content/blog/` 中新增 `.md` 文件。文件名会成为文章 URL 的 slug，例如：
+
+```text
+src/content/blog/开发产品形态与技术栈.md
+→ /blog/开发产品形态与技术栈/
+```
+
+每篇文章必须包含以下 frontmatter：
+
+```yaml
+---
+title: 文章标题
+date: '2026-07-20'
+tags: [开发, Astro]
+description: 用于博客列表的简短摘要
+---
+```
+
+正文使用标准 Markdown，可以直接插入标题、列表、代码块、引用、链接和表格。博客列表按 `date` 从新到旧排列。
+
+## 更新笔记中心
+
+编辑 `src/data/notes.js`，向 `notes` 数组添加对象：
 
 ```js
 {
   id: 'unique-id',
-  product: 'Qoder',                 // 与价格表 product 对应
+  product: 'Qoder',
   stacks: ['前端', '全栈'],
   langs: ['TypeScript'],
-  type: '心得',                     // 心得 / 经验 / 文档 / 社区
+  type: '心得',
   title: '标题',
-  date: '2026-07-09',
-  body: '<p>支持 <strong>HTML</strong> 与 <code>code</code></p>',
-  links: [{ title: '官网', url: 'https://...' }]
+  date: '2026-07-20',
+  body: '<p>笔记正文支持 HTML</p>',
+  links: [
+    { title: '官网', url: 'https://example.com' }
+  ]
 }
 ```
 
-### 更新价格
-编辑 `js/data-pricing.js`：
-- 改对应行的 `price` / `billing` / `note` / `updatedAt`
-- 同步修改底部 `pricingMeta.updatedAt`
-- 同一 `product` 可有多条 `plan`
+其中 `product`、`stacks`、`langs` 和 `type` 会自动生成筛选项。`id` 必须唯一。
 
-## 价格更新策略
+## 更新价格矩阵
 
-采用**手动维护 + 标注核对日期**（初版不做自动抓取）：
-- 大厂 coding plan 调价低频，改一行 `data-pricing.js` 成本极低；
-- 矩阵顶部始终显示"核对于 YYYY-MM-DD"，读者自判时效；
-- 自动抓取需写解析脚本 + 应对各官网 DOM / 反爬，对个人站是过度工程，预留为后续扩展。
+编辑 `src/data/pricing.js`：
 
-## 部署
+1. 在 `pricings` 中更新或添加套餐；
+2. 在 `pricingLinks` 中维护产品官网或价格页；
+3. 同步更新 `pricingMeta.updatedAt` 和核对说明；
+4. 运行 `npm run build`，确认数据和页面能够正常生成。
 
-独立 git 仓库 + GitHub Pages（与 `home/`、`personal/` 同套流程）：
+价格采用手动维护并标注核对日期的方式。公开页面只用于辅助比较，最终价格以产品官网为准。
+
+## 更新操作系统学习页
+
+内容位于 `src/data/os.js`。页面由章节、内容组和卡片组成：
+
+- 基础知识卡片主要使用 `markdown` 字段；
+- 复杂布局使用 `body` HTML；
+- 页面结构和交互逻辑位于 `src/pages/os.astro`。
+
+## 基础路径与部署
+
+`astro.config.mjs` 通过 `SITE_BASE` 控制站点基础路径。部署到域名根路径时直接构建：
 
 ```bash
-cd devnotes
-git init
-git add .
-git commit -m "init: 开发笔记站点骨架"
-git branch -M main
-git remote add origin <你的仓库地址>
-git push -u origin main
+npm run build
 ```
 
-推送后 GitHub Pages 几秒生效。commit 风格沿用中文 `type: 描述`（feat / fix / chore / style / diary）。
+部署到 GitHub Pages 的仓库子路径时，构建命令示例为：
+
+```bash
+SITE_BASE=/devnotes/ npm run build
+```
+
+构建完成后，将 `dist/` 发布到静态托管服务。当前仓库没有内置 `.github/workflows` 部署流程；如需在 `main` 分支更新后自动发布，需要另外配置 GitHub Pages Actions 工作流。
 
 ## 约定
 
-- 图片若使用，统一走 GitHub Pages 相对路径，不使用 jsDelivr CDN；
-- Git 操作仅在 `devnotes/` 子目录内进行，根目录不是仓库。
+- 内容和数据优先修改 `src/` 中的源文件，不直接编辑 `dist/`；
+- 图片使用站点相对路径，不依赖 jsDelivr CDN；
+- 修改后至少运行一次 `npm run build`；
+- Git 操作只在 `devnotes/` 内执行；
+- 提交信息使用中文 `type: 描述`，例如 `feat`、`fix`、`chore`、`style`。
