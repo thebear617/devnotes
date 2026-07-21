@@ -11,6 +11,17 @@ const blogCollection = defineCollection({
   }),
 });
 
+const timelineCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    date: z.string(),
+    tags: z.array(z.string()).default([]),
+    site: z.string().default(''),
+  }),
+});
+
 export const collections = {
   blog: blogCollection,
+  timeline: timelineCollection,
 };

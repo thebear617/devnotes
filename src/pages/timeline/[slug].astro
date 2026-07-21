@@ -1,0 +1,39 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('timeline');
+  return entries.map(entry => ({
+    params: { slug: entry.id.replace(/\.md$/, '') },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<Layout>
+  <main class="app-shell">
+    <a href={`${base}timeline/`} class="blog-back">← 返回开发时间线</a>
+
+    <article class="tl-detail">
+      <div class="tl-detail-inner">
+        <header class="tl-detail-header">
+          <div>
+            <h1 class="tl-detail-title">{entry.data.title}</h1>
+            <p class="tl-detail-date">{entry.data.date}</p>
+          </div>
+          <div class="tl-tags">
+            {entry.data.tags.map(tag => <span class="tl-tag">{tag}</span>)}
+          </div>
+        </header>
+        <div class="tl-detail-body">
+          <Content />
+        </div>
+      </div>
+    </article>
+  </main>
+</Layout>

@@ -1,0 +1,31 @@
+#!/bin/sh
+# sync-timeline-hook
+
+REPO_DIR=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+WORKSPACE_DIR=$(dirname "$REPO_DIR")
+SYNC_SCRIPT="$WORKSPACE_DIR/devnotes/scripts/sync-timeline.py"
+
+[ -f "$SYNC_SCRIPT" ] || exit 0
+
+GAPS=$(python3 "$SYNC_SCRIPT" --json 2>/dev/null | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+msgs = []
+gaps = d.get('gaps', [])
+new_sites = d.get('new_sites', [])
+
+if gaps:
+    msgs.append(f'\033[33m⚠️  发现 {len(gaps)} 个 DevNotes 时间线版本缺口：\033[0m')
+    for gap in gaps:
+        msgs.append(f'  - {gap[\"zh\"]} {gap[\"full_ver\"]} ({gap[\"date\"]})')
+if new_sites:
+    names = ', '.join(site['zh'] for site in new_sites)
+    msgs.append(f'\033[36m🆕 发现新站点：{names}\033[0m')
+if msgs:
+    msgs.append('\033[90m请让 Agent 执行 sync-timeline skill，同步到 DevNotes「开发时间线」。\033[0m')
+
+print('\n'.join(msgs))
+")
+
+[ -n "$GAPS" ] && echo "$GAPS"
+exit 0

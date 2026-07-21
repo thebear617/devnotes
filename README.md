@@ -2,9 +2,10 @@
 
 个人开发知识库，用于整理跨产品、跨技术栈和跨语言的使用心得、实践经验、学习内容与价格信息。
 
-当前站点包含四个板块：
+当前站点包含五个板块：
 
 - **笔记中心**：开发工具使用心得、经验和排雷记录，支持按产品、技术栈、语言和类型筛选；
+- **开发时间线**：记录个人项目、站点与开发工具的版本演进；
 - **博客**：使用 Markdown 编写的技术文章与随想；
 - **价格矩阵**：AI 编程产品及模型服务的订阅价格对比；
 - **操作系统**：按章节组织的操作系统入门内容与交互式案例。
@@ -29,8 +30,9 @@ devnotes/
 ├── package.json              # 开发、构建和预览命令
 ├── src/
 │   ├── content/
-│   │   ├── config.ts         # 博客内容集合及 frontmatter 约束
-│   │   └── blog/             # Markdown 博客文章
+│   │   ├── config.ts         # 内容集合及 frontmatter 约束
+│   │   ├── blog/             # Markdown 博客文章
+│   │   └── timeline/         # Markdown 开发时间线条目
 │   ├── data/
 │   │   ├── notes.js          # 笔记中心数据
 │   │   ├── pricing.js        # 价格矩阵数据与来源链接
@@ -41,9 +43,14 @@ devnotes/
 │   │   ├── notes.astro       # 笔记中心
 │   │   ├── pricing.astro     # 价格矩阵
 │   │   ├── os.astro          # 操作系统学习页
-│   │   └── blog/             # 博客列表与文章详情页
+│   │   ├── blog/             # 博客列表与文章详情页
+│   │   └── timeline/         # 时间线列表与独立详情页
 │   └── styles/
 │       └── global.css        # 全站样式
+├── scripts/
+│   ├── sync-timeline.py      # 检测并同步各仓库的大版本里程碑
+│   ├── install-hooks.sh      # 为各站点安装时间线缺口提醒 hook
+│   └── git-hooks/post-commit # post-commit hook 模板
 └── dist/                     # 构建产物，已被 .gitignore 忽略
 ```
 
@@ -114,6 +121,34 @@ description: 用于博客列表的简短摘要
 ```
 
 其中 `product`、`stacks`、`langs` 和 `type` 会自动生成筛选项。`id` 必须唯一。
+
+## 更新开发时间线
+
+时间线的唯一数据源是 `src/content/timeline/*.md`。每条记录一个 Markdown 文件，frontmatter 包含 `title`、`date`、`tags`、`site` 和 `slug`，正文用于详情页。
+
+检测各站点尚未记录的大版本：
+
+```bash
+python3 scripts/sync-timeline.py --status
+python3 scripts/sync-timeline.py --json
+```
+
+预览或写入缺失条目：
+
+```bash
+python3 scripts/sync-timeline.py --dry-run
+python3 scripts/sync-timeline.py
+```
+
+脚本按 `(major, minor)` 识别大版本；同一大版本中的 patch 更新不会重复生成条目。写入后运行 `npm run build` 检查内容集合和详情路由。
+
+为 `home`、`personal`、`devnotes`、`reanotes`、`lifenotes` 和 `cats` 安装提交后的缺口提醒：
+
+```bash
+./scripts/install-hooks.sh
+```
+
+hook 只提示缺口，不自动修改、提交或推送仓库。
 
 ## 更新价格矩阵
 

@@ -1,0 +1,104 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const entries = await getCollection('timeline');
+const resolved = entries.map(e => ({ ...e, slug: e.id.replace(/\.md$/, '') }));
+const sorted = resolved.sort((a, b) => {
+  const d = b.data.date.localeCompare(a.data.date);
+  if (d !== 0) return d;
+  const va = (a.data.title.match(/v(\d+)\.(\d+)\.(\d+)/) || []).slice(1).map(Number);
+  const vb = (b.data.title.match(/v(\d+)\.(\d+)\.(\d+)/) || []).slice(1).map(Number);
+  for (let i = 0; i < 3; i++) {
+    if ((va[i] || 0) !== (vb[i] || 0)) return (vb[i] || 0) - (va[i] || 0);
+  }
+  return 0;
+});
+
+const allSites = [...new Set(resolved.map(e => e.data.site).filter(Boolean))].sort();
+const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<Layout>
+  <main class="app-shell">
+    <h2 class="view-title">开发时间线</h2>
+    <p class="view-sub">记录个人项目、站点与开发工具的版本演进</p>
+
+    <div class="route-search">
+      <input id="timelineSearch" type="search" placeholder="搜索标题或标签..." aria-label="搜索开发时间线" />
+    </div>
+
+    <div class="filter-bar">
+      <div class="filter-row">
+        <span class="filter-label">站点</span>
+        <div class="filter-tags" data-filter="site">
+          {allSites.map(s => <button class="filter-tag" type="button">{s}</button>)}
+        </div>
+        <button class="filter-clear" id="filterClear" type="button">清空</button>
+      </div>
+    </div>
+
+    <div class="tl" id="timelineList">
+      {sorted.map(e => (
+        <a href={`${base}timeline/${e.slug}/`} class="tl-item" data-site={e.data.site} data-title={e.data.title.toLowerCase()} data-tags={e.data.tags.map(t => t.toLowerCase()).join(',')}>
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-head">
+              <span class="tl-date">{e.data.date}</span>
+              <span class="tl-title">{e.data.title}</span>
+            </div>
+            <div class="tl-tags">
+              {e.data.tags.map(t => <span class="tl-tag">{t}</span>)}
+            </div>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <div id="emptyState" class="empty-state" hidden>没有匹配的条目</div>
+
+    <script>
+      let siteFilter = '';
+
+      document.querySelectorAll('.filter-bar .filter-tag').forEach(tag => {
+        tag.addEventListener('click', () => {
+          const on = tag.classList.toggle('on');
+          const row = tag.closest('.filter-row');
+          if (on) {
+            row.querySelectorAll('.filter-tag').forEach(t => { if (t !== tag) t.classList.remove('on'); });
+            siteFilter = tag.textContent;
+          } else {
+            siteFilter = '';
+          }
+          applyFilters();
+        });
+      });
+
+      document.getElementById('filterClear')?.addEventListener('click', () => {
+        document.querySelectorAll('.filter-bar .filter-tag.on').forEach(t => t.classList.remove('on'));
+        siteFilter = '';
+        applyFilters();
+      });
+
+      const searchInput = document.getElementById('timelineSearch');
+      searchInput?.addEventListener('input', applyFilters);
+
+      function applyFilters() {
+        const query = (searchInput?.value || '').trim().toLowerCase();
+        const items = document.querySelectorAll('.tl-item');
+        let visible = 0;
+        items.forEach(item => {
+          const matchesSite = !siteFilter || item.dataset.site === siteFilter;
+          const title = item.dataset.title || '';
+          const tags = item.dataset.tags || '';
+          const matchesQuery = !query || title.includes(query) || tags.includes(query);
+          const show = matchesSite && matchesQuery;
+          item.hidden = !show;
+          if (show) visible++;
+        });
+        document.getElementById('emptyState').hidden = visible > 0;
+      }
+
+    </script>
+  </main>
+</Layout>
