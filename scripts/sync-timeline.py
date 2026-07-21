@@ -21,8 +21,13 @@ SITES = {
 }
 ZH_TO_REPO = {zh: repo for repo, zh in SITES.items()}
 
-FULL_RE = re.compile(r"\b(v\d+\.\d+\.\d+)\b")
 VER_RE = re.compile(r"v(\d+)\.(\d+)\.(\d+)")
+RELEASE_PATTERNS = (
+    re.compile(r"^\w+\((v\d+\.\d+\.\d+)\):"),
+    re.compile(r"^\w+\(release\):\s*(v\d+\.\d+\.\d+)\b"),
+    re.compile(r"^(v\d+\.\d+\.\d+):"),
+    re.compile(r"^(?:feat|fix|chore|refactor|style|init):\s*(?:发布\s+)?(v\d+\.\d+\.\d+)\b"),
+)
 
 
 def run(cmd):
@@ -33,6 +38,15 @@ def run(cmd):
 def parse_ver(value):
     match = VER_RE.search(value)
     return tuple(int(part) for part in match.groups()) if match else None
+
+
+def release_version(subject):
+    """提取仓库自身的正式版本，忽略时间线等文档标题中的跨仓库版本号。"""
+    for pattern in RELEASE_PATTERNS:
+        match = pattern.search(subject)
+        if match:
+            return match.group(1)
+    return None
 
 
 def unquote_yaml(value):
@@ -89,13 +103,13 @@ def repo_version_commits(repo):
         if not line.strip():
             continue
         sha, _, subject = line.partition("\x00")
-        match = FULL_RE.search(subject)
-        if not match:
+        full_version = release_version(subject)
+        if not full_version:
             continue
-        version = parse_ver(match.group(1))
+        version = parse_ver(full_version)
         bucket = version[:2]
         if bucket not in commits:
-            commits[bucket] = (match.group(1), subject, sha)
+            commits[bucket] = (full_version, subject, sha)
     return commits
 
 
