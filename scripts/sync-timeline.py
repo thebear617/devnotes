@@ -77,24 +77,21 @@ def read_frontmatter(path):
     return data
 
 
-def timeline_versions():
-    """返回时间线已记录的版本桶和每站最高完整版本。"""
-    buckets = {}
-    maximums = {}
+def timeline_all_versions():
+    """返回 {repo: set of (major, minor, patch)} 时间线已记录的所有完整版本。"""
+    versions = {}
     for path in TIMELINE_DIR.glob("*.md"):
         data = read_frontmatter(path)
         repo = ZH_TO_REPO.get(data.get("site", ""))
         version = parse_ver(data.get("title", ""))
         if not repo or not version:
             continue
-        buckets.setdefault(repo, set()).add(version[:2])
-        if repo not in maximums or version > maximums[repo]:
-            maximums[repo] = version
-    return buckets, maximums
+        versions.setdefault(repo, set()).add(version)
+    return versions
 
 
 def repo_version_commits(repo):
-    """按 (major, minor) 分桶，每个桶取 git log 中最新的版本 commit。"""
+    """返回 {(major, minor, patch): (full_ver, subject, sha)}，按完整版本号分桶，每个版本号取最新 commit。"""
     output = run([
         "git", "-C", str(ROOT / repo), "log", "main", "--format=%H%x00%s"
     ])
@@ -107,9 +104,8 @@ def repo_version_commits(repo):
         if not full_version:
             continue
         version = parse_ver(full_version)
-        bucket = version[:2]
-        if bucket not in commits:
-            commits[bucket] = (full_version, subject, sha)
+        if version not in commits:
+            commits[version] = (full_version, subject, sha)
     return commits
 
 
@@ -164,7 +160,7 @@ def file_stats(repo, old_sha, new_sha):
 
 
 def collect_additions():
-    existing_buckets, _ = timeline_versions()
+    existing_all = timeline_all_versions()
     additions = []
     notes = []
     new_sites = []
@@ -173,35 +169,30 @@ def collect_additions():
         commits = repo_version_commits(repo)
         if not commits:
             continue
-        existing = existing_buckets.get(repo, set())
+        existing = existing_all.get(repo, set())
         if not existing:
-            newest = max(commits)
-            notes.append(
-                f"  {repo} ({zh}) → 时间线无记录（仓库最新 v{newest[0]}.{newest[1]}）"
-            )
+            newest_ver = max(commits)
+            newest_full = commits[newest_ver][0]
+            notes.append(f"  {repo} ({zh}) → 时间线无记录（仓库最新 {newest_full}）")
             new_sites.append({"repo": repo, "zh": zh})
             continue
 
-        first_recorded = min(existing)
-        gaps = [bucket for bucket in sorted(commits) if bucket >= first_recorded and bucket not in existing]
-        for bucket in gaps:
-            full_ver, subject, sha = commits[bucket]
-            lower = [candidate for candidate in commits if candidate < bucket]
-            old_sha = commits[max(lower)][2] if lower else ""
+        tmin = min(existing)
+        gaps = sorted(v for v in commits if v >= tmin and v not in existing)
+
+        for v in gaps:
+            full_ver, subject, sha = commits[v]
+            all_vs = sorted(commits.keys())
+            idx = all_vs.index(v)
+            old_sha = commits[all_vs[idx - 1]][2] if idx > 0 else ""
             full_body, date = commit_meta(repo, sha)
             matter = parse_subject(subject)
             body = body_rest(full_body) or f"{zh}升级到 {full_ver}：{matter}。"
             entry_id = f"{repo}-v{full_ver[1:].replace('.', '')}"
             additions.append({
-                "repo": repo,
-                "zh": zh,
-                "full_ver": full_ver,
-                "major_minor": list(bucket),
-                "sha": sha,
-                "old_sha": old_sha,
-                "date": date,
-                "subject": subject,
-                "matter": matter,
+                "repo": repo, "zh": zh, "full_ver": full_ver,
+                "major_minor": list(v), "sha": sha, "old_sha": old_sha,
+                "date": date, "subject": subject, "matter": matter,
                 "id": entry_id,
                 "title": f"{zh} {full_ver}：{matter}",
                 "tags": [zh, category(subject)],
@@ -237,17 +228,19 @@ def output_json(additions, new_sites):
 
 
 def print_status():
-    buckets, maximums = timeline_versions()
+    all_versions = timeline_all_versions()
     print("站点        时间轴最高      仓库最新")
     print("-" * 44)
     for repo, zh in SITES.items():
         commits = repo_version_commits(repo)
-        current = maximums.get(repo)
+        existing = all_versions.get(repo, set())
+        current = max(existing) if existing else None
         current_text = f"v{current[0]}.{current[1]}.{current[2]}" if current else "（无）"
-        if commits:
-            newest_bucket = max(commits)
-            newest_text = commits[newest_bucket][0]
-            flag = "  ← 有缺口" if newest_bucket not in buckets.get(repo, set()) else ""
+        if commits and existing:
+            tmin = min(existing)
+            gaps = [v for v in commits if v >= tmin and v not in existing]
+            flag = "  ← 有缺口" if gaps else ""
+            newest_text = commits[max(commits)][0]
         else:
             newest_text = "（无）"
             flag = ""
