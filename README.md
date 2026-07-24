@@ -4,11 +4,11 @@
 
 当前站点包含五个板块：
 
-- **笔记中心**：开发工具使用心得、经验和排雷记录，支持按产品、技术栈、语言和类型筛选；
 - **开发时间线**：记录个人项目、站点与开发工具的版本演进；
+- **笔记中心**：开发工具使用心得、经验和排雷记录，支持按产品、技术栈、语言和类型筛选；
 - **博客**：使用 Markdown 编写的技术文章与随想；
-- **价格矩阵**：AI 编程产品及模型服务的订阅价格对比；
-- **操作系统**：按章节组织的操作系统入门内容与交互式案例。
+- **提示词库**：收藏值得反复使用的提示词与场景，按 Markdown 文章形式发布，支持搜索与标签筛选；
+- **价格矩阵**：AI 编程产品及模型服务的订阅价格对比。
 
 ## 技术栈
 
@@ -32,18 +32,18 @@ devnotes/
 │   ├── content/
 │   │   ├── config.ts         # 内容集合及 frontmatter 约束
 │   │   ├── blog/             # Markdown 博客文章
+│   │   ├── prompts/          # Markdown 提示词收藏
 │   │   └── timeline/         # Markdown 开发时间线条目
 │   ├── data/
 │   │   ├── notes.js          # 笔记中心数据
-│   │   ├── pricing.js        # 价格矩阵数据与来源链接
-│   │   └── os.js             # 操作系统学习内容
+│   │   └── pricing.js        # 价格矩阵数据与来源链接
 │   ├── layouts/
 │   │   └── Layout.astro      # 全站布局、侧栏与移动端导航
 │   ├── pages/
 │   │   ├── notes.astro       # 笔记中心
 │   │   ├── pricing.astro     # 价格矩阵
-│   │   ├── os.astro          # 操作系统学习页
 │   │   ├── blog/             # 博客列表与文章详情页
+│   │   ├── prompts/          # 提示词库列表与详情页
 │   │   └── timeline/         # 时间线列表与独立详情页
 │   └── styles/
 │       └── global.css        # 全站样式
@@ -99,6 +99,10 @@ description: 用于博客列表的简短摘要
 ```
 
 正文使用标准 Markdown，可以直接插入标题、列表、代码块、引用、链接和表格。博客列表按 `date` 从新到旧排列。
+
+## 添加提示词
+
+在 `src/content/prompts/` 中新增 `.md` 文件即可。字段与博客一致（`title`、`date`、`tags`、`description`，可选 `updated` 与 `slug`）；建议正文按 `## 提示词` 代码块 + `## 参考资料` 结构组织，来源链接放在参考资料一节。提示词库列表与博客列表一样支持搜索与标签筛选。
 
 ## 更新笔记中心
 
@@ -161,13 +165,23 @@ hook 只提示缺口，不自动修改、提交或推送仓库。
 
 价格采用手动维护并标注核对日期的方式。公开页面只用于辅助比较，最终价格以产品官网为准。
 
-## 更新操作系统学习页
+## 同步 AI 模型数据
 
-内容位于 `src/data/os.js`。页面由章节、内容组和卡片组成：
+模型排行榜数据位于 `src/data/models.js`，同步脚本位于 `scripts/sync-models.mjs`。参数量优先读取 DataLearner API，价格、上下文和能力字段由 OpenRouter 补充；默认不请求 Hugging Face，避免单个模型修正被网络超时拖慢。
 
-- 基础知识卡片主要使用 `markdown` 字段；
-- 复杂布局使用 `body` HTML；
-- 页面结构和交互逻辑位于 `src/pages/os.astro`。
+只修正指定模型：
+
+```bash
+node scripts/sync-models.mjs --only=moonshotai/kimi-k3
+```
+
+需要补充 Hugging Face 参数量时显式开启：
+
+```bash
+node scripts/sync-models.mjs --huggingface
+```
+
+`--include-provider=minimax` 可将 OpenRouter 中本地尚未收录的 MiniMax 模型加入排行榜；`--openrouter-file=/path/to/models.json` 可使用已下载的 API 快照；`--datalearner-file=/path/to/models.json` 可使用 DataLearner API 快照；`--skip-datalearner` 可临时关闭 DataLearner 数据源。
 
 ## 基础路径与部署
 
