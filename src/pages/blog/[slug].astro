@@ -12,7 +12,7 @@ export async function getStaticPaths() {
 
 const { blog } = Astro.props;
 const { Content, headings } = await render(blog);
-const tocHeadings = headings.filter(heading => heading.depth === 2 || heading.depth === 3);
+const tocHeadings = headings.filter(heading => heading.depth >= 1 && heading.depth <= 3);
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
@@ -42,7 +42,10 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       <article class="blog-article">
         <header class="blog-article-header">
           <h1 class="blog-article-title">{blog.data.title}</h1>
-          <p class="blog-article-date">{blog.data.date}</p>
+          <p class="blog-article-date">
+            发布于 {blog.data.date}
+            {blog.data.updated && blog.data.updated !== blog.data.date && ` · 更新于 ${blog.data.updated}`}
+          </p>
           {blog.data.tags.length ? (
             <div class="blog-article-tags">
               {blog.data.tags.map(t => <span class="blog-tag">{t}</span>)}
@@ -60,7 +63,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
 <script>
   const tocLinks = Array.from(document.querySelectorAll('.blog-toc-link'));
   const articleHeadings = Array.from(
-    document.querySelectorAll('.blog-article-body h2[id], .blog-article-body h3[id]')
+    document.querySelectorAll('.blog-article-body h1[id], .blog-article-body h2[id], .blog-article-body h3[id]')
   );
 
   function setActiveHeading(id) {

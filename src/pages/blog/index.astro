@@ -3,7 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const blogs = await getCollection('blog');
-blogs.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+blogs.sort((a, b) => new Date(b.data.updated || b.data.date).getTime() - new Date(a.data.updated || a.data.date).getTime());
 
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
