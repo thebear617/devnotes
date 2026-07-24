@@ -1,5 +1,21 @@
 export const notes = [
   {
+    id: 'clash-verge-subscription-tun-timeout',
+    product: 'Clash Verge',
+    stacks: ['网络', '运维'],
+    langs: [],
+    type: '调试',
+    title: 'Clash Verge 节点全部超时？重新导入订阅并关闭 TUN',
+    date: '2026-07-25',
+    body: `<p>电脑端使用 B 站点订阅时，Clash Verge 中所有节点都显示连接超时，但同一订阅在手机 Shadowrocket 上可以正常连接；换用 A 订阅后电脑端也能使用。排查发现电脑可以直接连通 B 节点端口，问题出在 Clash Verge 的 TUN 路由模式。</p>
+<p>解决方法：</p>
+<ol>
+  <li>到服务商网站重新导入一次需要使用的订阅，确保配置是最新的。</li>
+  <li>导入完成后关闭 Clash Verge 的 TUN 模式，使用普通系统代理。</li>
+</ol>
+<p>以后遇到“手机能用、电脑 Clash Verge 全部超时”的类似问题，可以先重新导入订阅，再关闭 TUN 模式测试。</p>`
+  },
+  {
     id: 'qoder-agent-first',
     product: 'Qoder',
     stacks: ['全栈', '前端'],
