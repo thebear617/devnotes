@@ -1,60 +1,352 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { pricingMeta, pricingLinks, pricings } from '../data/pricing.js';
+import { tools } from '../data/tools.js';
+import { models } from '../data/models.js';
 
-const tracks = [...new Set(pricings.map(p => p.track))];
+const toolData = tools.map(t => ({
+  id: t.id, name: t.name, vendor: t.vendor, country: t.country,
+  type: t.type, baseModels: t.baseModels, contextWindow: t.contextWindow,
+  minPrice: t.minPrice, bestPlan: t.bestPlan, bestPlanDesc: t.bestPlanDesc,
+  pricingUrl: t.pricingUrl, features: t.features, platforms: t.platforms,
+  launchYear: t.launchYear, tags: t.tags,
+}));
 
-function priceClass(price) {
-  if (price === '¥0' || price === '$0') return 'price-free';
-  if (price === '待确认') return 'price-unknown';
-  return 'price-paid';
-}
+const modelData = models.map(m => ({
+  id: m.id, name: m.name, provider: m.provider,
+  architecture: m.architecture,
+  params: m.params, contextLength: m.contextLength,
+  inputPrice: m.inputPrice, outputPrice: m.outputPrice,
+  knowledgeCutoff: m.knowledgeCutoff,
+  hasVision: m.hasVision, hasTools: m.hasTools, hasReasoning: m.hasReasoning,
+  codingScore: m.codingScore,
+  activeParams: m.activeParams, paramSource: m.paramSource,
+  paramConfidence: m.paramConfidence,
+}));
+
+const toolCols = [
+  { key: 'name', label: '产品', sortable: true },
+  { key: 'vendor', label: '厂商', sortable: true },
+  { key: 'type', label: '类型', sortable: false },
+  { key: 'baseModels', label: '底层模型', sortable: false },
+  { key: 'contextWindow', label: '上下文', sortable: true },
+  { key: 'minPrice', label: '最低价', sortable: true },
+  { key: 'bestPlan', label: '推荐方案', sortable: false },
+  { key: 'features', label: '特性', sortable: false },
+  { key: 'pricingUrl', label: '官网', sortable: false },
+  { key: 'launchYear', label: '发布', sortable: true },
+];
 ---
 
 <Layout>
   <main class="app-shell">
-    <h2 class="view-title">价格矩阵</h2>
-    <p class="view-sub">AI 编程工具 Coding Plan / Token Plan 订阅价一览</p>
+    <h2 class="view-title">AI 排行榜</h2>
+    <p class="view-sub">编程工具与 AI 模型的全景对比，点击列头可排序 · 数据来源：<a class="data-source-link" href="https://openrouter.ai/models" target="_blank" rel="noopener noreferrer">OpenRouter ↗</a> · <a class="data-source-link" href="https://www.datalearner.com/" target="_blank" rel="noopener noreferrer">DataLearner AI ↗</a></p>
 
-    <div class="pricing-meta">
-      <strong>核对于 {pricingMeta.updatedAt}</strong> · {pricingMeta.note}
+    <div class="lb-topbar">
+      <div class="sub-tabs" id="lbTabs">
+        <button class="sub-tab active" data-tab="tools">编程工具</button>
+        <button class="sub-tab" data-tab="models">AI 模型</button>
+      </div>
+      <div class="lb-views">
+        <button class="lb-view-btn active" data-view="table" title="表格视图">
+          <span class="lb-view-icon">☰</span>
+        </button>
+        <button class="lb-view-btn" data-view="card" title="卡片视图">
+          <span class="lb-view-icon">▦</span>
+        </button>
+      </div>
     </div>
 
-    {tracks.map(track => (
-      <section class="price-section">
-        <h3 class="price-section-title">{track}（{pricings.filter(p => p.track === track).map(p => p.product).filter((v, i, a) => a.indexOf(v) === i).length} 款产品）</h3>
-        <div class="table-wrap">
-          <table class="pricing-table">
-            <thead>
-              <tr>
-                <th>产品</th>
-                <th>厂商</th>
-                <th>方案</th>
-                <th>价格</th>
-                <th>周期</th>
-                <th>备注</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pricings.filter(p => p.track === track).map(p => {
-                const url = pricingLinks[p.product];
-                return (
-                  <tr>
-                    <td class="pt-name">
-                      {url ? <a href={url} class="pt-link" target="_blank" rel="noopener">{p.product} <span class="pt-ext">↗</span></a> : p.product}
-                    </td>
-                    <td>{p.vendor}</td>
-                    <td><strong>{p.plan}</strong></td>
-                    <td class={`pt-price ${priceClass(p.price)}`}>{p.price}</td>
-                    <td>{p.billing}</td>
-                    <td class="pt-note">{p.note}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    ))}
+    <div class="lb-table-wrap" id="lbTableWrap">
+      <table class="lb-table">
+        <thead>
+          <tr>
+            {toolCols.map(col => <th class:list={{ 'lb-th': true, 'lb-sortable': col.sortable }} data-key={col.key}>{col.label}{col.sortable && <span class="lb-arrow lb-arrow-hint">↕</span>}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {tools.map(tool => (
+            <tr>
+              <td>{tool.name}</td>
+              <td>{tool.vendor}</td>
+              <td>{tool.type}</td>
+              <td>{tool.baseModels}</td>
+              <td>{tool.contextWindow || '—'}</td>
+              <td class:list={{ 'lb-price-free': tool.minPrice === '$0' || tool.minPrice === '¥0' }}>{tool.minPrice}</td>
+              <td><strong>{tool.bestPlan}</strong><small>{tool.bestPlanDesc}</small></td>
+              <td>{tool.features.slice(0, 3).join(', ')}</td>
+              <td><a href={tool.pricingUrl} target="_blank" rel="noopener">↗</a></td>
+              <td>{tool.launchYear}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <div class="lb-cards" id="lbCards" style="display:none"></div>
+    <div class="empty-state" id="lbEmpty" style="display:none">暂无数据</div>
   </main>
 </Layout>
+
+<script define:vars={{ toolData, modelData }}>
+  const TOOLS = toolData;
+  const MODELS = modelData;
+
+  let currentTab = 'tools';
+  let currentView = 'table';
+  let sortKey = null;
+  let sortDir = 1;
+
+  function $(sel) { return document.querySelector(sel); }
+  function $$(sel) { return document.querySelectorAll(sel); }
+
+  function fmt(n) {
+    if (n == null) return '—';
+    if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+    if (n >= 1_000) return (n / 1_000).toFixed(0) + 'K';
+    return String(n);
+  }
+
+  function fmtPrice(p) {
+    if (p === 0) return '<span class="lb-price-free">$0</span>';
+    if (p == null || p === '') return '—';
+    if (typeof p === 'string') return p;
+    if (p < 0.01) return '$' + p.toFixed(4);
+    if (p < 1) return '$' + p.toFixed(2);
+    return '$' + p.toFixed(2);
+  }
+
+  function tagEl(label, cls) {
+    return '<span class="note-tag ' + (cls || '') + '">' + label + '</span>';
+  }
+
+  function featTags(items, limit) {
+    const shown = limit ? items.slice(0, limit) : items;
+    return shown.map(function(f) { return tagEl(f); }).join('');
+  }
+
+  // ── Tool columns ──
+  const toolCols = [
+    { key: 'name', label: '产品', sortable: true },
+    { key: 'vendor', label: '厂商', sortable: true },
+    { key: 'type', label: '类型', sortable: false },
+    { key: 'baseModels', label: '底层模型', sortable: false },
+    { key: 'contextWindow', label: '上下文', sortable: true },
+    { key: 'minPrice', label: '最低价', sortable: true },
+    { key: 'bestPlan', label: '推荐方案', sortable: false },
+    { key: 'features', label: '特性', sortable: false },
+    { key: 'pricingUrl', label: '官网', sortable: false },
+    { key: 'launchYear', label: '发布', sortable: true },
+  ];
+
+  const modelCols = [
+    { key: 'name', label: '模型', sortable: true },
+    { key: 'provider', label: '提供商', sortable: true },
+    { key: 'params', label: '参数量', sortable: true },
+    { key: 'contextLength', label: '上下文', sortable: true },
+    { key: 'inputPrice', label: '输入 $/M', sortable: true },
+    { key: 'outputPrice', label: '输出 $/M', sortable: true },
+    { key: 'knowledgeCutoff', label: '知识截止', sortable: true },
+    { key: 'codingScore', label: 'Coding', sortable: true },
+    { key: 'caps', label: '能力', sortable: false },
+  ];
+
+  function getData() { return currentTab === 'tools' ? TOOLS : MODELS; }
+  function getCols() { return currentTab === 'tools' ? toolCols : modelCols; }
+
+  function getVal(row, key) {
+    if (currentTab === 'tools') {
+      if (key === 'pricingUrl') return row.pricingUrl || '';
+      if (key === 'features') return (row.features || []).slice(0, 3).join(', ');
+      if (key === 'bestPlan') return '<strong>' + (row.bestPlan || '') + '</strong><br><small>' + (row.bestPlanDesc || '') + '</small>';
+      if (key === 'contextWindow') {
+        const v = row.contextWindow;
+        if (!v) return '—';
+        return v;
+      }
+      return row[key] || '';
+    }
+    if (key === 'contextLength') return fmt(row.contextLength);
+    if (key === 'inputPrice') return fmtPrice(row.inputPrice);
+    if (key === 'outputPrice') return fmtPrice(row.outputPrice);
+    if (key === 'knowledgeCutoff') return row.knowledgeCutoff || '—';
+    if (key === 'codingScore') return row.codingScore != null ? row.codingScore : '—';
+    if (key === 'caps') {
+      var caps = [];
+      if (row.hasVision) caps.push('👁');
+      if (row.hasTools) caps.push('🔧');
+      if (row.hasReasoning) caps.push('🧠');
+      return caps.join(' ') || '—';
+    }
+    return row[key] || '';
+  }
+
+  function getSortVal(row, key) {
+    if (currentTab === 'tools') {
+      if (key === 'contextWindow') {
+        var v = row.contextWindow;
+        if (!v) return 0;
+        if (typeof v === 'string' && v.endsWith('K')) return parseInt(v) * 1000;
+        return parseInt(v) || 0;
+      }
+      if (key === 'minPrice') {
+        var p = row.minPrice;
+        if (p === '¥0' || p === '$0') return 0;
+        var m = String(p).match(/([\d.]+)/);
+        return m ? parseFloat(m[1]) : 99999;
+      }
+      if (key === 'launchYear') return parseInt(row.launchYear) || 0;
+      return String(getVal(row, key)).toLowerCase();
+    }
+    if (key === 'contextLength') return row.contextLength || 0;
+    if (key === 'inputPrice') return row.inputPrice ?? 999;
+    if (key === 'outputPrice') return row.outputPrice ?? 999;
+    if (key === 'knowledgeCutoff') return row.knowledgeCutoff || '0000';
+    if (key === 'codingScore') return row.codingScore ?? -1;
+    return String(getVal(row, key)).toLowerCase();
+  }
+
+  function sortedData() {
+    var data = getData().slice();
+    if (sortKey) {
+      data.sort(function(a, b) {
+        var va = getSortVal(a, sortKey);
+        var vb = getSortVal(b, sortKey);
+        if (typeof va === 'number' && typeof vb === 'number') return (va - vb) * sortDir;
+        if (va < vb) return -1 * sortDir;
+        if (va > vb) return 1 * sortDir;
+        return 0;
+      });
+    }
+    return data;
+  }
+
+  function renderTable() {
+    var cols = getCols();
+    var data = sortedData();
+    var html = '<table class="lb-table"><thead><tr>';
+    cols.forEach(function(col) {
+      var cls = 'lb-th' + (col.sortable ? ' lb-sortable' : '');
+      var arrow = '';
+      if (col.sortable && sortKey === col.key) {
+        arrow = ' <span class="lb-arrow">' + (sortDir === 1 ? '↑' : '↓') + '</span>';
+      } else if (col.sortable) {
+        arrow = ' <span class="lb-arrow lb-arrow-hint">↕</span>';
+      }
+      html += '<th class="' + cls + '" data-key="' + col.key + '">' + col.label + arrow + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+    data.forEach(function(row) {
+      html += '<tr>';
+      cols.forEach(function(col) {
+        var val = getVal(row, col.key);
+        html += '<td>' + val + '</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    $('lbTableWrap').innerHTML = html;
+
+    $$('.lb-sortable').forEach(function(th) {
+      th.addEventListener('click', function() {
+        var key = th.dataset.key;
+        if (sortKey === key) {
+          sortDir = sortDir * -1;
+        } else {
+          sortKey = key;
+          sortDir = 1;
+        }
+        renderTable();
+        currentView = 'table';
+        $$('.lb-view-btn').forEach(function(b) { b.classList.toggle('active', b.dataset.view === 'table'); });
+      });
+    });
+  }
+
+  function renderCards() {
+    var data = sortedData();
+    if (currentTab === 'tools') {
+      var html = '<div class="note-list">';
+      data.forEach(function(t) {
+        var ftags = t.features ? t.features.slice(0, 4).map(function(f) { return tagEl(f); }).join('') : '';
+        html += '<div class="note-card lb-card">' +
+          '<div class="lb-card-head">' +
+            '<span class="lb-card-name">' + t.name + '</span>' +
+            '<span class="lb-card-vendor">' + t.vendor + '</span>' +
+          '</div>' +
+          '<div class="lb-card-row"><span>' + tagEl(t.type, 'type') + '</span><span class="lb-card-context">' + (t.contextWindow || '—') + '</span></div>' +
+          '<div class="lb-card-models">' + t.baseModels + '</div>' +
+          '<div class="lb-card-price">最低 ' + t.minPrice + ' · ' + t.bestPlan + '</div>' +
+          '<div class="note-tags">' + ftags + '</div>' +
+        '</div>';
+      });
+      html += '</div>';
+      $('lbCards').innerHTML = html;
+    } else {
+      var html = '<div class="note-list">';
+      data.forEach(function(m) {
+        var caps = [];
+        if (m.hasVision) caps.push(tagEl('👁 视觉'));
+        if (m.hasTools) caps.push(tagEl('🔧 工具'));
+        if (m.hasReasoning) caps.push(tagEl('🧠 推理'));
+        var priceStr = fmtPrice(m.inputPrice) + ' / ' + fmtPrice(m.outputPrice);
+        html += '<div class="note-card lb-card">' +
+          '<div class="lb-card-head">' +
+            '<span class="lb-card-name">' + m.name + '</span>' +
+            '<span class="lb-card-vendor">' + m.provider + '</span>' +
+          '</div>' +
+          '<div class="lb-card-row">' +
+            '<span>参数 ' + (m.params || '—') + '</span>' +
+            '<span>上下文 ' + fmt(m.contextLength) + '</span>' +
+          '</div>' +
+          '<div class="lb-card-row">' +
+            '<span>输入/输出: ' + priceStr + '</span>' +
+          '</div>' +
+          '<div class="lb-card-row lb-card-meta">' +
+            '<span>知识截止 ' + (m.knowledgeCutoff || '—') + '</span>' +
+            (m.codingScore != null ? '<span>Coding ' + m.codingScore + '</span>' : '') +
+          '</div>' +
+          '<div class="note-tags">' + caps.join('') + '</div>' +
+        '</div>';
+      });
+      html += '</div>';
+      $('lbCards').innerHTML = html;
+    }
+  }
+
+  function render() {
+    if (currentView === 'table') {
+      $('lbTableWrap').style.display = '';
+      $('lbCards').style.display = 'none';
+      renderTable();
+    } else {
+      $('lbTableWrap').style.display = 'none';
+      $('lbCards').style.display = '';
+      renderCards();
+    }
+  }
+
+  $$('#lbTabs .sub-tab').forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      $$('#lbTabs .sub-tab').forEach(function(t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      currentTab = tab.dataset.tab;
+      sortKey = null;
+      sortDir = 1;
+      render();
+    });
+  });
+
+  $$('.lb-view-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      $$('.lb-view-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      currentView = btn.dataset.view;
+      render();
+    });
+  });
+
+  render();
+</script>
+
+<script type="application/json" id="lbData" set:html={JSON.stringify({ toolData, modelData })}></script>
+<script src="../scripts/pricing.js"></script>
