@@ -1,0 +1,103 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const prompts = await getCollection('prompts');
+  return prompts.map(p => ({
+    params: { slug: p.slug },
+    props: { prompt: p },
+  }));
+}
+
+const { prompt } = Astro.props;
+const { Content, headings } = await render(prompt);
+const tocHeadings = headings.filter(heading => heading.depth >= 1 && heading.depth <= 3);
+const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+<Layout>
+  <main class="app-shell blog-page-shell">
+    <a href={`${base}prompts/`} class="blog-back">← 返回提示词库</a>
+    <div class="blog-detail-layout">
+      {tocHeadings.length > 0 && (
+        <aside class="blog-toc-column" aria-label="文章目录">
+          <details class="blog-toc" open>
+            <summary>本文目录</summary>
+            <nav>
+              {tocHeadings.map(heading => (
+                <a
+                  href={`#${heading.slug}`}
+                  class={`blog-toc-link depth-${heading.depth}`}
+                  data-heading-id={heading.slug}
+                >
+                  {heading.text}
+                </a>
+              ))}
+            </nav>
+          </details>
+        </aside>
+      )}
+
+      <article class="blog-article">
+        <header class="blog-article-header">
+          <h1 class="blog-article-title">{prompt.data.title}</h1>
+          <p class="blog-article-date">
+            发布于 {prompt.data.date}
+            {prompt.data.updated && prompt.data.updated !== prompt.data.date && ` · 更新于 ${prompt.data.updated}`}
+          </p>
+          {prompt.data.tags.length ? (
+            <div class="blog-article-tags">
+              {prompt.data.tags.map(t => <span class="blog-tag">{t}</span>)}
+            </div>
+          ) : null}
+        </header>
+        <div class="blog-article-body">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const tocLinks = Array.from(document.querySelectorAll('.blog-toc-link'));
+  const articleHeadings = Array.from(
+    document.querySelectorAll('.blog-article-body h1[id], .blog-article-body h2[id], .blog-article-body h3[id]')
+  );
+
+  function setActiveHeading(id) {
+    tocLinks.forEach(link => {
+      const active = link.dataset.headingId === id;
+      link.classList.toggle('active', active);
+      if (active) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  }
+
+  let ticking = false;
+  function updateActiveHeading() {
+    let activeId = articleHeadings[0]?.id;
+
+    for (const heading of articleHeadings) {
+      if (heading.getBoundingClientRect().top <= 120) activeId = heading.id;
+      else break;
+    }
+
+    if (activeId) setActiveHeading(activeId);
+    ticking = false;
+  }
+
+  function requestHeadingUpdate() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(updateActiveHeading);
+  }
+
+  if (tocLinks.length && articleHeadings.length) {
+    const scrollContainer = document.querySelector('.main-area');
+    updateActiveHeading();
+    scrollContainer?.addEventListener('scroll', requestHeadingUpdate, { passive: true });
+    window.addEventListener('hashchange', requestHeadingUpdate);
+  }
+</script>

@@ -2,29 +2,29 @@
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
-const blogs = await getCollection('blog');
-blogs.sort((a, b) => new Date(b.data.updated || b.data.date).getTime() - new Date(a.data.updated || a.data.date).getTime());
+const prompts = await getCollection('prompts');
+prompts.sort((a, b) => new Date(b.data.updated || b.data.date).getTime() - new Date(a.data.updated || a.data.date).getTime());
 
-const allTags = [...new Set(blogs.flatMap(b => b.data.tags))].sort();
+const allTags = [...new Set(prompts.flatMap(p => p.data.tags))].sort();
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
 <Layout>
   <main class="app-shell">
-    <h2 class="view-title">博客</h2>
-    <p class="view-sub">技术博客与随想</p>
+    <h2 class="view-title">提示词库</h2>
+    <p class="view-sub">收藏值得反复用的提示词与场景</p>
 
-    <div class="list-search" id="blogSearch">
+    <div class="list-search" id="promptSearch">
       <span class="list-search-icon">🔍</span>
       <input
         type="search"
-        id="blogSearchInput"
+        id="promptSearchInput"
         class="list-search-input"
         placeholder="搜索标题、描述或标签"
         autocomplete="off"
-        aria-label="搜索博客"
+        aria-label="搜索提示词"
       />
-      <button class="list-search-clear" id="blogSearchClear" aria-label="清除搜索">✕</button>
+      <button class="list-search-clear" id="promptSearchClear" aria-label="清除搜索">✕</button>
     </div>
 
     {allTags.length > 0 && (
@@ -39,32 +39,32 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       </div>
     )}
 
-    {blogs.length > 0 ? (
-      <div class="blog-list" id="blogList">
-        {blogs.map(blog => (
+    {prompts.length > 0 ? (
+      <div class="blog-list" id="promptList">
+        {prompts.map(p => (
           <a
-            href={`${base}blog/${blog.slug}/`}
+            href={`${base}prompts/${p.slug}/`}
             class="blog-card"
-            data-tags={blog.data.tags.join(',')}
-            data-title={blog.data.title}
-            data-desc={blog.data.description || ''}
+            data-tags={p.data.tags.join(',')}
+            data-title={p.data.title}
+            data-desc={p.data.description || ''}
           >
-            <div class="blog-card-title">{blog.data.title}</div>
-            {blog.data.description && <p class="blog-card-desc">{blog.data.description}</p>}
-            <div class="blog-card-meta">{blog.data.date}</div>
-            {blog.data.tags.length > 0 && (
+            <div class="blog-card-title">{p.data.title}</div>
+            {p.data.description && <p class="blog-card-desc">{p.data.description}</p>}
+            <div class="blog-card-meta">{p.data.date}</div>
+            {p.data.tags.length > 0 && (
               <div class="blog-card-tags">
-                {blog.data.tags.map(t => <span class="blog-tag">{t}</span>)}
+                {p.data.tags.map(t => <span class="blog-tag">{t}</span>)}
               </div>
             )}
           </a>
         ))}
       </div>
     ) : (
-      <section class="empty-state">还没有博客文章</section>
+      <section class="empty-state">还没有提示词</section>
     )}
 
-    <section class="empty-state" id="emptyState" style="display:none">没有匹配的博客</section>
+    <section class="empty-state" id="emptyState" style="display:none">没有匹配的提示词</section>
   </main>
 </Layout>
 
@@ -94,8 +94,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     applyFilters();
   });
 
-  const searchInput = document.getElementById('blogSearchInput');
-  const searchClear = document.getElementById('blogSearchClear');
+  const searchInput = document.getElementById('promptSearchInput');
+  const searchClear = document.getElementById('promptSearchClear');
   searchInput.addEventListener('input', () => {
     searchTerm = searchInput.value.trim().toLowerCase();
     searchClear.style.display = searchTerm ? '' : 'none';
@@ -111,7 +111,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
 
   function applyFilters() {
     const visible = [];
-    document.querySelectorAll('#blogList .blog-card').forEach(card => {
+    document.querySelectorAll('#promptList .blog-card').forEach(card => {
       let show = true;
       if (filters.tags && !card.dataset.tags.split(',').includes(filters.tags)) show = false;
       if (show && searchTerm) {

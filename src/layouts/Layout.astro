@@ -5,11 +5,12 @@ const currentPath = Astro.url.pathname;
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
 
 const navItems = [
-  { href: 'notes/', icon: '📒', label: '笔记中心' },
   { href: 'timeline/', icon: '🧑‍💻', label: '开发时间线' },
+  { href: 'notes/', icon: '📒', label: '笔记中心' },
   { href: 'blog/', icon: '📝', label: '博客' },
-  { href: 'pricing/', icon: '💲', label: '价格矩阵' },
-  ];
+  { href: 'prompts/', icon: '✨', label: '提示词库' },
+  { href: 'pricing/', icon: '🏆', label: 'AI 排行榜' },
+];
 ---
 
 <!DOCTYPE html>
