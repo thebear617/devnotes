@@ -3,16 +3,17 @@ import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const blogs = await getCollection('blog');
-blogs.sort((a, b) => new Date(b.data.updated || b.data.date).getTime() - new Date(a.data.updated || a.data.date).getTime());
+blogs.sort((a, b) => new Date(b.data.updated || b.data.date).getTime() - new Date(a.data.updated || b.data.date).getTime());
 
-const allTags = [...new Set(blogs.flatMap(b => b.data.tags))].sort();
+const PRIMARY_TAGS = ['编程', '科研', '随想'];
+const SECONDARY_TAGS = ['综述', '实践', '入门', '方法', '会议', '随笔'];
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
 <Layout>
   <main class="app-shell">
     <h2 class="view-title">博客</h2>
-    <p class="view-sub">技术博客与随想</p>
+    <p class="view-sub">编程 · 科研 · 随想</p>
 
     <div class="list-search" id="blogSearch">
       <span class="list-search-icon">🔍</span>
@@ -27,12 +28,18 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       <button class="list-search-clear" id="blogSearchClear" aria-label="清除搜索">✕</button>
     </div>
 
-    {allTags.length > 0 && (
+    {blogs.length > 0 && (
       <div class="filter-bar" id="filterBar">
+        <div class="filter-row">
+          <span class="filter-label">分类</span>
+          <div class="filter-tags" data-filter="primary">
+            {PRIMARY_TAGS.map(t => <button class="filter-tag">{t}</button>)}
+          </div>
+        </div>
         <div class="filter-row">
           <span class="filter-label">标签</span>
           <div class="filter-tags" data-filter="tags">
-            {allTags.map(t => <button class="filter-tag">{t}</button>)}
+            {SECONDARY_TAGS.map(t => <button class="filter-tag">{t}</button>)}
             <button class="filter-clear" id="filterClear">清除筛选</button>
           </div>
         </div>
@@ -46,6 +53,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
             href={`${base}blog/${blog.slug}/`}
             class="blog-card"
             data-tags={blog.data.tags.join(',')}
+            data-primary={blog.data.tags.filter(t => PRIMARY_TAGS.includes(t)).join(',')}
+            data-secondary={blog.data.secondaryTag || ''}
             data-title={blog.data.title}
             data-desc={blog.data.description || ''}
           >
@@ -113,7 +122,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     const visible = [];
     document.querySelectorAll('#blogList .blog-card').forEach(card => {
       let show = true;
-      if (filters.tags && !card.dataset.tags.split(',').includes(filters.tags)) show = false;
+      if (filters.primary && !card.dataset.primary.split(',').includes(filters.primary)) show = false;
+      if (show && filters.tags && card.dataset.secondary !== filters.tags) show = false;
       if (show && searchTerm) {
         const haystack = (card.dataset.title + ' ' + card.dataset.desc + ' ' + card.dataset.tags).toLowerCase();
         show = haystack.includes(searchTerm);

@@ -1,0 +1,129 @@
+---
+title: Agentic Work
+date: '2026-07-25'
+updated: '2026-07-25'
+tags: [编程, 综述]
+secondaryTag: 综述
+description: Agentic Work-综述
+slug: agent-work-overview
+---
+
+## 一、Agentic Work路线图
+
+
+1. **Agentic Coding / Vibe Coding**
+  - 软件开发
+  - 数据工程
+  - 科研编程
+2. **Agentic Knowledge Work / Vibe Working**
+  - 搜资料 / Agentic Research：调研和资料搜集
+  - 数据分析处理：读 PDF、EXCEL
+  - 文档输出：写报告、方案、论文，制作 PPT，做图表
+  - 信息聚合整理：阅读邮件和会议记录
+  - 运营管理：跨应用完成业务流程、维护
+
+
+
+---
+
+## 二、Vibe Coding 
+
+### 1.定义
+2025 年 2 月 2 日，Andrej Karpathy 在 X 上发了一条推文，给一种新的编程方式取了名字：
+
+> “一种新的编程方式，我称之为 **vibe coding**：完全沉浸在 *vibes* 里，拥抱指数级进步，忘记代码本身的存在。”
+>
+> *fully give in to the vibes, embrace exponentials, and forget that the code even exists.*([X](https://x.com/karpathy/status/1886192184805015498))
+
+这不是玩笑。一年后，“vibe coding”被评为 Collins 词典 2025 年度词汇，定义是“借助自然语言触发人工智能，以辅助编写计算机代码的行为”([Collins](https://www.collinsdictionary.com/dictionary/english/vibe-coding))。
+
+```text
+Vibe Coding
+自然语言 → Agent → 代码、测试、软件产品
+```
+
+
+#### 别称一：Agentic Coding / Agentic Software Engineering
+
+- **Vibe Coding** ：Karpathy 个人的、偏社区语感的叫法。
+- 更正式、更学术的称呼是 **Agentic Coding**，或 **Agentic Software Engineering**——它强调的是“Agent 主导执行”这件事，而不是氛围。SWE-bench 等基准用来衡量 Agent 自主完成软件任务的能力。
+
+
+### 2.形态
+
+| 形态 | 代表 | 工作姿势 |
+|---|---|---|
+| IDE 内集成 Agent | Cursor、Windsurf | 在编辑器里 ⌘K/Composer 对话，看 diff、接受/拒绝 |
+| 终端 Agent | Claude Code、OpenAI Codex CLI | CLI 自然语言下指令，由 Agent 规划、改文件、跑测试 |
+| 异步远程 Agent | OpenAI Codex(cloud)、Devin | 把任务丢给云端 Agent，等其多步执行完回来交付 |
+
+不管哪种形态，本质都是 **自然语言描述目标，Agent 规划+生成+迭代**。
+
+#### 与“补全式 AI 助手”的区别
+
+旧式的 GitHub Copilot 补全，本质还是人工逐行写、AI 提示下一行。**Vibe Coding 的关键，是把节奏交给了 Agent**：
+
+- **Agent 主动规划**：拆解任务、决定改哪些文件
+- **Agent 自我验证**：能跑测试、跑构建、根据报错回头修
+- **人重点在于判断与方向**：描述意图、看反馈、给回路
+
+
+---
+
+## 三、Vibe Working
+
+
+### 1.定义
+
+与 Vibe Coding 对应、用于做 PPT、表格、文档、报告的 Agent，目前**还没有一个全行业完全统一的代名词**，但已经出现了几套清晰的叫法。
+
+微软在 2025 年正式提出了 **Vibe Working**，定义为：
+
+> 通过自然语言表达目标，由 Agent 规划、生成和反复修改 Word、Excel、PowerPoint 等工作成果。
+
+几乎是 Vibe Coding 的镜像：
+
+```text
+Vibe Coding    自然语言 → Agent → 代码、测试、软件
+Vibe Working   自然语言 → Agent → 文档、表格、PPT、报告
+```
+
+微软同期推出了 Office Agent，以及 Word、Excel、PowerPoint 专用 Agent([Microsoft](https://www.microsoft.com/en-us/microsoft-365/blog/2025/09/29/vibe-working-introducing-agent-mode-and-office-agent-in-microsoft-365-copilot/))。
+
+### 2.形态
+
+微软的 Researcher Agent 被定位为处理复杂、多步骤研究并输出结构化报告；OpenAI 则把制作文档、表格、演示文稿、报告等能力统一归入 **Work**，与专门负责编程的 Codex 区分开([微软支持](https://support.microsoft.com/en-us/microsoft-365-copilot/get-started-with-researcher-in-microsoft-365-copilot))。
+
+
+如果 Agent 是通过鼠标、键盘或浏览器界面操作 Excel、PowerPoint、Google Sheets 等软件，也可以叫：**Computer-Use Agent（计算机操作智能体）**
+
+注意它描述的是**操作方式**，不是工作类型：
+
+```text
+Office Agent         → 它在做什么
+Computer-Use Agent   → 它是怎么做的
+```
+
+一个 Office Agent 可以通过 Office API 修改表格，也可以通过 computer use 模拟点击界面。OpenAI 的通用 Agent 同样把浏览网页、处理文件、填写表单和编辑表格归入跨工具执行能力([OpenAI](https://openai.com/index/introducing-chatgpt-agent/))。
+
+这条维度其实跨越 Coding 与 Working 两侧：Claude Code 在终端里可以“操作” `git`、`npm`、文件系统；一个 office-use Agent 可以“操作”浏览器填表。本质都是 Agent **代替人去操作已有工具**，而非生成产物后直接交付。
+
+
+### 3.应用场景
+
+1. 搜资料：调研和资料搜集
+2. 数据分析：读 PDF和整理表格，阅读邮件和会议记录
+3. 写汇报：写报告和论文，编写方案
+4. 做PPT：制作 PPT，做图表
+5. 运营管理：跨应用完成业务流程、维护
+
+---
+
+## 四、参考资料
+
+1. [Vibe working: Introducing Agent Mode and Office Agent in Microsoft 365 Copilot](https://www.microsoft.com/en-us/microsoft-365/blog/2025/09/29/vibe-working-introducing-agent-mode-and-office-agent-in-microsoft-365-copilot/) — Microsoft
+2. [Get started with Researcher in Microsoft 365 Copilot](https://support.microsoft.com/en-us/microsoft-365-copilot/get-started-with-researcher-in-microsoft-365-copilot) — Microsoft 支持
+3. [OfficeBench: Benchmarking Language Agents across Multiple Applications for Office Automation](https://arxiv.org/abs/2407.19056) — arXiv
+4. [Introducing ChatGPT agent: bridging research and action](https://openai.com/index/introducing-chatgpt-agent/) — OpenAI
+5. [Andrej Karpathy on X: There's a new kind of coding I call 'vibe coding'...](https://x.com/karpathy/status/1886192184805015498) — X
+6. [Collins Dictionary 2025 Word of the Year: vibe coding](https://www.collinsdictionary.com/dictionary/english/vibe-coding) — Collins
