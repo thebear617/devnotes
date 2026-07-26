@@ -668,6 +668,9 @@ button {
   font-size: .76rem;
   line-height: 1.45;
   text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   transition: border-color .15s, color .15s, background .15s;
 }
 
@@ -731,6 +734,13 @@ button {
   color: var(--text);
 }
 
+.blog-article-body h1 {
+  margin: 2.5rem 0 1rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  scroll-margin-top: 1rem;
+}
+
 .blog-article-body h2 {
   margin: 2rem 0 .8rem;
   font-size: 1.2rem;
@@ -775,12 +785,90 @@ button {
 }
 
 .blog-article-body pre {
+  position: relative;
   margin: .6rem 0;
   padding: .8rem;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface-soft);
   overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.blog-article-body .copy-btn {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 0;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .15s, background .15s;
+}
+
+.blog-article-body .copy-btn::before,
+.blog-article-body .copy-btn::after {
+  content: '';
+  position: absolute;
+  border-radius: 2px;
+  transition: all .2s;
+}
+
+.blog-article-body .copy-btn::before {
+  width: 12px;
+  height: 14px;
+  border: 2px solid var(--text-sub);
+  background: transparent;
+  top: 4px;
+  left: 5px;
+}
+
+.blog-article-body .copy-btn::after {
+  width: 12px;
+  height: 14px;
+  border: 2px solid var(--text-sub);
+  background: var(--surface);
+  top: 7px;
+  left: 8px;
+}
+
+.blog-article-body pre:hover .copy-btn {
+  opacity: 1;
+}
+
+.blog-article-body .copy-btn:hover {
+  background: var(--accent-soft);
+}
+
+.blog-article-body .copy-btn:hover::before,
+.blog-article-body .copy-btn:hover::after {
+  border-color: var(--accent);
+}
+
+.blog-article-body .copy-btn.copied::before {
+  width: 6px;
+  height: 11px;
+  border-color: var(--accent);
+  border-top: none;
+  border-left: none;
+  border-right: 2.5px solid var(--accent);
+  border-bottom: 2.5px solid var(--accent);
+  background: transparent;
+  top: 5px;
+  left: 10px;
+  border-radius: 0;
+  transform: rotate(40deg);
+}
+
+.blog-article-body .copy-btn.copied::after {
+  display: none;
 }
 
 .blog-article-body pre code {
@@ -809,6 +897,41 @@ button {
   margin: .2rem 0;
 }
 
+.blog-article-body .tip-label {
+  cursor: pointer;
+  border-bottom: 1.5px dashed var(--accent);
+  transition: color .15s;
+}
+
+.blog-article-body .tip-label:hover {
+  color: var(--accent);
+}
+
+.blog-article-body .tip-detail {
+  display: none;
+  margin: .5rem 0 .5rem 0;
+  padding: .8rem 1rem;
+  background: var(--surface-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  font-size: .88rem;
+  line-height: 1.75;
+}
+
+.blog-article-body li:hover .tip-detail {
+  display: block;
+}
+
+.blog-article-body li.pinned .tip-detail {
+  display: block;
+  border-left-color: var(--accent);
+}
+
+.blog-article-body li.pinned .tip-label {
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .blog-article-body blockquote {
   margin: .6rem 0;
   padding: .5rem .9rem;
@@ -816,6 +939,44 @@ button {
   background: var(--accent-soft);
   color: #0f766e;
   font-size: .85rem;
+}
+
+.blog-article-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  margin: .5rem 0;
+  cursor: zoom-in;
+  transition: opacity .15s;
+}
+
+.blog-article-body img:hover {
+  opacity: .85;
+}
+
+.img-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, .85);
+  cursor: zoom-out;
+  animation: fadeIn .2s ease;
+}
+
+.img-lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, .4);
+  cursor: default;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .blog-article-body hr {
@@ -864,7 +1025,7 @@ button {
 
 @media (min-width: 1360px) {
   .blog-detail-layout {
-    grid-template-columns: minmax(0, 860px) 220px;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas: "article toc";
     justify-content: center;
     align-items: start;
@@ -879,6 +1040,7 @@ button {
     position: sticky;
     top: 1.25rem;
     margin: 2rem 0 0;
+    max-width: 300px;
   }
 }
 

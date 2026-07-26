@@ -205,4 +205,5 @@ SITE_BASE=/devnotes/ npm run build
 - 图片使用站点相对路径，不依赖 jsDelivr CDN；
 - 修改后至少运行一次 `npm run build`；
 - Git 操作只在 `devnotes/` 内执行；
-- 提交信息使用中文 `type: 描述`，例如 `feat`、`fix`、`chore`、`style`。
+- 提交信息使用中文 `type: 描述`，例如 `feat`、`fix`、`chore`、`style`；
+- 小红书链接始终保留完整长链（含所有 query 参数），禁止截短为 `/explore/:id` 短链。
