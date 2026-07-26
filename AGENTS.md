@@ -19,13 +19,17 @@
 - `src/styles/global.css`：全站样式
 - 每次 Git 操作都在 `devnotes/` 内执行；提交使用中文 `type: 描述`
 
-## 约定规则
+## 长期记忆与约定
 
-修改 devnotes 内容前，先读取 devnotes 专属约定：
+进入 devnotes 工作前，先读取跨项目长期记忆入口，了解全局约定与规则：
+
+`/Users/mokaiche/Documents/htmls/.workbuddy/memory/MEMORY.md`
+
+该文件是索引路由，指向 `conventions/` 下所有项目约定文件。devnotes 专属约定位于：
 
 `/Users/mokaiche/Documents/htmls/.workbuddy/memory/conventions/devnotes.md`
 
-该文件包含小红书链接规则、提示词库结构规范、标签体系等约定。
+包含小红书链接规则、提示词库结构规范、标签体系、提交信息格式等约定。
 
 ## 关键约束
 
