@@ -1,7 +1,7 @@
 ---
-title: 文献 → PPT
+title: 如何制作 PPT
 date: '2026-07-26'
-slug: lit-to-ppt
+slug: how-to-make-ppt
 tags: [科研, PPT]
 secondaryTag: PPT
 description: 如何用 Agent 快速制作高质量的 PPT
@@ -9,11 +9,11 @@ description: 如何用 Agent 快速制作高质量的 PPT
 
 # 案例集合
 
-## 案例一：论文 → PPT（GPT-5.6 + Image2）
+## 一、论文 → PPT（GPT-5.6 + Image2）
 
 ### 1. 核心思路
 
-先让 Image2 产出高视觉完成度的图像版 PPT（不可编辑），再用 GPT-5.5/5.6 逐页逆向还原为可编辑的 .pptx 文件。整个流水线是：
+参考[这个视频](https://www.bilibili.com/video/BV1mgNj6MEuX/)和[飞书文档](https://wievf29s6ca.feishu.cn/wiki/L8mOwmm0KiApwZkfy8JcN7tonHg)的思路：先让 Image2 产出高视觉完成度的图像版 PPT（不可编辑），再用 GPT-5.5/5.6 逐页逆向还原为可编辑的 .pptx 文件。整个流水线：
 
 ```text
 论文 + 参考风格图
@@ -139,6 +139,49 @@ description: 如何用 Agent 快速制作高质量的 PPT
 - 每页生成前，再次声明"使用 image2 模型"。
 ```
 
-# 参考资料
+## 二、调研 → PPT（桌面 Agent + Skills）
 
-1. 论文 → PPT（GPT-5.6 + Image2）· [视频](https://www.bilibili.com/video/BV1mgNj6MEuX/) · [文档](https://wievf29s6ca.feishu.cn/wiki/L8mOwmm0KiApwZkfy8JcN7tonHg)
+### 1. 核心思路
+
+参考[这个视频](https://www.bilibili.com/video/BV15f336QETT/)的思路：用桌面 Agent 自主完成"调研 → 整理 → PPT 输出"的全流程。Agent 先搜索和阅读相关资料，提取关键对比维度（厂商、产品、特点、差异、价格），再调用 [ppt-master](https://github.com/hugohe3/ppt-master) 这个 skill 直接产出最终 .pptx 文件。人和 Agent 的分工是：人只给出调研主题和交付要求，Agent 负责找资料、整理、排版和输出。
+
+### 2. 提示词
+
+```text
+调用 ppt-master skill 做一个 PPT，PPT 主题介绍各大 AI 模型厂商的 Agent 桌面端应用以及特点和差异，以及价格：Codex、Claude Code、Kimi Work、Trae Work、WorkBuddy、豆包、QoderWork。在 5–8 页内讲明白，我要第二天跟全公司的领导汇报。风格酷的你自己定，出完整整地第一版给我。
+```
+
+# 优质资源合集
+
+## 一、生成 PPT
+
+以下资源来自[彼得潘AI](https://space.bilibili.com/1315561/)对 7 个中文 AI 博主 PPT skill 的实测评测：
+
+| Skill | 产出模态 | 评测评价 | 当前 Star |
+|-------|---------|----------|----------|
+| [何与果 PPT Master](https://github.com/hugohe3/ppt-master) | 可编辑 PPTX | **夯（最高）**。唯一正经做 PPT 的，所见即所得，内置克隆音色 + 旁白。扣分项：工程重、上手门槛高 | 41.2k |
+| [归藏 PPT Skill](https://github.com/op7418/guizang-ppt-skill) | HTML 幻灯片 | **人上人**。瑞士风顶级审美，快捷键控制动画适配线下分享，但切换有闪烁、bug 较多 | 22.4k |
+| [张咋啦 Front-end Slides](https://github.com/zarazhangrui/frontend-slides) | HTML | **顶级**。完成度高、风格与动效一致性最好，扣分项：HTML 而非真 PPT | 26.4k |
+| [花叔 Design](https://github.com/alchaincyf/huashu-design) | 可编辑 PPTX | **顶级**。审美强，能做到可编辑 PPTX，短板是排版偶有重叠 | 22.1k |
+| [宝玉 Slide Deck](https://github.com/JimLiu/baoyu-skills) | 图片（一页一图） | **NPC**。不可编辑、不可控、约等于抽奖，风格偏可爱风，初衷是给自媒体配图 | 24.2k |
+| [乔木 Anything to NotebookLM](https://github.com/joeseesun/qiaomu-anything-to-notebooklm) | NotebookLM 幻灯片（纯图片） | **NPC**。不是真 PPT，只是 NotebookLM 幻灯片，设计无规范 | 5.6k |
+| [Louis HTML PPT Skill](https://github.com/lewislulu/html-ppt-skill) | HTML | **NPC**。素材库丰富，演讲者模式 + 逐字稿 + 计时器实用，但排版与字体糟糕 | 7.4k |
+
+排名体系：**夯 > 人上人 > 顶级 > NPC**。评测视频见 [从夯到拉锐评一下中文 AI 博主的 PPT skill](https://www.bilibili.com/video/BV1yXE96gEjE/)。
+
+## 二、修改 PPT
+
+以下资源来自同作者对「已有 PPT 让 AI 帮忙美化」场景的实测，拿一份大学期末作业 PPT 逐个测试各 skill 的美化能力：
+
+| Skill | 产出模态 | 评测评价 | 当前 Star |
+|-------|---------|----------|----------|
+| Claude OPUS 徒手版（彩蛋） | 可编辑 PPTX | **巅峰夯**。不调用任何 skill，徒手用 Python-pptx 生成，完美复用原配图，能把文本截图重新做成有样式的真文本，主题色/背景/排版不输任何 skill | - |
+| [Louis HTML PPT Skill](https://github.com/lewislulu/html-ppt-skill) | HTML | **夯（最高）**（上期 NPC）。功能最全（演讲者模式 + 逐字稿 + 计时器），模板审美、动效和配色本轮最强。上期排版差是因为 4K 屏缩放问题，调好比例后效果非常满意。演讲场合允许 HTML 则必选 | 7.4k |
+| [何与果 PPT Master](https://github.com/hugohe3/ppt-master) | 可编辑 PPTX | **人上人**（上期夯）。可编辑 PPTX + SVG 优秀。但出了图片全漏的 bug（Python 工具中文编码兼容问题，提醒 AI 统一 UTF-8） | 41.2k |
+| [宝玉 Slide Deck](https://github.com/JimLiu/baoyu-skills) | 图片（纯出图） | **顶级**。纯出图路线在改 PPT 场景刚好是舒适区，不改演讲内容，只在视觉锦上添花并补高质量人物图/背景。缺点：30 页 PPT 跑了近一小时，微调成本高 | 24.2k |
+| [归藏 PPT Skill](https://github.com/op7418/guizang-ppt-skill) | HTML | **顶级**。电子杂志风审美顶级，原图重新裁切且位置正确，对截图会先 OCR 再重新生成。缺点：只能 HTML，现场需确认能否直接使用 | 22.4k |
+| [花叔 Design](https://github.com/alchaincyf/huashu-design) | 可编辑 PPTX | **顶级**。审美稳定质量高，能读取原配图放对位置。偶有图片拉伸/排版 bug，但可编辑 PPTX，花 3 分钟微调就很好用 | 22.1k |
+| [张咋啦 Front-end Slides](https://github.com/zarazhangrui/frontend-slides) | HTML | **NPC**（上期顶级）。风格中等、排版逊色、完成度不够，稳定性不强。动效太快反而干扰讲解 | 26.4k |
+| [乔木 Anything to NotebookLM](https://github.com/joeseesun/qiaomu-anything-to-notebooklm) | NotebookLM 幻灯片（纯图片） | **NPC**。几乎没有 PPT 设计规则和视觉规范，成品不如豆包。纯图片，无二次操作空间 | 5.6k |
+
+排名体系：**巅峰夯 > 夯 > 人上人 > 顶级 > NPC**。评测视频见 [改 PPT 作业版](https://www.bilibili.com/video/BV1zgKZ6VE7x/)。
