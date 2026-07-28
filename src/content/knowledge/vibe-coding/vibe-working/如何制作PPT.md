@@ -4,8 +4,7 @@ date: '2026-07-26'
 slug: how-to-make-ppt
 kind: workflow
 category: Vibe Coding
-tags: []
-secondaryTag: PPT
+subcategory: PPT
 description: 如何用 Agent 快速制作高质量的 PPT
 ---
 

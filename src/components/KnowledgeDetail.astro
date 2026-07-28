@@ -27,8 +27,7 @@ const tocHeadings = headings.filter(heading => heading.depth >= 1 && heading.dep
         <p class="blog-article-date">发布于 {entry.data.date}{entry.data.updated && entry.data.updated !== entry.data.date && ` · 更新于 ${entry.data.updated}`}</p>
         <div class="blog-article-tags">
           <span class:list={['blog-tag', 'category-tag', entry.data.category.startsWith('Vibe ') ? 'category-vibe' : 'category-knowledge']}>{entry.data.category}</span>
-          {entry.data.secondaryTag && <span class="blog-tag">{entry.data.secondaryTag}</span>}
-          {entry.data.tags.map(tag => <span class="blog-tag">{tag}</span>)}
+          {entry.data.subcategory && <span class="blog-tag">{entry.data.subcategory}</span>}
         </div>
       </header>
       <div class="blog-article-body"><Content /></div>
