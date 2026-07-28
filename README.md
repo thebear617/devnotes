@@ -6,8 +6,7 @@
 
 - **开发时间线**：记录个人项目、站点与开发工具的版本演进；
 - **笔记中心**：开发工具使用心得、经验和排雷记录，支持按产品、技术栈、语言和类型筛选；
-- **博客**：使用 Markdown 编写的技术文章与随想；
-- **提示词库**：收藏值得反复使用的提示词与场景，按 Markdown 文章形式发布，支持搜索与标签筛选；
+- **知识库**：统一收录技术文章、随想与可复用的 Agent 工作流；支持按三个绿色知识分类与一个紫色 Vibe Coding 分类、二级标签和关键词筛选；
 - **价格矩阵**：AI 编程产品及模型服务的订阅价格对比。
 
 ## 技术栈
@@ -31,8 +30,7 @@ devnotes/
 ├── src/
 │   ├── content/
 │   │   ├── config.ts         # 内容集合及 frontmatter 约束
-│   │   ├── blog/             # Markdown 博客文章
-│   │   ├── prompts/          # Markdown 提示词收藏
+│   │   ├── knowledge/        # Markdown 知识库，按四个一级分类建立子目录
 │   │   └── timeline/         # Markdown 开发时间线条目
 │   ├── data/
 │   │   ├── notes.js          # 笔记中心数据
@@ -42,8 +40,7 @@ devnotes/
 │   ├── pages/
 │   │   ├── notes.astro       # 笔记中心
 │   │   ├── pricing.astro     # 价格矩阵
-│   │   ├── blog/             # 博客列表与文章详情页
-│   │   ├── prompts/          # 提示词库列表与详情页
+│   │   ├── knowledge/        # 知识库列表与详情页
 │   │   └── timeline/         # 时间线列表与独立详情页
 │   └── styles/
 │       └── global.css        # 全站样式
@@ -78,13 +75,13 @@ npm run build
 npm run preview
 ```
 
-## 添加博客文章
+## 添加知识条目
 
-在 `src/content/blog/` 中新增 `.md` 文件。文件名会成为文章 URL 的 slug，例如：
+在 `src/content/knowledge/` 对应的分类子目录中新增 `.md` 文件：`programming/`、`research/`、`reflections/`、`vibe-coding/`。文件名使用便于本地阅读的中文名称，slug 统一使用英文 kebab-case，例如：
 
 ```text
-src/content/blog/开发产品形态与技术栈.md
-→ /blog/开发产品形态与技术栈/
+src/content/knowledge/programming/traditional-full-stack-development/传统全栈开发.md
+→ /knowledge/traditional-full-stack-development/
 ```
 
 每篇文章必须包含以下 frontmatter：
@@ -93,16 +90,20 @@ src/content/blog/开发产品形态与技术栈.md
 ---
 title: 文章标题
 date: '2026-07-20'
-tags: [开发, Astro]
-description: 用于博客列表的简短摘要
+kind: article # article | workflow
+category: 编程 # 编程 | Vibe Coding | 科研 | 随想
+secondaryTag: 实践
+tags: []
+description: 用于知识库列表的简短摘要
+slug: traditional-full-stack-development # 可选；重命名既有文件时保留旧 URL
 ---
 ```
 
-正文使用标准 Markdown，可以直接插入标题、列表、代码块、引用、链接和表格。博客列表按 `date` 从新到旧排列。
+正文使用标准 Markdown，可以直接插入标题、列表、代码块、引用、链接和表格。知识库列表按 `updated`（若有）或 `date` 从新到旧排列。
 
-## 添加提示词
+其中，`kind` 用于保留旧博客／提示词详情地址的兼容路由；一级分类由 `category` 决定，`secondaryTag` 用于二级筛选。旧的 `/blog/` 与 `/prompts/` 列表入口会跳转到 `/knowledge/`，既有详情地址仍可访问。
 
-在 `src/content/prompts/` 中新增 `.md` 文件即可。字段与博客一致（`title`、`date`、`tags`、`description`，可选 `updated` 与 `slug`）；建议正文按 `## 提示词` 代码块 + `## 参考资料` 结构组织，来源链接放在参考资料一节。提示词库列表与博客列表一样支持搜索与标签筛选。
+工作流建议正文按 `# 案例集合`、案例步骤与 `# 参考资料` 结构组织，来源链接放在参考资料一节。
 
 ## 更新笔记中心
 

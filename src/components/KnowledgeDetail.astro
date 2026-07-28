@@ -1,0 +1,75 @@
+---
+import { render } from 'astro:content';
+import 'katex/dist/katex.min.css';
+
+const { entry, backHref, backLabel } = Astro.props;
+const { Content, headings } = await render(entry);
+const tocHeadings = headings.filter(heading => heading.depth >= 1 && heading.depth <= 3);
+---
+
+<main class="app-shell blog-page-shell">
+  <a href={backHref} class="blog-back">← {backLabel}</a>
+  <div class="blog-detail-layout">
+    {tocHeadings.length > 0 && (
+      <aside class="blog-toc-column" aria-label="文章目录">
+        <details class="blog-toc" open>
+          <summary>本文目录</summary>
+          <nav>
+            {tocHeadings.map(heading => <a href={`#${heading.slug}`} class={`blog-toc-link depth-${heading.depth}`} data-heading-id={heading.slug}>{heading.text}</a>)}
+          </nav>
+        </details>
+      </aside>
+    )}
+
+    <article class="blog-article">
+      <header class="blog-article-header">
+        <h1 class="blog-article-title">{entry.data.title}</h1>
+        <p class="blog-article-date">发布于 {entry.data.date}{entry.data.updated && entry.data.updated !== entry.data.date && ` · 更新于 ${entry.data.updated}`}</p>
+        <div class="blog-article-tags">
+          <span class:list={['blog-tag', 'category-tag', entry.data.category.startsWith('Vibe ') ? 'category-vibe' : 'category-knowledge']}>{entry.data.category}</span>
+          {entry.data.secondaryTag && <span class="blog-tag">{entry.data.secondaryTag}</span>}
+          {entry.data.tags.map(tag => <span class="blog-tag">{tag}</span>)}
+        </div>
+      </header>
+      <div class="blog-article-body"><Content /></div>
+    </article>
+  </div>
+</main>
+
+<script>
+  const tocLinks = Array.from(document.querySelectorAll('.blog-toc-link'));
+  const articleHeadings = Array.from(document.querySelectorAll('.blog-article-body h1[id], .blog-article-body h2[id], .blog-article-body h3[id]'));
+  function updateActiveHeading() {
+    let activeId = articleHeadings[0]?.id;
+    for (const heading of articleHeadings) {
+      if (heading.getBoundingClientRect().top <= 120) activeId = heading.id;
+      else break;
+    }
+    tocLinks.forEach(link => link.classList.toggle('active', link.dataset.headingId === activeId));
+  }
+  const scrollContainer = document.querySelector('.main-area');
+  if (tocLinks.length && articleHeadings.length) {
+    updateActiveHeading();
+    scrollContainer?.addEventListener('scroll', () => requestAnimationFrame(updateActiveHeading), { passive: true });
+    window.addEventListener('hashchange', updateActiveHeading);
+  }
+  document.querySelectorAll('.tip-label').forEach(label => label.addEventListener('click', () => label.closest('li')?.classList.toggle('pinned')));
+  document.querySelectorAll('.blog-article-body pre').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.setAttribute('aria-label', '复制代码');
+    btn.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(pre.querySelector('code')?.textContent || pre.textContent || '');
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 1500);
+    });
+    pre.appendChild(btn);
+  });
+  document.querySelectorAll('.blog-article-body img').forEach(img => img.addEventListener('click', () => {
+    const overlay = document.createElement('div');
+    overlay.className = 'img-lightbox';
+    overlay.appendChild(img.cloneNode(true));
+    overlay.addEventListener('click', () => overlay.remove());
+    document.body.appendChild(overlay);
+  }));
+</script>

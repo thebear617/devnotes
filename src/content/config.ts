@@ -1,11 +1,13 @@
 import { defineCollection, z } from 'astro:content';
 
-const blogCollection = defineCollection({
+const knowledgeCollection = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
     date: z.string(),
     updated: z.string().optional(),
+    kind: z.enum(['article', 'workflow']),
+    category: z.enum(['编程', 'Vibe Coding', '科研', '随想']),
     tags: z.array(z.string()).default([]),
     secondaryTag: z.string().optional(),
     description: z.string().default(''),
@@ -23,21 +25,7 @@ const timelineCollection = defineCollection({
   }),
 });
 
-const promptsCollection = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string(),
-    date: z.string(),
-    updated: z.string().optional(),
-    tags: z.array(z.string()).default([]),
-    secondaryTag: z.string().optional(),
-    description: z.string().default(''),
-    slug: z.string().optional(),
-  }),
-});
-
 export const collections = {
-  blog: blogCollection,
+  knowledge: knowledgeCollection,
   timeline: timelineCollection,
-  prompts: promptsCollection,
 };
