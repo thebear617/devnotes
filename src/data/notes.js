@@ -1,5 +1,17 @@
 export const notes = [
   {
+    id: 'astro-dev-server-content-cache',
+    product: 'Astro',
+    stacks: ['前端', '运维'],
+    langs: ['JavaScript'],
+    type: '调试',
+    title: '开发页列表为空？重启 Astro 开发服务刷新内容状态',
+    date: '2026-07-28',
+    body: `<p>内容集合迁移、改名或大量调整后，长期运行的 Astro 开发服务有时会保留失效的内容状态：页面的筛选框仍在，但列表和筛选标签都为空。</p>
+<p>先确认 Markdown 源文件与生产构建产物正常；若只有本地开发页异常，重启开发服务即可让内容集合重新加载并恢复渲染。</p>
+<p>一句话：<strong>重启服务，有些时候渲染就正常加载了。</strong></p>`
+  },
+  {
     id: 'clash-verge-subscription-tun-timeout',
     product: 'Clash Verge',
     stacks: ['网络', '运维'],
