@@ -62,6 +62,12 @@ const noteDataForClient = sortedNotes.map(n => ({
       ))}
     </div>
 
+    <nav class="list-pagination" id="notesPagination" aria-label="笔记中心分页" hidden>
+      <button class="list-page-button" id="notesPrevPage" type="button">← 上一页</button>
+      <div class="list-page-numbers" id="notesPageNumbers"></div>
+      <button class="list-page-button" id="notesNextPage" type="button">下一页 →</button>
+    </nav>
+
     <section class="empty-state" id="emptyState" style="display:none">没有匹配的笔记</section>
 
     <div id="noteDetail" style="display:none"></div>
@@ -100,6 +106,8 @@ const noteDataForClient = sortedNotes.map(n => ({
   }
 
   let filters = {};
+  let currentPage = 1;
+  const pageSize = 8;
   document.querySelectorAll('.filter-bar .filter-tag').forEach(tag => {
     tag.addEventListener('click', () => {
       const row = tag.closest('.filter-row');
@@ -111,28 +119,83 @@ const noteDataForClient = sortedNotes.map(n => ({
       } else {
         delete filters[filterKey];
       }
-      applyFilters();
+      resetToFirstPage();
     });
   });
 
   document.getElementById('filterClear').addEventListener('click', () => {
     document.querySelectorAll('.filter-bar .filter-tag.on').forEach(t => t.classList.remove('on'));
     filters = {};
-    applyFilters();
+    resetToFirstPage();
   });
 
-  function applyFilters() {
-    const visible = [];
-    document.querySelectorAll('.note-card').forEach(card => {
-      let show = true;
-      if (filters.product && card.dataset.product !== filters.product) show = false;
-      if (filters.stacks && !card.dataset.stacks.split(',').includes(filters.stacks)) show = false;
-      if (filters.langs && !card.dataset.langs.split(',').includes(filters.langs)) show = false;
-      if (filters.type && card.dataset.type !== filters.type) show = false;
-      card.style.display = show ? '' : 'none';
-      if (show) visible.push(card);
+  document.getElementById('notesPrevPage')?.addEventListener('click', () => {
+    currentPage -= 1;
+    applyFilters({ scrollToList: true });
+  });
+
+  document.getElementById('notesNextPage')?.addEventListener('click', () => {
+    currentPage += 1;
+    applyFilters({ scrollToList: true });
+  });
+
+  document.getElementById('notesPageNumbers')?.addEventListener('click', event => {
+    const page = Number(event.target.closest('[data-page]')?.dataset.page);
+    if (!page || page === currentPage) return;
+    currentPage = page;
+    applyFilters({ scrollToList: true });
+  });
+
+  function resetToFirstPage() {
+    currentPage = 1;
+    applyFilters();
+  }
+
+  function applyFilters({ scrollToList = false } = {}) {
+    const cards = [...document.querySelectorAll('.note-card')];
+    const filtered = cards.filter(card => (
+      (!filters.product || card.dataset.product === filters.product)
+        && (!filters.stacks || card.dataset.stacks.split(',').includes(filters.stacks))
+        && (!filters.langs || card.dataset.langs.split(',').includes(filters.langs))
+        && (!filters.type || card.dataset.type === filters.type)
+    ));
+    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+    currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+    const firstIndex = (currentPage - 1) * pageSize;
+    const pageCards = new Set(filtered.slice(firstIndex, firstIndex + pageSize));
+
+    cards.forEach(card => {
+      card.style.display = pageCards.has(card) ? '' : 'none';
     });
-    document.getElementById('emptyState').style.display = visible.length ? 'none' : '';
+
+    document.getElementById('emptyState').style.display = filtered.length ? 'none' : '';
+    renderPagination(totalPages, filtered.length);
+
+    if (scrollToList) {
+      document.getElementById('noteList')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function renderPagination(totalPages, resultCount) {
+    const pagination = document.getElementById('notesPagination');
+    const prev = document.getElementById('notesPrevPage');
+    const next = document.getElementById('notesNextPage');
+    const pageNumbers = document.getElementById('notesPageNumbers');
+    if (!pagination || !prev || !next || !pageNumbers) return;
+
+    pagination.hidden = resultCount <= pageSize;
+    prev.disabled = currentPage === 1;
+    next.disabled = currentPage === totalPages;
+    pageNumbers.replaceChildren(...Array.from({ length: totalPages }, (_, index) => {
+      const page = index + 1;
+      const button = document.createElement('button');
+      button.className = `list-page-number${page === currentPage ? ' on' : ''}`;
+      button.type = 'button';
+      button.dataset.page = String(page);
+      button.textContent = String(page);
+      if (page === currentPage) button.setAttribute('aria-current', 'page');
+      return button;
+    }));
   }
 
   document.getElementById('noteList').addEventListener('click', (e) => {
@@ -152,4 +215,6 @@ const noteDataForClient = sortedNotes.map(n => ({
       document.getElementById('noteDetail').style.display = 'none';
     }
   });
+
+  applyFilters();
 </script>
