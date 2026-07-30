@@ -466,6 +466,36 @@ fi
     ]
   },
   {
+    id: 'minimax-api-key-rotation',
+    product: 'MiniMax / Hermes',
+    stacks: ['运维', 'AI 工具', '调试'],
+    langs: ['Shell'],
+    type: '调试',
+    title: 'MiniMax API Key 更换：三个位置 + 两个重启',
+    date: '2026-07-30',
+    body: `<h2>适用场景</h2>
+<p>MiniMax API Key 过期 / 失效，导致 Hermes（飞书 & 终端）和 CC Switch 全部报 401。</p>
+
+<h2>需要替换的三个位置</h2>
+<ol>
+  <li><strong>CC Switch</strong>：更新 API Key，保证 Cloud Code 正常生成代码。</li>
+  <li><strong>Hermes config.yaml（2 处）</strong>：<code>~/.hermes/config.yaml</code> 中 <code>title_gen.api_key</code>（~262 行）和 <code>custom_providers.api_key</code>（~632 行），把旧 key 替换为新 key。改完执行：
+    <pre><code>hermes gateway restart   # 重启网关，飞书重新生效
+hermes                    # 开启新会话</code></pre>
+  </li>
+  <li><strong>Hermes .env</strong>：替换 <code>MINIMAX_CN_API_KEY</code> 的值，然后：
+    <pre><code>hermes model --refresh   # 刷新模型缓存，终端 Hermes 恢复正常</code></pre>
+  </li>
+</ol>
+
+<h2>验证清单</h2>
+<ul>
+  <li>CC Switch：能正常发起代码生成</li>
+  <li>飞书：给 Hermes 发消息，能收到正常回复（不再 401）</li>
+  <li>终端：<code>hermes</code> 启动后对话正常</li>
+</ul>`
+  },
+  {
     id: 'pig-home-todo-board-missing-nav-wrapper',
     product: 'Astro',
     stacks: ['前端', '调试'],
