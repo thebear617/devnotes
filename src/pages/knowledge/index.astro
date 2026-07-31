@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content';
 const entries = await getCollection('knowledge');
 entries.sort((a, b) => new Date(b.data.updated || b.data.date).getTime() - new Date(a.data.updated || a.data.date).getTime());
 
-const PRIMARY_CATEGORIES = ['编程', '科研', '随想', 'Vibe Coding'];
+const PRIMARY_CATEGORIES = ['编程', '科研', '随想', 'Vibe Coding', '传统 Working'];
 const subcategories = [...new Set(entries.map(entry => entry.data.subcategory).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'zh-CN'));
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
@@ -13,7 +13,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
 <Layout>
   <main class="app-shell">
     <h2 class="view-title">知识库</h2>
-    <p class="view-sub">编程 · 科研 · 随想 · Vibe Coding</p>
+    <p class="view-sub">编程 · 科研 · 随想 · Vibe Coding · 传统 Working</p>
 
     <div class="list-search" id="knowledgeSearch">
       <span class="list-search-icon">🔍</span>
@@ -53,7 +53,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
             {entry.data.description && <p class="blog-card-desc">{entry.data.description}</p>}
             <div class="blog-card-meta">{entry.data.date}</div>
             <div class="blog-card-tags">
-              <span class:list={['blog-tag', 'category-tag', entry.data.category.startsWith('Vibe ') ? 'category-vibe' : 'category-knowledge']}>{entry.data.category}</span>
+              <span class:list={['blog-tag', 'category-tag', entry.data.category.startsWith('Vibe ') ? 'category-vibe' : entry.data.category === '传统 Working' ? 'category-traditional' : 'category-knowledge']}>{entry.data.category}</span>
               {entry.data.subcategory && <span class="blog-tag">{entry.data.subcategory}</span>}
             </div>
           </a>

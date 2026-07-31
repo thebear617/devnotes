@@ -7,7 +7,7 @@ const knowledgeCollection = defineCollection({
     date: z.string(),
     updated: z.string().optional(),
     kind: z.enum(['article', 'workflow']),
-    category: z.enum(['编程', 'Vibe Coding', '科研', '随想']),
+    category: z.enum(['编程', 'Vibe Coding', '科研', '随想', '传统 Working']),
     subcategory: z.string().optional(),
     description: z.string().default(''),
     slug: z.string().optional(),

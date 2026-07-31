@@ -652,6 +652,11 @@ button {
   background: #f3e8ff;
 }
 
+.blog-tag.category-traditional {
+  color: #d97706;
+  background: #fff7ed;
+}
+
 /* ─── Blog detail page ─── */
 
 .blog-page-shell {
