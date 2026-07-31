@@ -1,8 +1,8 @@
 ---
 title: '新建 Agent Skill：lol-data-update（熊窝英雄联盟数据更新）'
 date: '2026-08-01'
-tags: [技能, 工具]
-site: 技能
+tags: [skill, 工具]
+site: skill
 slug: 'skill-lol-data-update'
 ---
 

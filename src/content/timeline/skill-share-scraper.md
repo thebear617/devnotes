@@ -1,8 +1,8 @@
 ---
 title: '新建 Agent Skill：share-scraper（AI 分享页爬取存档）'
 date: '2026-08-01'
-tags: [技能, 工具]
-site: 技能
+tags: [skill, 工具]
+site: skill
 slug: 'skill-share-scraper'
 ---
 
