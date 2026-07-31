@@ -1,7 +1,7 @@
 ---
-title: 如何制作 PPT
+title: 如何用 Agent 做 PPT
 date: '2026-07-26'
-slug: how-to-make-ppt
+slug: how-to-make-ppt-with-agent
 kind: workflow
 category: Vibe Coding
 subcategory: PPT
