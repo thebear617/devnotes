@@ -808,22 +808,25 @@ button {
 
 .blog-article-body h2 {
   margin: 2rem 0 .8rem;
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   font-weight: 800;
   scroll-margin-top: 1rem;
 }
 
 .blog-article-body h3 {
-  margin: 1.6rem 0 .7rem;
-  font-size: 1.05rem;
+  margin: 2rem 0 .7rem;
+  font-size: 1.2rem;
   font-weight: 800;
+  padding-bottom: .35rem;
+  border-bottom: 1px solid var(--border);
   scroll-margin-top: 1rem;
 }
 
 .blog-article-body h4 {
   margin: 1.4rem 0 .7rem;
-  font-size: .98rem;
-  font-weight: 800;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--muted-strong);
   scroll-margin-top: 1rem;
 }
 
