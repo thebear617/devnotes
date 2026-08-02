@@ -24,8 +24,23 @@ export const notes = [
 <h2>④ 两种确定的解决方案</h2>
 <ol>
   <li><strong>彻底清掉旧状态：</strong>打开 DevTools，在 Network 勾选 <strong>Disable cache</strong>，然后执行“清空缓存并硬性重新加载”；或者在 Chrome 的“清除浏览数据”中删除缓存的图片和文件。清理后首页继续使用标准路径 <code>/</code>。</li>
-  <li><strong>每个站点固定不同端口：</strong>避免多个本地项目复用 <code>localhost:4321</code>。例如让 GameNotes 固定使用 <code>4324</code>，临时启动命令为 <code>npm run dev -- --port 4324</code>。端口不同即来源不同，浏览器不会复用旧页面缓存。</li>
+  <li><strong>每个站点固定不同端口：</strong>避免多个本地项目复用 <code>localhost:4321</code>。端口不同即来源不同，浏览器不会复用旧页面缓存。</li>
 </ol>
+
+<h2>⑤ 2026-08-02 的最终选择与端口表</h2>
+<p>先清空 Chrome 旧缓存以修复当前问题；长期固定每个站点的开发端口，并在端口被占用时直接报错，避免服务悄悄漂移到其他端口。</p>
+<table>
+  <thead><tr><th>端口</th><th>站点</th><th>本地入口</th></tr></thead>
+  <tbody>
+    <tr><td>4321</td><td>熊窝（Personal）</td><td><code>http://localhost:4321/</code></td></tr>
+    <tr><td>4322</td><td>猪窝（Home）</td><td><code>http://localhost:4322/</code></td></tr>
+    <tr><td>4323</td><td>猫猫手册（Cats）</td><td><code>http://localhost:4323/cat-knowledge/</code></td></tr>
+    <tr><td>4324</td><td>研究笔记（ReaNotes）</td><td><code>http://localhost:4324/</code></td></tr>
+    <tr><td>4325</td><td>游戏笔记（GameNotes）</td><td><code>http://localhost:4325/</code></td></tr>
+    <tr><td>4326</td><td>生活笔记（LifeNotes）</td><td><code>http://localhost:4326/</code></td></tr>
+    <tr><td>4327</td><td>开发笔记（DevNotes）</td><td><code>http://localhost:4327/notes/</code></td></tr>
+  </tbody>
+</table>
 
 <p><strong>排查口诀：</strong>先用 <code>curl</code> 判断服务端有没有重定向，再用不同浏览器对比；只有 Chrome 异常时，优先检查缓存和端口是否被其他项目复用。</p>`
   },

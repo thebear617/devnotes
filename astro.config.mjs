@@ -5,6 +5,7 @@ import rehypeMark from './src/plugins/rehype-mark.mjs';
 
 export default defineConfig({
   base: process.env.SITE_BASE || '/',
+  vite: { server: { strictPort: true } },
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex, rehypeMark],
