@@ -961,6 +961,23 @@ button {
   padding-left: 1.3rem;
 }
 
+/* 按 Markdown 嵌套层级区分有序列表标记，避免内层列表继续显示为数字。 */
+.blog-article-body ol {
+  list-style-type: decimal;
+}
+
+.blog-article-body ol ol {
+  list-style-type: lower-alpha;
+}
+
+.blog-article-body ol ol ol {
+  list-style-type: lower-roman;
+}
+
+.blog-article-body ol ol ol ol {
+  list-style-type: decimal;
+}
+
 .blog-article-body li {
   margin: .2rem 0;
 }
