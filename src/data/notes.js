@@ -34,11 +34,11 @@ export const notes = [
   <tbody>
     <tr><td>4321</td><td>熊窝（Personal）</td><td><code>http://localhost:4321/</code></td></tr>
     <tr><td>4322</td><td>猪窝（Home）</td><td><code>http://localhost:4322/</code></td></tr>
-    <tr><td>4323</td><td>猫猫手册（Cats）</td><td><code>http://localhost:4323/cat-knowledge/</code></td></tr>
+    <tr><td>4323</td><td>开发笔记（DevNotes）</td><td><code>http://localhost:4323/notes/</code></td></tr>
     <tr><td>4324</td><td>研究笔记（ReaNotes）</td><td><code>http://localhost:4324/</code></td></tr>
     <tr><td>4325</td><td>游戏笔记（GameNotes）</td><td><code>http://localhost:4325/</code></td></tr>
     <tr><td>4326</td><td>生活笔记（LifeNotes）</td><td><code>http://localhost:4326/</code></td></tr>
-    <tr><td>4327</td><td>开发笔记（DevNotes）</td><td><code>http://localhost:4327/notes/</code></td></tr>
+    <tr><td>4327</td><td>猫猫手册（Cats）</td><td><code>http://localhost:4327/cat-knowledge/</code></td></tr>
   </tbody>
 </table>
 
