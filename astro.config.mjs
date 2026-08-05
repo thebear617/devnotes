@@ -25,6 +25,8 @@ export default defineConfig({
     '/prompts/how-to-stop-model-laziness/': '/knowledge/awesome-tricks/',
     '/knowledge/操作系统入门/': '/knowledge/operating-systems-introduction/',
     '/blog/操作系统入门/': '/knowledge/operating-systems-introduction/',
+    '/knowledge/操作系统基础知识/': '/knowledge/operating-systems-introduction/',
+    '/blog/操作系统基础知识/': '/knowledge/operating-systems-introduction/',
     '/knowledge/全栈详解/': '/knowledge/traditional-full-stack-development/',
     '/blog/全栈详解/': '/knowledge/traditional-full-stack-development/',
     '/knowledge/full-stack-development/': '/knowledge/traditional-full-stack-development/',

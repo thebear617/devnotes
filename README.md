@@ -6,7 +6,7 @@
 
 - **开发时间线**：记录个人项目、站点与开发工具的版本演进；
 - **笔记中心**：开发工具使用心得、经验和排雷记录，支持按产品、技术栈、语言和类型筛选；
-- **知识库**：统一收录技术文章、随想与可复用的 Agent 工作流；支持按三个绿色知识分类与一个紫色 Vibe Coding 分类、二级标签和关键词筛选；
+- **知识库**：统一收录开发与实践、科研和个人随笔；按一级领域与二级内容角色筛选，并支持关键词搜索；
 - **价格矩阵**：AI 编程产品及模型服务的订阅价格对比。
 
 ## 技术栈
@@ -30,7 +30,7 @@ devnotes/
 ├── src/
 │   ├── content/
 │   │   ├── config.ts         # 内容集合及 frontmatter 约束
-│   │   ├── knowledge/        # Markdown 知识库，按四个一级分类建立子目录
+│   │   ├── knowledge/        # Markdown 知识库，按一级领域与二级内容角色组织
 │   │   └── timeline/         # Markdown 开发时间线条目
 │   ├── data/
 │   │   ├── notes.js          # 笔记中心数据
@@ -77,10 +77,26 @@ npm run preview
 
 ## 添加知识条目
 
-在 `src/content/knowledge/` 对应的分类子目录中新增 `.md` 文件：`programming/`、`research/`、`reflections/`、`vibe-coding/`。文件名使用便于本地阅读的中文名称，slug 统一使用英文 kebab-case，例如：
+在 `src/content/knowledge/` 对应的一级、二级目录中新增 `.md` 文件。当前目录约定如下：
 
 ```text
-src/content/knowledge/programming/traditional-full-stack-development/传统全栈开发.md
+development/overviews/  # 综述
+development/fundamentals/ # 基础知识
+development/cases/      # 典型案例
+development/resources/  # 学习资源
+development/configurations/ # 配置记录
+research/overviews/     # 综述
+research/fundamentals/  # 基础知识
+research/cases/         # 典型案例
+research/resources/     # 学习资源
+research/configurations/ # 配置记录
+reflections/essays/     # 随笔
+```
+
+文件名使用便于本地阅读的中文名称，slug 统一使用英文 kebab-case，例如：
+
+```text
+src/content/knowledge/development/overviews/传统全栈开发.md
 → /knowledge/traditional-full-stack-development/
 ```
 
@@ -90,10 +106,8 @@ src/content/knowledge/programming/traditional-full-stack-development/传统全�
 ---
 title: 文章标题
 date: '2026-07-20'
-kind: article # article | workflow
-category: 编程 # 编程 | Vibe Coding | 科研 | 随想
-secondaryTag: 实践
-tags: []
+category: 开发与实践 # 开发与实践 | 科研 | 随想
+subcategory: 基础知识 # 基础知识 | 典型案例 | 学习资源 | 配置记录 | 综述 | 随笔
 description: 用于知识库列表的简短摘要
 slug: traditional-full-stack-development # 可选；重命名既有文件时保留旧 URL
 ---
@@ -101,9 +115,11 @@ slug: traditional-full-stack-development # 可选；重命名既有文件时保�
 
 正文使用标准 Markdown，可以直接插入标题、列表、代码块、引用、链接和表格。知识库列表按 `updated`（若有）或 `date` 从新到旧排列。
 
-其中，`kind` 用于保留旧博客／提示词详情地址的兼容路由；一级分类由 `category` 决定，`secondaryTag` 用于二级筛选。旧的 `/blog/` 与 `/prompts/` 列表入口会跳转到 `/knowledge/`，既有详情地址仍可访问。
+`category` 表示一级领域，`subcategory` 表示二级内容角色；两者应与文件所在目录保持一致。`category` 可使用 `开发与实践`、`科研`、`随想`，二级目录可使用 `基础知识`、`典型案例`、`学习资源`、`配置记录`、`综述`，随想目前使用 `随笔`。
 
-工作流建议正文按 `# 案例集合`、案例步骤与 `# 参考资料` 结构组织，来源链接放在参考资料一节。
+旧的 `/blog/` 与 `/prompts/` 列表入口会跳转到 `/knowledge/`。既有详情地址通过显式 `slug` 和 `src/data/legacy-knowledge-routes.js` 中的兼容映射继续访问，不依赖知识条目的额外类型字段。
+
+典型案例建议正文按 `# 案例集合`、案例步骤与 `# 参考资料` 结构组织，来源链接放在参考资料一节。
 
 ## 更新笔记中心
 
