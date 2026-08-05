@@ -2,13 +2,15 @@ import { defineConfig } from 'astro/config';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeMark from './src/plugins/rehype-mark.mjs';
+import rehypePopover from './src/plugins/rehype-popover.mjs';
+import rehypeTableWrap from './src/plugins/rehype-table-wrap.mjs';
 
 export default defineConfig({
   base: process.env.SITE_BASE || '/',
   vite: { server: { strictPort: true } },
   markdown: {
     remarkPlugins: [remarkMath],
-    rehypePlugins: [rehypeKatex, rehypeMark],
+    rehypePlugins: [rehypeKatex, rehypeMark, rehypeTableWrap, rehypePopover],
   },
   build: {
     format: 'directory',
