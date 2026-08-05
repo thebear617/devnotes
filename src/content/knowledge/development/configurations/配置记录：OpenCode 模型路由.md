@@ -1,11 +1,11 @@
 ---
-title: OpenCode 模型路由与 Agent 编排
+title: 配置记录：OpenCode 模型路由
 date: '2026-08-05'
 updated: '2026-08-05'
 category: 开发与实践
 subcategory: 配置记录
-description: 记录当前 OpenCode Go 的 Router Agent、任务子 Agent、模型映射、权限边界与用量观察策略。
-slug: opencode-model-routing
+description: 记录当前 OpenCode Go 当前的路由策略。
+slug: opencode-model-routing-config
 ---
 ## 会话索引
 > codex的‘dev：opencodego-模型路由配置‘

@@ -20,7 +20,7 @@ slug: 'devnotes-v060'
 
 - 接入 `remark-math` + `rehype-katex`，`astro.config.mjs` 中 KaTeX 在 rehype-mark 之前执行，避免 `==` 高亮误伤公式等号。
 - 博客与提示词详情页 `import 'katex/dist/katex.min.css'`，字体由 Vite 打包走相对路径，不依赖 CDN。
-- 支持 `$...$` 行内公式与 `$$...$$` 行间公式，已在《你好，这是第一篇博客》中补充 demo 样例。
+- 支持 `$...$` 行内公式与 `$$...$$` 行间公式，已在《随笔：2026-07-19 DevNotes 第一篇》中补充 demo 样例。
 
 ## 排版与样式
 
@@ -29,5 +29,5 @@ slug: 'devnotes-v060'
 
 ## 新增内容
 
-- 新增博客《Agentic Work》：梳理 Vibe Coding / Vibe Working / Agentic Knowledge Work / Office Agents / Computer-Use Agent 的谱系，含 Karpathy 推文与 Collins 词典引用。
+- 新增博客《综述：智能体工作》：梳理 Vibe Coding / Vibe Working / Agentic Knowledge Work / Office Agents / Computer-Use Agent 的谱系，含 Karpathy 推文与 Collins 词典引用。
 - 文章参考资料从隐藏的 reference link 改为可见的有序列表。

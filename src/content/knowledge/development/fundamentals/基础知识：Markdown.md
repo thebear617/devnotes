@@ -1,8 +1,8 @@
 ---
-title: Markdown 语法综述
+title: 基础知识：Markdown
 date: '2026-08-04'
 updated: '2026-08-04'
-slug: markdown-syntax-overview
+slug: markdown-fundamentals
 category: 开发与实践
 subcategory: 基础知识
 description: Markdown语法样式、主题说明

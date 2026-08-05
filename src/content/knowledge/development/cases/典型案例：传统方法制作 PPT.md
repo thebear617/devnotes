@@ -1,10 +1,10 @@
 ---
-title: 如何用传统方法做PPT
+title: 典型案例：传统方法制作 PPT
 date: '2026-07-31'
 category: 开发与实践
 subcategory: 典型案例
 description: 不依赖 AI，只用 PPT 自带功能做出专业效果的方法集合。
-slug: traditional-ppt-method
+slug: traditional-ppt-creation-practice
 ---
 
 # 案例集合

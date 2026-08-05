@@ -209,6 +209,19 @@ button {
 
 /* ─── List search ─── */
 
+.knowledge-toolbar {
+  display: flex;
+  align-items: stretch;
+  gap: .6rem;
+  margin-bottom: .8rem;
+}
+
+.knowledge-toolbar .list-search {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
 .list-search {
   display: flex;
   align-items: center;
@@ -264,6 +277,33 @@ button {
 
 .list-search-clear:hover {
   color: var(--red);
+}
+
+.knowledge-sort {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  flex-shrink: 0;
+  min-width: 6.4rem;
+  padding: .45rem .75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  color: var(--text);
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .15s, color .15s, box-shadow .15s;
+}
+
+.knowledge-sort:hover,
+.knowledge-sort[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 4px 14px rgba(13, 148, 136, .14);
 }
 
 /* ─── Filter bar ─── */
@@ -1590,6 +1630,8 @@ button {
   .sidebar-brand { padding: 1.2rem .8rem .9rem; position: relative; }
 
   .note-list { grid-template-columns: 1fr; }
+  .knowledge-toolbar { flex-direction: column; }
+  .knowledge-sort { width: 100%; }
   .filter-label { width: auto; padding-top: 0; }
   .list-pagination { gap: .35rem; }
   .list-page-button { padding-inline: .55rem; }
