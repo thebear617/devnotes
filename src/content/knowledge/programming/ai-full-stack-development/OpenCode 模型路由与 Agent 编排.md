@@ -8,6 +8,8 @@ subcategory: AI
 description: 记录当前 OpenCode Go 的 Router Agent、任务子 Agent、模型映射、权限边界与用量观察策略。
 slug: opencode-model-routing
 ---
+## 会话索引
+> codex的‘dev：opencodego-模型路由配置‘
 
 ## 一、当前方案
 
