@@ -20,7 +20,7 @@ slug: 'devnotes-v060'
 
 - 接入 `remark-math` + `rehype-katex`，`astro.config.mjs` 中 KaTeX 在 rehype-mark 之前执行，避免 `==` 高亮误伤公式等号。
 - 博客与提示词详情页 `import 'katex/dist/katex.min.css'`，字体由 Vite 打包走相对路径，不依赖 CDN。
-- 支持 `$...$` 行内公式与 `$$...$$` 行间公式，已在《随笔：2026-07-19 DevNotes 第一篇》中补充 demo 样例。
+- 支持 `$...$` 行内公式与 `$$...$$` 行间公式，已在《时刻：2026-07-19 DevNotes 第一篇》中补充 demo 样例。
 
 ## 排版与样式
 

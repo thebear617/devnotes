@@ -6,7 +6,7 @@ const entries = await getCollection('knowledge');
 entries.sort((a, b) => new Date(b.data.updated || b.data.date).getTime() - new Date(a.data.updated || a.data.date).getTime());
 
 const PRIMARY_CATEGORIES = ['开发与实践', '科研', '随想'];
-const SUBCATEGORIES = ['基础知识', '典型案例', '学习资源', '配置记录', '综述', '随笔'];
+const SUBCATEGORIES = ['基础知识', '典型案例', '学习资源', '配置记录', '综述', '随笔', '时刻'];
 const subcategories = SUBCATEGORIES.filter(subcategory => entries.some(entry => entry.data.subcategory === subcategory));
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
