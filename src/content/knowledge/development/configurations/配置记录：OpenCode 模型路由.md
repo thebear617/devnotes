@@ -27,10 +27,10 @@ OpenCode 的 Agent 分为 primary agent 和 subagent；subagent 可以被主 Age
 | 入口 | 模型 | 负责什么 | 权限边界 |
 | --- | --- | --- | --- |
 | `@router` | `opencode-go/deepseek-v4-flash` | 判断任务类型、委派子 Agent、汇总结果 | 禁止编辑和 Bash，只允许调用指定的 `route-*` Agent |
-| `@route-explore` | `opencode-go/deepseek-v4-flash` | 搜索代码、定位文件、追踪真实执行路径、收集证据 | 只读，禁止编辑和 Bash |
-| `@route-plan` | `opencode-go/glm-5.2` | 根因分析、架构设计、实施计划和风险判断 | 只读，禁止编辑和 Bash |
+| `@route-explore` | `opencode-go/deepseek-v4-flash` | 搜索代码、定位文件、追踪真实执行路径、收集证据 | 禁止编辑，Bash 允许 |
+| `@route-plan` | `opencode-go/glm-5.2` | 根因分析、架构设计、实施计划和风险判断 | 禁止编辑，Bash 允许 |
 | `@route-build` | `opencode-go/deepseek-v4-flash` | 实际修改代码、内容和配置，运行必要验证 | 编辑和 Bash 允许 |
-| `@route-review` | `opencode-go/deepseek-v4-pro` | 检查 diff、测试、构建、发布风险和敏感信息 | 禁止编辑，Bash 需要确认 |
+| `@route-review` | `opencode-go/deepseek-v4-pro` | 检查 diff、测试、构建、发布风险和敏感信息 | 禁止编辑，Bash 允许 |
 | `@route-docs` | `opencode-go/qwen3.7-plus` | 中文 Markdown、文档、注释和结构化内容；涉及图片时使用模型原生视觉能力 | 编辑和 Bash 允许；默认不调用 `image-vision` skill |
 | `@route-vision` | `opencode-go/qwen3.7-plus` | 使用模型原生视觉能力分析截图、界面布局、本地图片和 OCR，必要时处理图片并修改实现 | 编辑和 Bash 允许；默认不调用 `image-vision` skill |
 
