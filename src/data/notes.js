@@ -77,7 +77,15 @@ PUBLIC_AMAP_JS_SECURITY_CODE: \${{ secrets.PUBLIC_AMAP_JS_SECURITY_CODE }}</code
   <li>GitHub：仓库 Actions Secrets 有两个同名 Secret，工作流构建成功。</li>
   <li>线上：打开实际域名，地图底图和地点标记正常出现。</li>
   <li>安全：Key 和安全密钥没有提交到 Git、公开 Markdown 或前端源码中的明文配置文件。</li>
-</ul>`,
+</ul>
+
+<h2>七、域名白名单与本地开发的验证结论</h2>
+<ol>
+  <li><strong>不设置域名白名单：</strong>本地开发地址和线上自定义域名都可以正常加载高德地图底图与标点。</li>
+  <li><strong>设置域名白名单：</strong>只有白名单中的域名可以正常访问地图图层；线上域名仍能显示底图，本地开发地址无法显示底图，但自定义标点仍可能正常出现。</li>
+</ol>
+<p>这说明地图底图瓦片请求会校验当前页面的访问域名，而自定义标点是页面代码在地图实例上创建的覆盖物，两者的加载链路不同。因此，“本地只有标点、没有底图”并不一定代表 Key 没有注入，更可能是本地来源不在域名白名单中。</p>
+<p><strong>实践建议：</strong>生产环境保留域名白名单；本地开发使用单独的开发 Key，或在仅用于本地调试的 Key 上不设置白名单，不要为了本地调试而放开生产 Key 的限制。</p>`,
     links: [
       { title: '高德开放平台控制台', url: 'https://console.amap.com/' },
       { title: 'Vercel Dashboard', url: 'https://vercel.com/dashboard' },
