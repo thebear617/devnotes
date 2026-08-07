@@ -2,6 +2,12 @@ function isAdjacent(previous, next) {
   return previous?.position?.end?.line + 1 === next?.position?.start?.line;
 }
 
+function isIndentedContinuation(next) {
+  // Blank lines can make fenced blocks separate AST nodes, but a two-space
+  // block still belongs to the preceding footnote until a top-level node starts.
+  return next?.position?.start?.column === 3;
+}
+
 function getOrderedListStart(node, file) {
   if (!file?.value || node?.type !== 'list' || !node.ordered) return node?.start;
 
@@ -57,23 +63,35 @@ export default function remarkFootnoteIndent() {
       const definition = tree.children[index];
       const content = tree.children[index + 1];
 
+      const canStart = isAdjacent(definition, content)
+        || isIndentedContinuation(content);
       if (
         definition?.type !== 'footnoteDefinition'
-        || definition.children?.length
         || !content?.position
-        || !isAdjacent(definition, content)
+        || !canStart
       ) {
         continue;
       }
 
-      const extracted = extractIndentedContent(content, file);
-      if (!extracted) continue;
+      const extracted = definition.children?.length
+        ? null
+        : extractIndentedContent(content, file);
+      if (extracted) {
+        definition.children = [extracted.footnoteContent];
+        if (extracted.remainingContent) {
+          tree.children[index + 1] = extracted.remainingContent;
+        } else {
+          tree.children.splice(index + 1, 1);
+        }
+      }
 
-      definition.children = [extracted.footnoteContent];
-      if (extracted.remainingContent) {
-        tree.children[index + 1] = extracted.remainingContent;
-      } else {
-        tree.children.splice(index + 1, 1);
+      let nextIndex = index + 1;
+      while (nextIndex < tree.children.length) {
+        const next = tree.children[nextIndex];
+        if (!isIndentedContinuation(next)) break;
+
+        definition.children.push(next);
+        tree.children.splice(nextIndex, 1);
       }
     }
   };

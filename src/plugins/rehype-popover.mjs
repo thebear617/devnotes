@@ -59,13 +59,29 @@ function getReferenceId(node) {
   return decodeFootnoteId(reference?.properties?.href);
 }
 
-function replaceReferences(parent, definitions) {
+function getReferenceLabel(node, file) {
+  const reference = node.children.find(child => isElement(child, 'a') && hasProperty(child, 'dataFootnoteRef'));
+  const preservedLabel = reference?.properties?.dataFootnoteLabel;
+  if (typeof preservedLabel === 'string' && preservedLabel) return preservedLabel;
+
+  const start = node.position?.start?.offset;
+  const end = node.position?.end?.offset;
+  if (!Number.isInteger(start) || !Number.isInteger(end) || !file?.value) return null;
+
+  const source = String(file.value).slice(start, end);
+  return source.startsWith('[^') && source.endsWith(']')
+    ? source.slice(2, -1)
+    : null;
+}
+
+function replaceReferences(parent, definitions, file) {
   if (!Array.isArray(parent.children)) return;
 
   parent.children = parent.children.flatMap(child => {
     if (isFootnoteReference(child)) {
       const id = getReferenceId(child);
       if (!id || !definitions.has(id)) return child;
+      const label = getReferenceLabel(child, file) || id;
 
       return {
         type: 'element',
@@ -76,11 +92,11 @@ function replaceReferences(parent, definitions) {
           dataArticlePopoverTrigger: id,
           ariaExpanded: 'false',
         },
-        children: [{ type: 'text', value: id }],
+        children: [{ type: 'text', value: label }],
       };
     }
 
-    if (isElement(child)) replaceReferences(child, definitions);
+    if (isElement(child)) replaceReferences(child, definitions, file);
     return child;
   });
 }
@@ -100,14 +116,14 @@ function createTemplates(tree, definitions) {
 }
 
 export default function rehypePopover() {
-  return tree => {
+  return (tree, file) => {
     const section = findFootnoteSection(tree);
     if (!section) return;
 
     const definitions = collectDefinitions(section);
     if (!definitions.size) return;
 
-    replaceReferences(tree, definitions);
+    replaceReferences(tree, definitions, file);
     tree.children = tree.children.filter(child => child !== section);
     createTemplates(tree, definitions);
   };

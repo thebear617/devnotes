@@ -1122,6 +1122,7 @@ button {
   max-height: min(70vh, 560px);
   overflow: auto;
   overscroll-behavior: contain;
+  min-height: 0;
 }
 
 .article-popover-image-frame {
