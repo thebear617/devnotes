@@ -1,5 +1,90 @@
 export const notes = [
   {
+    id: 'amap-js-api-vercel-github-deploy',
+    product: '高德地图 JS API / Vercel / GitHub',
+    stacks: ['前端', '部署', '运维'],
+    langs: ['JavaScript', 'Shell'],
+    type: '经验',
+    title: '高德地图 JS API 部署：Vercel、GitHub Actions 与自定义域名的配置流程',
+    date: '2026-08-07',
+    body: `<p>这条记录用于保存 Astro 静态站点接入高德地图 JS API 后，部署到自定义域名时需要完成的三端配置。关键原则是：<code>PUBLIC_</code> 环境变量会在构建阶段注入前端产物，所以变量必须同时配置在实际负责构建的托管平台中。</p>
+
+<h2>一、先确认实际部署平台</h2>
+<p>不要只看代码仓库判断线上站点由谁部署。自定义域名可能已经指向 Vercel，而 GitHub Pages 只是另一份部署产物。</p>
+<ul>
+  <li><strong>Vercel 自定义域名：</strong><code>https://pig.thebear617.cn/food-map/</code>，由 Vercel 提供页面。</li>
+  <li><strong>GitHub Pages：</strong><code>https://thebear617.github.io/pig-home/food-map/</code>，由 GitHub Actions 构建并发布。</li>
+</ul>
+<p>如果用户访问的是自定义域名，就必须在 Vercel 配置环境变量；只在 GitHub 添加 Secret 不会影响 Vercel 的构建。</p>
+
+<h2>二、高德地图控制台</h2>
+<ol>
+  <li>进入 <a href="https://console.amap.com/" target="_blank" rel="noopener">高德开放平台控制台</a>，创建或打开对应应用。</li>
+  <li>创建 <strong>Web 端（JS API）</strong> 的 Key。不要误用只给 Web 服务 API 使用的 Key。</li>
+  <li>记录对应的安全密钥（<code>securityJsCode</code>），但不要把 Key 或安全密钥写入 Git 仓库、Markdown 笔记或聊天记录。</li>
+  <li>在安全设置的域名白名单中添加实际访问域名，填写纯域名，不带协议和路径：<code>pig.thebear617.cn</code>。如果同时使用 GitHub Pages，也添加 <code>thebear617.github.io</code>。</li>
+</ol>
+
+<h2>三、Vercel 配置（自定义域名的必做项）</h2>
+<ol>
+  <li>打开 <a href="https://vercel.com/dashboard" target="_blank" rel="noopener">Vercel Dashboard</a>，进入负责 <code>pig.thebear617.cn</code> 的项目。</li>
+  <li>进入 <strong>Settings → Environment Variables</strong>。</li>
+  <li>在 <strong>Production</strong> 环境添加以下两条变量：</li>
+</ol>
+<table>
+  <thead><tr><th>Key</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td><code>PUBLIC_AMAP_JS_KEY</code></td><td>高德 Web 端 JS API Key</td></tr>
+    <tr><td><code>PUBLIC_AMAP_JS_SECURITY_CODE</code></td><td>高德安全密钥</td></tr>
+  </tbody>
+</table>
+<ul>
+  <li>保持 <strong>Sensitive</strong> 开启。</li>
+  <li>Production 不需要选择 Custom Preview Branch。</li>
+  <li>变量名必须完全一致，不加引号、空格或中文。</li>
+  <li>保存后进入 <strong>Deployments → 最新部署 → ⋯ → Redeploy</strong>。如果提供缓存选项，关闭 <strong>Use existing Build Cache</strong>。</li>
+</ul>
+<p>环境变量不会自动注入已经完成的旧部署；添加变量后必须重新构建。</p>
+
+<h2>四、GitHub Actions 配置（GitHub Pages 的必做项）</h2>
+<ol>
+  <li>打开仓库 <a href="https://github.com/thebear617/pig-home/settings/secrets/actions" target="_blank" rel="noopener"><code>thebear617/pig-home</code> 的 Actions Secrets 页面</a>。</li>
+  <li>进入 <strong>Secrets → New repository secret</strong>，添加同名的两条 Secret：</li>
+</ol>
+<ul>
+  <li><code>PUBLIC_AMAP_JS_KEY</code></li>
+  <li><code>PUBLIC_AMAP_JS_SECURITY_CODE</code></li>
+</ul>
+<p>这里选择 <strong>Secrets</strong>，不要选择 Variables。仓库工作流在 <code>.github/workflows/deploy.yml</code> 的构建步骤中读取：</p>
+<pre><code>PUBLIC_AMAP_JS_KEY: \${{ secrets.PUBLIC_AMAP_JS_KEY }}
+PUBLIC_AMAP_JS_SECURITY_CODE: \${{ secrets.PUBLIC_AMAP_JS_SECURITY_CODE }}</code></pre>
+<p>保存后进入 <strong>Actions → Deploy to GitHub Pages → Run workflow</strong>，选择 <code>main</code> 分支并运行。确认 <code>build</code> 与 <code>deploy</code> 两个任务都成功。</p>
+
+<h2>五、排障顺序</h2>
+<ol>
+  <li><strong>看域名响应头：</strong>确认当前访问的是 Vercel 还是 GitHub Pages，先确定应该检查哪一套环境变量。</li>
+  <li><strong>看构建产物：</strong>如果页面完全没有高德脚本加载逻辑，说明构建时没有注入变量。</li>
+  <li><strong>看浏览器控制台和 Network：</strong>页面里的“请配置前端 JS API Key”是统一兜底提示，任何高德脚本加载失败都可能显示这句话，不能单凭提示判断变量为空。</li>
+  <li><strong>如果高德返回 <code>Error key!</code>：</strong>重新复制 Key，确认使用的是 JS API Key，并检查是否带有前导空格、尾随空格、换行或引号。</li>
+  <li><strong>检查 Key 长度：</strong>本次实际踩到的坑是 Vercel Value 开头多了一个空白字符，导致构建后的 Key 比正确值多 1 个字符，高德因此判定 Key 无效。</li>
+  <li><strong>Key 有效但仍被拒绝：</strong>回到高德控制台检查域名白名单，确认已添加当前浏览器地址栏中的纯域名。</li>
+</ol>
+
+<h2>六、最终检查清单</h2>
+<ul>
+  <li>高德控制台：JS API Key、securityJsCode、域名白名单已配置。</li>
+  <li>Vercel：Production 环境有两个 <code>PUBLIC_AMAP_*</code> 变量，并已 Redeploy。</li>
+  <li>GitHub：仓库 Actions Secrets 有两个同名 Secret，工作流构建成功。</li>
+  <li>线上：打开实际域名，地图底图和地点标记正常出现。</li>
+  <li>安全：Key 和安全密钥没有提交到 Git、公开 Markdown 或前端源码中的明文配置文件。</li>
+</ul>`,
+    links: [
+      { title: '高德开放平台控制台', url: 'https://console.amap.com/' },
+      { title: 'Vercel Dashboard', url: 'https://vercel.com/dashboard' },
+      { title: 'GitHub Actions Secrets · pig-home', url: 'https://github.com/thebear617/pig-home/settings/secrets/actions' }
+    ]
+  },
+  {
     id: 'bili-transcribe-skill-fixes',
     product: 'bili-audio-transcribe / yt-dlp',
     stacks: ['开发工具', '调试', 'Python'],
