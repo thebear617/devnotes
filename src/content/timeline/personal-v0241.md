@@ -1,6 +1,6 @@
 ---
-title: '熊窝 v0.24.1：路由表图标全面本地化，移除 Google favicon API 依赖'
-date: '2026-08-05'
+title: '熊窝 v0.24.1–v0.24.2：路由表图标本地化与生活仪表盘追踪调整'
+date: '2026-08-09'
 tags: [熊窝, 功能]
 site: 熊窝
 slug: 'personal-v0241'
@@ -19,3 +19,12 @@ slug: 'personal-v0241'
 ## 图标处理与维护脚本
 
 图标做透明边裁剪并铺满 256×256 画布，避免不同站点 favicon 原始尺寸差异导致的显示不一致。新增 `scripts/download-route-icons.py`（抓取 favicon）与 `scripts/normalize-route-icons.py`（归一化）两个维护脚本。顺带把「猫猫」站点域名更新为 `cat.xdubear.cn`，版本升至 0.24.1。
+
+## v0.24.2 后续调整
+
+8 月 9 日，生活仪表盘在同一 0.24 主线下完成一轮小范围追踪看板调整，并发布 v0.24.2。
+
+- 完善追踪看板的布局、分页与周/月统计展示
+- 将 `Blog writing` 替换为 `Term walkthrough`，目标从每日 5 篇改为每日覆盖 20 个术语
+- 新增 `Read 100 pages`，每日阅读目标为 100 页
+- 保留旧快照数据，但不把旧博客篇数迁移为术语数，避免统计口径混淆
