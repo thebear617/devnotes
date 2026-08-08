@@ -85,11 +85,12 @@ function replaceReferences(parent, definitions, file) {
 
       return {
         type: 'element',
-        tagName: 'button',
+        tagName: 'span',
         properties: {
-          type: 'button',
           className: ['article-popover-trigger'],
           dataArticlePopoverTrigger: id,
+          role: 'button',
+          tabIndex: 0,
           ariaExpanded: 'false',
         },
         children: [{ type: 'text', value: label }],

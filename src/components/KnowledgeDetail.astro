@@ -38,19 +38,44 @@ const tocHeadings = headings.filter(heading => heading.depth >= 1 && heading.dep
 <script>
   const tocLinks = Array.from(document.querySelectorAll('.blog-toc-link'));
   const articleHeadings = Array.from(document.querySelectorAll('.blog-article-body h1[id], .blog-article-body h2[id], .blog-article-body h3[id]'));
-  function updateActiveHeading() {
-    let activeId = articleHeadings[0]?.id;
-    for (const heading of articleHeadings) {
-      if (heading.getBoundingClientRect().top <= 120) activeId = heading.id;
-      else break;
-    }
+  const scrollContainer = document.querySelector('.main-area');
+  const activeHeadingOffset = 120;
+
+  function setActiveHeading(activeId) {
     tocLinks.forEach(link => link.classList.toggle('active', link.dataset.headingId === activeId));
   }
-  const scrollContainer = document.querySelector('.main-area');
+
+  function updateActiveHeading() {
+    if (!articleHeadings.length) return;
+
+    const containerTop = scrollContainer?.getBoundingClientRect().top || 0;
+    const activeLine = containerTop + activeHeadingOffset;
+    let activeId = articleHeadings[0].id;
+    for (const heading of articleHeadings) {
+      if (heading.getBoundingClientRect().top <= activeLine) activeId = heading.id;
+      else break;
+    }
+
+    // A heading near the end may never reach the active line because the
+    // scroll container cannot scroll past the end of the article. At the
+    // bottom, use the last heading that has entered the viewport instead.
+    if (scrollContainer && scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 1) {
+      const containerBottom = containerTop + scrollContainer.clientHeight;
+      for (const heading of articleHeadings) {
+        if (heading.getBoundingClientRect().top <= containerBottom) activeId = heading.id;
+        else break;
+      }
+    }
+
+    setActiveHeading(activeId);
+  }
   if (tocLinks.length && articleHeadings.length) {
     updateActiveHeading();
     scrollContainer?.addEventListener('scroll', () => requestAnimationFrame(updateActiveHeading), { passive: true });
     window.addEventListener('hashchange', updateActiveHeading);
+    tocLinks.forEach(link => link.addEventListener('click', () => {
+      setActiveHeading(link.dataset.headingId);
+    }));
   }
   document.querySelectorAll('.tip-label').forEach(label => label.addEventListener('click', () => label.closest('li')?.classList.toggle('pinned')));
   const popoverTemplates = new Map(
@@ -155,6 +180,11 @@ const tocHeadings = headings.filter(heading => heading.depth >= 1 && heading.dep
     trigger.addEventListener('mouseleave', scheduleHide);
     trigger.addEventListener('focus', show);
     trigger.addEventListener('blur', scheduleHide);
+    trigger.addEventListener('keydown', event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      trigger.click();
+    });
     trigger.addEventListener('click', event => {
       event.preventDefault();
       pinned = !pinned;

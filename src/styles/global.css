@@ -1035,13 +1035,19 @@ button {
 }
 
 .blog-article-body .article-popover-trigger {
+  display: inline;
   padding: 0;
   border: none;
-  border-bottom: 1.5px dashed var(--accent);
   background: transparent;
   color: inherit;
   font: inherit;
   cursor: pointer;
+  white-space: normal;
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1.5px;
+  text-decoration-color: var(--accent);
+  text-underline-offset: .18em;
 }
 
 .blog-article-body .tip-detail {
