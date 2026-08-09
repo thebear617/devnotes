@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import { unified } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';
 import remarkFootnoteIndent from './src/plugins/remark-footnote-indent.mjs';
 import rehypeKatex from 'rehype-katex';
@@ -11,11 +12,13 @@ export default defineConfig({
   base: process.env.SITE_BASE || '/',
   vite: { server: { strictPort: true } },
   markdown: {
-    remarkPlugins: [remarkFootnoteIndent, remarkMath],
-    rehypePlugins: [rehypeKatex, rehypeMark, rehypeTableWrap, rehypePopover],
-    remarkRehype: {
+    processor: unified({
+      remarkPlugins: [remarkFootnoteIndent, remarkMath],
+      rehypePlugins: [rehypeKatex, rehypeMark, rehypeTableWrap, rehypePopover],
+      remarkRehype: {
       handlers: { footnoteReference: footnoteReferenceWithLabel },
-    },
+      },
+    }),
   },
   build: {
     format: 'directory',

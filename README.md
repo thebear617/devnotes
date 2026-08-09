@@ -13,8 +13,8 @@
 
 | 层面 | 选型 |
 |------|------|
-| 框架 | Astro 5 |
-| 内容 | Astro Content Collections + Markdown + JavaScript 数据文件 |
+| 框架 | Astro 7 |
+| 内容 | Astro Content Layer + Markdown + JavaScript 数据文件 |
 | 样式 | 原生 CSS，石板灰与青绿色主题 |
 | 交互 | Astro 页面脚本 + 原生 JavaScript |
 | 输出 | 静态 HTML、CSS 和 JavaScript |
@@ -28,8 +28,8 @@ devnotes/
 ├── astro.config.mjs          # Astro 配置、基础路径与首页重定向
 ├── package.json              # 开发、构建和预览命令
 ├── src/
+│   ├── content.config.ts      # Content Layer 内容集合及 frontmatter 约束
 │   ├── content/
-│   │   ├── config.ts         # 内容集合及 frontmatter 约束
 │   │   ├── knowledge/        # Markdown 知识库，按一级领域与二级内容角色组织
 │   │   └── timeline/         # Markdown 开发时间线条目
 │   ├── data/
@@ -117,7 +117,7 @@ slug: traditional-full-stack-development # 可选；重命名既有文件时保�
 
 `category` 表示一级领域，`subcategory` 表示二级内容角色；两者应与文件所在目录保持一致。`category` 可使用 `开发与实践`、`科研`、`随想`，二级目录可使用 `基础知识`、`典型案例`、`学习资源`、`配置记录`、`综述`，随想目前使用 `随笔`。
 
-旧的 `/blog/` 与 `/prompts/` 列表入口会跳转到 `/knowledge/`。既有详情地址通过显式 `slug` 和 `src/data/legacy-knowledge-routes.js` 中的兼容映射继续访问，不依赖知识条目的额外类型字段。
+旧的 `/blog/` 与 `/prompts/` 列表入口会跳转到 `/knowledge/`。既有详情地址通过 frontmatter 中的显式 `slug` 和 `src/data/legacy-knowledge-routes.js` 中的兼容映射继续访问，不依赖知识条目的额外类型字段。
 
 典型案例建议正文按 `# 案例集合`、案例步骤与 `# 参考资料` 结构组织，来源链接放在参考资料一节。
 

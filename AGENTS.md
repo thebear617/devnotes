@@ -2,9 +2,9 @@
 
 ## 项目定位
 
-`devnotes` 是基于 Astro 5 的独立开发知识库与静态网站。内容集合和站点代码全部保存在本仓库，包含知识库、时间线、笔记中心和价格矩阵四个板块。
+`devnotes` 是基于 Astro 7 的独立开发知识库与静态网站。内容集合和站点代码全部保存在本仓库，包含知识库、时间线、笔记中心和价格矩阵四个板块。
 
-- 正式内容源：`src/content/`（knowledge / timeline）
+- 正式内容源：`src/content/`（knowledge / timeline）；集合配置：`src/content.config.ts`
 - 补充数据源：`src/data/`（notes.js / pricing.js）
 - 构建命令：`npm run build`
 - 本地开发：`npm run dev`

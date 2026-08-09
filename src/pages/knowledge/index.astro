@@ -50,7 +50,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       <div class="blog-list" id="knowledgeList">
         {entries.map(entry => (
           <a
-            href={`${base}knowledge/${entry.slug}/`}
+            href={`${base}knowledge/${entry.data.slug || entry.id}/`}
             class="blog-card"
             data-category={entry.data.category}
             data-subcategory={entry.data.subcategory || ''}
