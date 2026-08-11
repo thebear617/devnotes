@@ -2042,3 +2042,19 @@ button {
   background: var(--surface-soft);
   font-weight: 700;
 }
+
+.tl-detail-body .foodmap-ui-archive {
+  display: grid;
+  gap: 1rem;
+  width: min(100%, 900px);
+  margin: 1rem auto;
+}
+
+.tl-detail-body .foodmap-ui-archive img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+}

@@ -47,8 +47,8 @@ slug: 'home-v190'
 
 以下图片作为本次美食地图 UI 设计与成品界面的视觉留档。
 
-![美食地图 UI 设计图 1](/images/timeline/food-map-v190/ui-01.png)
-
-![美食地图 UI 设计图 2](/images/timeline/food-map-v190/ui-02.png)
-
-![美食地图 UI 设计图 3](/images/timeline/food-map-v190/ui-03.png)
+<div class="foodmap-ui-archive">
+  <img src="/images/timeline/food-map-v190/ui-01.png" alt="美食地图 UI 设计图 1" loading="lazy" />
+  <img src="/images/timeline/food-map-v190/ui-02.png" alt="美食地图 UI 设计图 2" loading="lazy" />
+  <img src="/images/timeline/food-map-v190/ui-03.png" alt="美食地图 UI 设计图 3" loading="lazy" />
+</div>
