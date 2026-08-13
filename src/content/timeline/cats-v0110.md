@@ -25,4 +25,6 @@ slug: 'cats-v0110'
 
 ## UI 设计图留档
 
-![价格参考页面最终表格视图](/images/timeline/cats-v0110/ui-01.png)
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/cats-v0110/ui-01.png" alt="价格参考页面最终表格视图" loading="lazy" />
+</div>
