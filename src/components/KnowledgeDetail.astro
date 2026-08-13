@@ -5,6 +5,18 @@ import 'katex/dist/katex.min.css';
 const { entry, backHref, backLabel } = Astro.props;
 const { Content, headings } = await render(entry);
 const tocHeadings = headings.filter(heading => heading.depth >= 1 && heading.depth <= 3);
+const tocSections = [];
+let currentTocGroup;
+for (const heading of tocHeadings) {
+  if (heading.depth === 2) {
+    currentTocGroup = { type: 'group', heading, children: [] };
+    tocSections.push(currentTocGroup);
+  } else if (heading.depth === 3 && currentTocGroup) {
+    currentTocGroup.children.push(heading);
+  } else {
+    tocSections.push({ type: 'standalone', heading });
+  }
+}
 ---
 
 <main class="app-shell blog-page-shell">
@@ -15,7 +27,20 @@ const tocHeadings = headings.filter(heading => heading.depth >= 1 && heading.dep
         <details class="blog-toc" open>
           <summary>本文目录</summary>
           <nav>
-            {tocHeadings.map(heading => <a href={`#${heading.slug}`} class={`blog-toc-link depth-${heading.depth}`} data-heading-id={heading.slug}>{heading.text}</a>)}
+            {tocSections.map(section => section.type === 'group' ? (
+              <section class="blog-toc-group" data-expanded="true">
+                <div class="blog-toc-group-header">
+                  <a href={`#${section.heading.slug}`} class="blog-toc-link depth-2" data-heading-id={section.heading.slug}>{section.heading.text}</a>
+                </div>
+                <div class="blog-toc-sublist">
+                  <div>
+                    {section.children.map(heading => <a href={`#${heading.slug}`} class={`blog-toc-link depth-${heading.depth}`} data-heading-id={heading.slug}>{heading.text}</a>)}
+                  </div>
+                </div>
+              </section>
+            ) : (
+              <a href={`#${section.heading.slug}`} class={`blog-toc-link depth-${section.heading.depth}`} data-heading-id={section.heading.slug}>{section.heading.text}</a>
+            ))}
           </nav>
         </details>
       </aside>
@@ -38,11 +63,27 @@ const tocHeadings = headings.filter(heading => heading.depth >= 1 && heading.dep
 <script>
   const tocLinks = Array.from(document.querySelectorAll('.blog-toc-link'));
   const articleHeadings = Array.from(document.querySelectorAll('.blog-article-body h1[id], .blog-article-body h2[id], .blog-article-body h3[id]'));
+  const tocGroups = Array.from(document.querySelectorAll('.blog-toc-group'));
+  const headingGroups = new Map();
+  tocGroups.forEach(group => group.querySelectorAll('.blog-toc-link').forEach(link => headingGroups.set(link.dataset.headingId, group)));
   const scrollContainer = document.querySelector('.main-area');
   const activeHeadingOffset = 120;
 
+  function syncExpandedGroups(activeId) {
+    const activeGroup = headingGroups.get(activeId);
+    tocGroups.forEach(group => {
+      const expanded = group === activeGroup;
+      group.dataset.expanded = String(expanded);
+    });
+  }
+
   function setActiveHeading(activeId) {
     tocLinks.forEach(link => link.classList.toggle('active', link.dataset.headingId === activeId));
+    const activeGroup = headingGroups.get(activeId);
+    if (activeGroup && activeGroup.querySelector('.blog-toc-link.depth-2')) {
+      activeGroup.querySelector('.blog-toc-link.depth-2').classList.add('active');
+    }
+    syncExpandedGroups(activeId);
   }
 
   function updateActiveHeading() {
@@ -71,6 +112,7 @@ const tocHeadings = headings.filter(heading => heading.depth >= 1 && heading.dep
   }
   if (tocLinks.length && articleHeadings.length) {
     updateActiveHeading();
+    syncExpandedGroups(document.querySelector('.blog-toc-link.active')?.dataset.headingId);
     scrollContainer?.addEventListener('scroll', () => requestAnimationFrame(updateActiveHeading), { passive: true });
     window.addEventListener('hashchange', updateActiveHeading);
     tocLinks.forEach(link => link.addEventListener('click', () => {

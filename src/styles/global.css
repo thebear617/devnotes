@@ -785,8 +785,26 @@ button {
   padding-left: .2rem;
 }
 
+.blog-toc-sublist {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 200ms ease;
+}
+
+.blog-toc-sublist > div {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.blog-toc-group[data-expanded="false"] .blog-toc-sublist {
+  grid-template-rows: 0fr;
+}
+
 .blog-toc-link.depth-3 {
-  padding-left: 1.15rem;
+  margin-left: 1.05rem;
+  padding-left: .9rem;
   font-size: .72rem;
 }
 
