@@ -1,0 +1,36 @@
+---
+title: '常识笔记 v1.1.0：本地 CMS 编辑体验与双向定位升级'
+date: '2026-08-14'
+tags: [常识笔记, 功能]
+site: 常识笔记
+slug: 'lifenotes-v110'
+---
+
+常识笔记升级到 v1.1.0：围绕本地 CMS 的编辑效率、Markdown 预览一致性和 UI 细节完成一轮体验升级，并加入编辑器与预览之间的双向定位。
+
+## CMS 界面与布局
+
+- 将后台页面标题改为“常识笔记后台”，统一 LifeNotes 的站点语义。
+- 重构文章库、内容核心、内容归类、文件与发布和 Markdown 编辑区的布局，修复卡片与内部输入组件宽度约束不一致造成的溢出。
+- 修复未正确套用的全局 CSS 规则，明确处理 `box-sizing`、`min-width`、`max-width` 和表单控件内边距，保证 CSS 改动真正作用到目标组件。
+- 移除没有实际帮助的编辑区行号栏，并为编辑内容与中间分割线保留稳定的右侧间距。
+
+## Markdown 编辑体验
+
+- 加粗、斜体和行内代码支持重复点击切换，避免重复叠加 Markdown 标记。
+- 增加 Markdown 编辑器的 `Command+Z` / `Ctrl+Z` 撤回，以及 `Command+Shift+Z` / `Ctrl+Y` 重做，工具栏操作也会进入历史记录。
+- Task list 预览改为只显示 checkbox，不再显示普通无序列表圆点；CMS 预览和正式文章页保持一致。
+- 预览继续使用 LifeNotes 正式文章的 Markdown 渲染逻辑，统一标题、列表、链接、表格和引用样式。
+
+## 编辑器与预览双向定位
+
+- 在编辑器和预览之间增加 `→`、`←` 两个定位按钮：左侧 Markdown 当前光标可定位到右侧预览，右侧点击或选中内容可返回对应 Markdown 区域。
+- 预览 HTML 增加 Markdown 源码起止行映射，标题、段落、列表项、引用和表格等块级内容可以按源码位置滚动和高亮。
+- 定位操作采用主动触发，不强制接管普通滚动，保留编辑器和预览各自的阅读节奏。
+
+## 版本与 UI 设计图
+
+- 项目版本号从 `1.0.0` 升级到 `1.1.0`。
+- 关键实现集中在 `src/pages/admin.astro`、`src/admin/local-cms.mjs` 和 `src/plugins/rehype-source-position.mjs`。
+
+![常识笔记本地 CMS v1.1.0 UI](/images/timeline/lifenotes-v110/ui-01.png)
