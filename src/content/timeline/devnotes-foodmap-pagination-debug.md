@@ -20,7 +20,7 @@ slug: 'devnotes-foodmap-pagination-debug'
 
 ## 根因
 
-区域分页仅设置 `hidden`，但以下选择器的优先级更高：
+区域分页仅设置 `hidden`，没有复用已有的 `is-directory-hidden` 状态；同时，页面中以下选择器的优先级更高：
 
 ```css
 body[data-page="food-map"] .foodmap-list-item {
@@ -32,8 +32,8 @@ body[data-page="food-map"] .foodmap-list-item {
 
 ## 修复
 
-- 区域分页同步添加 `is-directory-hidden` 类名，明确标记当前页之外的条目。
-- 为该状态命中 `display: none !important`，避免被区域列表的通用 `display: block` 覆盖。
+- 区域分页复用已有的 `is-directory-hidden` 类名，明确标记当前页之外的条目。
+- 该状态原本已有 `display: none !important` 规则，本次让区域分页复用它，避免被区域列表的通用 `display: block` 覆盖。
 - 同步设置 `aria-hidden`，让视觉隐藏状态与辅助技术语义保持一致。
 
 ## 验证
