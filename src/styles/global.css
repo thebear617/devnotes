@@ -2051,6 +2051,15 @@ button {
   height: auto;
   margin: .5rem 0;
   border-radius: 8px;
+  cursor: zoom-in;
+  transition: opacity .15s;
+}
+.tl-detail-body img:hover {
+  opacity: .85;
+}
+.tl-detail-body img:focus-visible {
+  outline: 3px solid rgba(13, 148, 136, .35);
+  outline-offset: 3px;
 }
 .tl-detail-body table {
   width: 100%;
