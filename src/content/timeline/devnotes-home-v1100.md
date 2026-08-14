@@ -1,7 +1,7 @@
 ---
 title: '猪窝 v1.10.0：美食地图区域视图收尾发布'
 date: '2026-08-15'
-tags: [猪窝, 功能, 内容, 调试, CSS]
+tags: [猪窝, 功能, 内容]
 site: 猪窝
 slug: 'devnotes-home-v1100'
 ---
