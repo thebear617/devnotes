@@ -2045,6 +2045,13 @@ button {
 .tl-detail-body pre code { padding: 0; background: none; border: none; font-size: inherit; color: inherit; }
 .tl-detail-body strong { font-weight: 800; }
 .tl-detail-body hr { border: none; border-top: 1px solid var(--line); margin: 1rem 0; }
+.tl-detail-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: .5rem 0;
+  border-radius: 8px;
+}
 .tl-detail-body table {
   width: 100%;
   border-collapse: collapse;
