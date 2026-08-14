@@ -19,3 +19,9 @@ slug: 'lifenotes-v100'
 
 - 引入 `src/content.config.ts` 内容集合配置，统一 Markdown 内容的读取与 frontmatter schema 约束。
 - 同步升级项目版本号至 `v1.0.0`，发布提交为 `95bb161d`。
+
+## UI 稿
+
+后台 UI 采用文章库与编辑表单的两栏布局，包含文章管理、元数据填写和 Markdown 实时预览，整体以橙红色为强调色。
+
+![LifeNotes 本地 CMS 后台 UI 稿](/images/timeline/lifenotes-v100/ui-01.png)
