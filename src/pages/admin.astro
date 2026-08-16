@@ -194,6 +194,28 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .preview pre { overflow: auto; padding: 10px; border-radius: 7px; color: #dcefed; background: #16363d; }
     .preview pre code { padding: 0; background: transparent; }
     .preview-placeholder { margin: 24px 0; color: #9aaeb2; }
+    .preview .article-popover-trigger { display: inline; padding: 0; border: 0; color: inherit; background: transparent; cursor: pointer; font: inherit; text-decoration: underline dashed #0f766e 1.5px; text-underline-offset: .18em; }
+    .preview .article-popover-trigger:hover, .preview .article-popover-trigger:focus-visible { color: #0f766e; }
+    .preview-footnote-popover { position: fixed; z-index: 1000; display: none; width: fit-content; min-width: min(320px, calc(100vw - 2rem)); max-width: min(720px, calc(100vw - 2rem)); padding: 12px 16px 14px; border: 1px solid rgba(15, 118, 110, .18); border-top: 3px solid #0f766e; border-radius: 14px; background: linear-gradient(135deg, rgba(255, 255, 255, .98), rgba(240, 253, 250, .96)); box-shadow: 0 20px 48px rgba(15, 23, 42, .18), 0 4px 12px rgba(15, 118, 110, .08); backdrop-filter: blur(12px); }
+    .preview-footnote-popover::before { position: absolute; top: -8px; left: var(--popover-arrow-left, 22px); width: 14px; height: 14px; border-top: 1px solid rgba(15, 118, 110, .18); border-left: 1px solid rgba(15, 118, 110, .18); background: #f8fdfc; content: ""; transform: translateX(-50%) rotate(45deg); }
+    .preview-footnote-popover[data-placement="top"]::before { top: auto; bottom: -8px; border-top: 0; border-left: 0; border-right: 1px solid rgba(15, 118, 110, .18); border-bottom: 1px solid rgba(15, 118, 110, .18); }
+    .preview-footnote-popover.is-visible { display: block; animation: preview-footnote-fade-in .15s ease; }
+    .preview-footnote-popover[data-popover-kind="table"] { max-width: min(900px, calc(100vw - 2rem)); }
+    .preview-footnote-popover-heading { display: flex; align-items: baseline; gap: 8px; margin: -2px 0 9px; padding-bottom: 8px; border-bottom: 1px solid rgba(15, 118, 110, .14); line-height: 1.3; }
+    .preview-footnote-popover-title { min-width: 0; color: #647b82; font-size: 12px; font-weight: 700; overflow-wrap: anywhere; }
+    .preview-footnote-popover-content { max-height: min(70vh, 560px); overflow: auto; overscroll-behavior: contain; min-height: 0; color: #334155; font-size: 13px; line-height: 1.75; }
+    .preview-footnote-popover-content p { margin: 7px 0; }
+    .preview-footnote-popover-content ul, .preview-footnote-popover-content ol { margin: 2px 0 0; padding-left: 22px; }
+    .preview-footnote-popover-content li { margin: 5px 0; padding-left: 2px; overflow-wrap: anywhere; }
+    .preview-footnote-popover-content li::marker { color: #0f766e; font-weight: 800; }
+    .preview-footnote-popover-content a { color: #0f766e; }
+    .preview-footnote-popover-content table { width: 100%; margin: 0; border-collapse: collapse; font-size: 12px; }
+    .preview-footnote-popover-content th, .preview-footnote-popover-content td { padding: 6px 9px; border: 1px solid #d9e6e8; text-align: left; vertical-align: top; }
+    .preview-footnote-popover-content th { color: #153b42; background: #eef7f6; }
+    .preview-footnote-popover-content img { max-width: 100%; height: auto; cursor: zoom-in; }
+    .preview-footnote-popover-content img:focus-visible { outline: 3px solid rgba(20, 184, 166, .22); outline-offset: 3px; }
+    .preview-footnote-popover-content > :last-child { margin-bottom: 0; }
+    @keyframes preview-footnote-fade-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
     @media (max-width: 980px) {
       .admin { height: auto; min-height: 100vh; }
       .workspace { grid-template-columns: 1fr; }
@@ -311,6 +333,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     let previewTimer = 0;
     let selectedPreviewNode = null;
     let syncHighlightTimer = 0;
+    let previewFootnoteCleanup = () => {};
+    let activePreviewFootnoteClose = null;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     const activeCollection = () => state.collections.find((item) => item.id === state.collectionId);
@@ -696,17 +720,20 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
         const requestId = ++state.previewId;
         const body = $('body').value;
         if (!body.trim()) {
+          previewFootnoteCleanup();
           $('preview').innerHTML = '<p class="preview-placeholder">Markdown 预览会显示在这里</p>';
           selectedPreviewNode = null;
           $('preview').classList.remove('is-loading');
           return;
         }
+        previewFootnoteCleanup();
         $('preview').classList.add('is-loading');
         try {
           const data = await request('preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ collection: state.collectionId, body }) });
           if (requestId === state.previewId) {
             $('preview').innerHTML = data.html || '<p class="preview-placeholder">暂无预览</p>';
             enhancePreviewImages();
+            enhancePreviewFootnotes();
             selectedPreviewNode = null;
           }
         } catch (error) {
@@ -720,8 +747,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       }, 180);
     }
 
-    function enhancePreviewImages() {
-      $('preview').querySelectorAll('img').forEach((img) => {
+    function enhancePreviewImages(root = $('preview')) {
+      root.querySelectorAll('img').forEach((img) => {
         if (img.closest('a')) return;
         img.setAttribute('tabindex', '0');
         img.setAttribute('role', 'button');
@@ -768,6 +795,180 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       document.addEventListener('keydown', handleEscape);
       document.body.appendChild(overlay);
       closeButton.focus();
+    }
+
+    function enhancePreviewFootnotes() {
+      previewFootnoteCleanup();
+      const preview = $('preview');
+      const templates = new Map(
+        Array.from(preview.querySelectorAll('template[data-article-popover-content]'))
+          .map((template) => [template.dataset.articlePopoverContent, template]),
+      );
+      const cleanups = [];
+
+      preview.querySelectorAll('[data-article-popover-trigger]').forEach((trigger, index) => {
+        const id = trigger.dataset.articlePopoverTrigger;
+        const template = templates.get(id);
+        if (!template) return;
+
+        const panel = document.createElement('div');
+        panel.className = 'preview-footnote-popover';
+        panel.id = `preview-footnote-${state.previewId}-${index}`;
+        panel.setAttribute('role', 'dialog');
+        panel.setAttribute('aria-hidden', 'true');
+        trigger.setAttribute('aria-controls', panel.id);
+
+        const content = document.createElement('div');
+        content.className = 'preview-footnote-popover-content';
+        content.innerHTML = template.innerHTML;
+        panel.dataset.popoverKind = content.querySelector('table') ? 'table' : 'note';
+
+        const heading = document.createElement('div');
+        heading.className = 'preview-footnote-popover-heading';
+        const title = document.createElement('span');
+        title.className = 'preview-footnote-popover-title';
+        title.textContent = trigger.textContent.trim();
+        heading.append(title);
+        panel.append(heading, content);
+        document.body.appendChild(panel);
+
+        let pinned = false;
+        let hideTimer = 0;
+        const padding = 16;
+        const gap = 10;
+        const cancelHide = () => {
+          if (!hideTimer) return;
+          window.clearTimeout(hideTimer);
+          hideTimer = 0;
+        };
+        const close = () => {
+          cancelHide();
+          pinned = false;
+          panel.classList.remove('is-visible');
+          panel.setAttribute('aria-hidden', 'true');
+          trigger.setAttribute('aria-expanded', 'false');
+          if (activePreviewFootnoteClose === close) activePreviewFootnoteClose = null;
+        };
+        const scheduleHide = () => {
+          cancelHide();
+          hideTimer = window.setTimeout(() => {
+            if (!pinned) close();
+          }, 160);
+        };
+        const position = () => {
+          if (!panel.classList.contains('is-visible')) return;
+          const triggerRect = trigger.getBoundingClientRect();
+          const panelRect = panel.getBoundingClientRect();
+          const left = Math.min(
+            Math.max(triggerRect.left, padding),
+            Math.max(padding, window.innerWidth - panelRect.width - padding),
+          );
+          const topSpace = Math.max(0, triggerRect.top - padding - gap);
+          const bottomSpace = Math.max(0, window.innerHeight - triggerRect.bottom - padding - gap);
+          const fitsTop = panelRect.height <= topSpace;
+          const fitsBottom = panelRect.height <= bottomSpace;
+          const placement = fitsBottom || (!fitsTop && bottomSpace >= topSpace) ? 'bottom' : 'top';
+          const availableSpace = placement === 'bottom' ? bottomSpace : topSpace;
+          const contentRect = content.getBoundingClientRect();
+          const panelChrome = panelRect.height - contentRect.height;
+          const maxContentHeight = Math.min(window.innerHeight * .7, 560);
+          const availableContentHeight = Math.max(120, availableSpace - panelChrome);
+          content.style.maxHeight = `${Math.min(maxContentHeight, availableContentHeight)}px`;
+
+          const positionedPanelRect = panel.getBoundingClientRect();
+          const preferredTop = placement === 'bottom'
+            ? triggerRect.bottom + gap
+            : triggerRect.top - positionedPanelRect.height - gap;
+          const top = Math.max(
+            padding,
+            Math.min(preferredTop, window.innerHeight - padding - positionedPanelRect.height),
+          );
+          const arrowLeft = Math.min(
+            Math.max(triggerRect.left + triggerRect.width / 2 - left, 22),
+            Math.max(22, positionedPanelRect.width - 22),
+          );
+          panel.style.left = `${left}px`;
+          panel.style.top = `${top}px`;
+          panel.dataset.placement = placement;
+          panel.style.setProperty('--popover-arrow-left', `${arrowLeft}px`);
+        };
+        const show = () => {
+          cancelHide();
+          if (activePreviewFootnoteClose && activePreviewFootnoteClose !== close) activePreviewFootnoteClose();
+          activePreviewFootnoteClose = close;
+          panel.classList.add('is-visible');
+          panel.setAttribute('aria-hidden', 'false');
+          trigger.setAttribute('aria-expanded', 'true');
+          window.requestAnimationFrame(position);
+        };
+        const handleTriggerKeydown = (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          trigger.click();
+        };
+        const handleTriggerClick = (event) => {
+          event.preventDefault();
+          pinned = !pinned;
+          if (pinned) show();
+          else close();
+        };
+        const handleEscape = (event) => {
+          if (event.key === 'Escape') close();
+        };
+        const handlePanelClick = (event) => {
+          const target = event.target instanceof Element ? event.target : null;
+          const image = target?.closest('img');
+          if (!image || !panel.contains(image) || image.closest('a')) return;
+          event.preventDefault();
+          openPreviewLightbox(image, image.currentSrc || image.src, image.alt);
+        };
+        const handlePanelKeydown = (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          const target = event.target instanceof Element ? event.target : null;
+          const image = target?.closest('img');
+          if (!image || !panel.contains(image) || image.closest('a')) return;
+          event.preventDefault();
+          openPreviewLightbox(image, image.currentSrc || image.src, image.alt);
+        };
+
+        trigger.addEventListener('mouseenter', show);
+        trigger.addEventListener('mouseleave', scheduleHide);
+        trigger.addEventListener('focus', show);
+        trigger.addEventListener('blur', scheduleHide);
+        trigger.addEventListener('keydown', handleTriggerKeydown);
+        trigger.addEventListener('click', handleTriggerClick);
+        panel.addEventListener('mouseenter', cancelHide);
+        panel.addEventListener('mouseleave', scheduleHide);
+        panel.addEventListener('click', handlePanelClick);
+        panel.addEventListener('keydown', handlePanelKeydown);
+        window.addEventListener('resize', position);
+        preview.addEventListener('scroll', position, { passive: true });
+        document.addEventListener('keydown', handleEscape);
+        enhancePreviewImages(panel);
+
+        cleanups.push(() => {
+          trigger.removeEventListener('mouseenter', show);
+          trigger.removeEventListener('mouseleave', scheduleHide);
+          trigger.removeEventListener('focus', show);
+          trigger.removeEventListener('blur', scheduleHide);
+          trigger.removeEventListener('keydown', handleTriggerKeydown);
+          trigger.removeEventListener('click', handleTriggerClick);
+          panel.removeEventListener('mouseenter', cancelHide);
+          panel.removeEventListener('mouseleave', scheduleHide);
+          panel.removeEventListener('click', handlePanelClick);
+          panel.removeEventListener('keydown', handlePanelKeydown);
+          window.removeEventListener('resize', position);
+          preview.removeEventListener('scroll', position);
+          document.removeEventListener('keydown', handleEscape);
+          close();
+          panel.remove();
+        });
+      });
+
+      previewFootnoteCleanup = () => {
+        cleanups.splice(0).forEach((cleanup) => cleanup());
+        previewFootnoteCleanup = () => {};
+      };
     }
 
     const previewBlockSelector = 'h1[data-source-start], h2[data-source-start], h3[data-source-start], p[data-source-start], ul[data-source-start], ol[data-source-start], blockquote[data-source-start], pre[data-source-start], table[data-source-start], li[data-source-start]';
