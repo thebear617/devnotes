@@ -178,7 +178,14 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .preview h1 { font-size: 22px; }
     .preview h2 { margin-top: 1.4em; font-size: 18px; }
     .preview h3 { margin-top: 1.2em; font-size: 15px; }
-    .preview img { max-width: 100%; height: auto; }
+    .preview img { max-width: 100%; height: auto; cursor: zoom-in; }
+    .preview img:focus-visible, .preview .timeline-image-link:focus-visible { outline: 3px solid rgba(20, 184, 166, .22); outline-offset: 3px; }
+    .preview .timeline-image-link { cursor: zoom-in; }
+    .preview-lightbox { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 3.5rem 1rem 1rem; background: rgba(0, 0, 0, .82); cursor: zoom-out; }
+    .preview-lightbox-content { position: relative; display: flex; align-items: center; justify-content: center; max-width: 92vw; max-height: 92vh; }
+    .preview-lightbox img { max-width: 90vw; max-height: 90vh; width: auto; height: auto; border-radius: 8px; box-shadow: 0 8px 40px rgba(0, 0, 0, .4); cursor: default; }
+    .preview-lightbox-close { position: absolute; top: -2.8rem; right: 0; width: 2.2rem; height: 2.2rem; border: 1px solid rgba(255, 255, 255, .28); border-radius: 999px; color: #fff; background: rgba(15, 23, 42, .72); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+    .preview-lightbox-close:hover, .preview-lightbox-close:focus-visible { border-color: rgba(255, 255, 255, .6); background: rgba(15, 23, 42, .92); }
     .preview table { display: block; width: 100%; max-width: 100%; margin: .9rem 0; overflow: auto; border-collapse: collapse; }
     .preview th, .preview td { padding: 6px 9px; border: 1px solid #d9e6e8; text-align: left; vertical-align: top; }
     .preview th { color: #153b42; background: #eef7f6; }
@@ -699,6 +706,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
           const data = await request('preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ collection: state.collectionId, body }) });
           if (requestId === state.previewId) {
             $('preview').innerHTML = data.html || '<p class="preview-placeholder">暂无预览</p>';
+            enhancePreviewImages();
             selectedPreviewNode = null;
           }
         } catch (error) {
@@ -710,6 +718,56 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
           if (requestId === state.previewId) $('preview').classList.remove('is-loading');
         }
       }, 180);
+    }
+
+    function enhancePreviewImages() {
+      $('preview').querySelectorAll('img').forEach((img) => {
+        if (img.closest('a')) return;
+        img.setAttribute('tabindex', '0');
+        img.setAttribute('role', 'button');
+        img.setAttribute('aria-label', '查看大图');
+      });
+    }
+
+    function openPreviewLightbox(trigger, src, alt) {
+      const overlay = document.createElement('div');
+      overlay.className = 'preview-lightbox';
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-modal', 'true');
+      overlay.setAttribute('aria-label', '图片预览');
+
+      const content = document.createElement('div');
+      content.className = 'preview-lightbox-content';
+
+      const preview = document.createElement('img');
+      preview.src = src;
+      preview.alt = alt || '图片预览';
+      preview.decoding = 'async';
+
+      const closeButton = document.createElement('button');
+      closeButton.type = 'button';
+      closeButton.className = 'preview-lightbox-close';
+      closeButton.setAttribute('aria-label', '关闭大图');
+      closeButton.textContent = '×';
+
+      const closeLightbox = () => {
+        overlay.remove();
+        document.removeEventListener('keydown', handleEscape);
+        trigger.focus({ preventScroll: true });
+      };
+      const handleEscape = (event) => {
+        if (event.key === 'Escape') closeLightbox();
+      };
+
+      content.append(preview, closeButton);
+      overlay.append(content);
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay) closeLightbox();
+      });
+      closeButton.addEventListener('click', closeLightbox);
+      document.addEventListener('keydown', handleEscape);
+      document.body.appendChild(overlay);
+      closeButton.focus();
     }
 
     const previewBlockSelector = 'h1[data-source-start], h2[data-source-start], h3[data-source-start], p[data-source-start], ul[data-source-start], ol[data-source-start], blockquote[data-source-start], pre[data-source-start], table[data-source-start], li[data-source-start]';
@@ -852,8 +910,29 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     $('sync-to-preview').onclick = syncSourceToPreview;
     $('sync-to-source').onclick = syncPreviewToSource;
     $('preview').addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const imageLink = target?.closest('a.timeline-image-link');
+      if (imageLink && $('preview').contains(imageLink)) {
+        event.preventDefault();
+        openPreviewLightbox(imageLink, imageLink.href, imageLink.dataset.imageAlt || imageLink.textContent.trim());
+        return;
+      }
+      const image = target?.closest('img');
+      if (image && $('preview').contains(image) && !image.closest('a')) {
+        event.preventDefault();
+        openPreviewLightbox(image, image.currentSrc || image.src, image.alt);
+        return;
+      }
       const block = findPreviewBlock(event.target);
       if (block) selectedPreviewNode = block;
+    });
+    $('preview').addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const target = event.target instanceof Element ? event.target : null;
+      const image = target?.closest('img');
+      if (!image || !$('preview').contains(image) || image.closest('a')) return;
+      event.preventDefault();
+      openPreviewLightbox(image, image.currentSrc || image.src, image.alt);
     });
     $('preview').addEventListener('mouseup', () => {
       const selection = window.getSelection();

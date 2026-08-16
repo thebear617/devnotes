@@ -29,8 +29,8 @@ category: 猫猫
 
 ## UI 设计图留档
 
-- 桌面端视图：[desktop.png](/images/timeline/cats-v0120/desktop.png) 展示详情悬浮窗、横向档案胶囊和 3 列照片墙。
-- 移动端视图：[mobile.png](/images/timeline/cats-v0120/mobile.png) 展示窄屏下的 2 列照片墙、横向标签和底部分页控件。
+- 桌面端视图：<a class="timeline-image-link" href="/images/timeline/cats-v0120/desktop.png" data-image-alt="猫猫 v0.12.0 桌面端视图">desktop.png</a> 展示详情悬浮窗、横向档案胶囊和 3 列照片墙。
+- 移动端视图：<a class="timeline-image-link" href="/images/timeline/cats-v0120/mobile.png" data-image-alt="猫猫 v0.12.0 移动端视图">mobile.png</a> 展示窄屏下的 2 列照片墙、横向标签和底部分页控件。
 
 ## 发布信息
 
