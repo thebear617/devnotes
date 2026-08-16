@@ -24,8 +24,14 @@ ChatNotes v0.4.0 聚焦阅读画布与回答卡片视觉：收束卡片宽度和
 
 ## UI 设计图留档
 
-以下图片记录 v0.4.0 的阅读卡片、回答卡片和暖米色画布视觉。
+以下 7 张图片按文件名中的时间戳从早到晚排列，记录 v0.4.0 前后阅读卡片、回答卡片和暖米色画布的 UI 演进。
 
 <div class="timeline-ui-archive">
-  <img src="/images/timeline/chatnotes-v040/ui-01.png" alt="ChatNotes v0.4.0 阅读画布与卡片 UI" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/design-01.png" alt="ChatNotes v0.4.0 UI 设计稿 1" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/design-02.png" alt="ChatNotes v0.4.0 UI 设计稿 2" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/design-03.png" alt="ChatNotes v0.4.0 UI 设计稿 3" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/design-04.png" alt="ChatNotes v0.4.0 UI 设计稿 4" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/design-05.png" alt="ChatNotes v0.4.0 UI 设计稿 5" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/design-06.png" alt="ChatNotes v0.4.0 UI 设计稿 6" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/design-07.jpg" alt="ChatNotes v0.4.0 UI 设计稿 7" loading="lazy" />
 </div>
