@@ -1,0 +1,874 @@
+---
+const isDev = import.meta.env.DEV;
+const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
+---
+
+{isDev ? <>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href={`${base}favicon.png`} />
+  <title>开发笔记后台</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { min-width: 320px; background: #edf2f3; }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      background: #edf2f3;
+      color: #1e293b;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC", sans-serif;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .admin { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 8px; max-width: 1720px; height: 100vh; min-height: 720px; margin: auto; padding: 10px 16px 16px; }
+    .topbar, .tabs, .panel { border: 1px solid #dbe5e7; background: rgba(255, 255, 255, .96); box-shadow: 0 5px 18px rgba(15, 63, 70, .06); }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 58px; padding: 9px 16px; border-radius: 10px; }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark { display: grid; width: 36px; height: 36px; place-items: center; border-radius: 10px; color: #fff; background: #0f766e; font-size: 18px; font-weight: 800; }
+    .brand-title { margin: 0; overflow: hidden; color: #0f4c55; font-size: 21px; font-weight: 800; letter-spacing: -.035em; text-overflow: ellipsis; white-space: nowrap; }
+    .environment { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border: 1px solid #b7e2dc; border-radius: 7px; color: #0f766e; background: #f0fdfa; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .environment::before { width: 7px; height: 7px; border-radius: 50%; background: #14b8a6; content: ""; }
+    .back-link { display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border: 1px solid #d5e1e3; border-radius: 8px; color: #334155; background: #fff; font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+    .back-link:hover { border-color: #0f766e; color: #0f766e; background: #f0fdfa; }
+    .tabs { display: flex; gap: 6px; overflow-x: auto; padding: 6px; border-radius: 10px; }
+    .topbar .tabs { flex: 1 1 auto; justify-content: center; min-width: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+    .topbar .tabs .tab { min-height: 34px; padding: 0 13px; }
+    .tab { flex: 0 0 auto; min-height: 36px; padding: 0 16px; border: 1px solid transparent; border-radius: 7px; color: #64748b; background: transparent; font-size: 13px; font-weight: 700; }
+    .tab:hover { color: #0f766e; background: #f0fdfa; }
+    .tab.active { border-color: #9edbd3; color: #0f766e; background: #e7f8f5; }
+    .workspace { display: grid; grid-template-columns: minmax(300px, 360px) minmax(0, 1fr); gap: 8px; min-height: 0; }
+    .panel { min-width: 0; min-height: 0; border-radius: 10px; }
+    .sidebar { display: grid; grid-template-rows: auto auto auto minmax(0, 1fr); padding: 16px 13px 12px; }
+    .panel-heading, .editor-heading, .toolbar, .list-tools, .editor-label, .editor-footer, .status-actions { display: flex; align-items: center; }
+    .panel-heading, .editor-heading { justify-content: space-between; gap: 12px; }
+    h2, h3, p { margin-top: 0; }
+    .panel-heading h2, .editor-heading h2 { margin-bottom: 0; color: #153b42; letter-spacing: -.025em; }
+    .panel-heading h2 { font-size: 18px; }
+    .entry-count { color: #94a3b8; font-size: 11px; font-weight: 700; white-space: nowrap; }
+    .search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px; margin: 14px 0 8px; }
+    .search { position: relative; min-width: 0; }
+    .search input { width: 100%; min-height: 38px; padding: 0 12px 0 34px; border: 1px solid #d8e4e6; border-radius: 8px; outline: 0; color: #1e293b; background: #fbfefe; }
+    .search input:focus, .filter-field select:focus, .field input:focus, .field select:focus, .field textarea:focus, .path-row input:focus { border-color: #36a79b; box-shadow: 0 0 0 3px rgba(20, 184, 166, .12); }
+    .search::before { position: absolute; top: 10px; left: 12px; color: #7c9296; content: "⌕"; font-size: 18px; }
+    .list-tools-wrap { position: relative; }
+    .list-tools { gap: 7px; }
+    .list-tools button, .toolbar button, .secondary, .primary, .add-link { min-height: 34px; border: 1px solid #d3e0e2; border-radius: 7px; color: #47636a; background: #fff; font-size: 12px; font-weight: 700; }
+    .list-tools button { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 38px; padding: 0 9px; white-space: nowrap; }
+    .list-tools button:hover, .list-tools button[aria-expanded="true"], .list-tools button.has-active { border-color: #8ed2c9; color: #0f766e; background: #f0fdfa; }
+    .tool-icon { display: inline-grid; width: 16px; height: 16px; place-items: center; color: #6d8389; font-size: 15px; font-weight: 800; line-height: 1; }
+    .tool-icon svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.4; }
+    .list-tools button:hover .tool-icon, .list-tools button[aria-expanded="true"] .tool-icon, .list-tools button.has-active .tool-icon { color: #0f766e; }
+    .filter-badge { display: inline-grid; min-width: 18px; height: 18px; padding: 0 4px; place-items: center; border-radius: 999px; color: #fff; background: #c2410c; font-size: 10px; line-height: 1; }
+    .popover { position: absolute; z-index: 20; top: calc(100% + 7px); right: 0; left: auto; width: 260px; max-height: min(70vh, 520px); overflow: auto; padding: 12px; border: 1px solid #cfe0e2; border-radius: 9px; background: #fff; box-shadow: 0 14px 32px rgba(15, 63, 70, .16); }
+    .popover[hidden] { display: none; }
+    #sort-popover { width: 180px; }
+    .popover-heading, .popover-footer { display: flex; align-items: center; justify-content: space-between; gap: 9px; }
+    .popover-heading { margin-bottom: 10px; }
+    .popover-heading strong { color: #25515a; font-size: 12px; }
+    .popover-heading span, .popover-empty { color: #8aa0a5; font-size: 10px; }
+    .filter-fields { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .filter-field, .field { display: grid; gap: 5px; color: #5b7280; font-size: 11px; font-weight: 700; }
+    .filter-field select, .field input, .field select, .field textarea, .path-row input { width: 100%; min-height: 36px; padding: 7px 9px; border: 1px solid #d7e3e5; border-radius: 7px; outline: 0; color: #1e293b; background: #fbfefe; }
+    .field textarea { min-height: 84px; resize: vertical; line-height: 1.55; }
+    .filter-field select, .field select { padding-right: 6px; }
+    .custom-select { position: relative; align-self: start; width: 100%; min-width: 0; }
+    .custom-select-native { position: absolute; width: 1px; height: 1px; min-height: 0 !important; padding: 0 !important; border: 0 !important; opacity: 0; pointer-events: none; }
+    .custom-select-trigger { display: flex; width: 100%; height: 36px; min-height: 36px; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 9px; border: 1px solid #d7e3e5; border-radius: 7px; color: #1e293b; background: #fbfefe; font-size: 12px; font-weight: 600; text-align: left; }
+    .custom-select-trigger:hover { border-color: #36b1a5; color: #0f766e; background: #fff; }
+    .custom-select-trigger:disabled { border-color: #dfe8e9; color: #9aaeb2; background: #f4f8f8; cursor: not-allowed; }
+    .custom-select-trigger svg { width: 15px; height: 15px; flex: 0 0 auto; color: #6d8389; transition: transform .15s ease, color .15s ease; }
+    .custom-select.open .custom-select-trigger { border-color: #36b1a5; box-shadow: inset 0 0 0 1px #36b1a5; }
+    .custom-select.open .custom-select-trigger svg { color: #0f766e; transform: rotate(180deg); }
+    .custom-select-menu { position: absolute; z-index: 30; top: calc(100% + 5px); right: 0; left: 0; max-height: 220px; overflow-y: auto; padding: 5px; border: 1px solid #cfe0e2; border-radius: 8px; background: #fff; box-shadow: 0 12px 26px rgba(15, 63, 70, .14); }
+    .custom-select-menu[hidden] { display: none; }
+    .custom-select-option { display: flex; width: 100%; min-height: 32px; align-items: center; padding: 0 8px; border: 0; border-radius: 6px; color: #47636a; background: transparent; font-size: 11px; font-weight: 600; text-align: left; }
+    .custom-select-option:hover, .custom-select-option.is-selected { border: 0; color: #0f766e; background: #eaf9f6; }
+    .custom-select-option::before { width: 16px; flex: 0 0 16px; color: #0f766e; content: ""; font-size: 13px; font-weight: 800; }
+    .custom-select-option.is-selected::before { content: "✓"; }
+    .popover-footer { margin-top: 11px; padding-top: 10px; border-top: 1px solid #e7eff0; }
+    .popover-footer button { min-height: 29px; padding: 0 9px; border: 1px solid #d3e0e2; border-radius: 6px; color: #587178; background: #fff; font-size: 11px; font-weight: 700; }
+    .popover-footer button:hover { border-color: #64b9b0; color: #0f766e; background: #f0fdfa; }
+    .sort-options { display: grid; gap: 4px; }
+    .sort-option { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 9px; min-height: 32px; padding: 0 9px; border: 1px solid transparent; border-radius: 6px; color: #587178; background: transparent; font-size: 11px; font-weight: 700; text-align: left; }
+    .sort-option:hover { background: #f2f8f8; }
+    .sort-option.active { border-color: #b7e2dc; color: #0f766e; background: #eaf9f6; }
+    .sort-option::after { color: transparent; content: "✓"; }
+    .sort-option.active::after { color: #0f766e; }
+    .toolbar { gap: 7px; margin-bottom: 9px; }
+    .toolbar button { flex: 1; padding: 0 8px; }
+    .toolbar button:first-child, .primary { border-color: #0f766e; color: #fff; background: #0f766e; }
+    .toolbar button:first-child:hover, .primary:hover { background: #0b5f59; }
+    .toolbar button:hover, .secondary:hover, .add-link:hover { border-color: #64b9b0; color: #0f766e; background: #f0fdfa; }
+    .entry-list { min-height: 0; overflow: auto; padding-right: 3px; }
+    .entry { display: grid; gap: 4px; width: 100%; margin-bottom: 5px; padding: 10px 10px 9px; border: 1px solid transparent; border-radius: 8px; text-align: left; color: #334155; background: transparent; }
+    .entry:hover { background: #f2f8f8; }
+    .entry.active { border-color: #b7e2dc; background: #e9f8f5; }
+    .entry strong { overflow: hidden; color: #21434a; font-size: 12px; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+    .entry small { overflow: hidden; color: #8aa0a5; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+    .entry-meta { display: flex; gap: 6px; overflow: hidden; color: #6f858a; font-size: 10px; white-space: nowrap; }
+    .entry-meta span { overflow: hidden; text-overflow: ellipsis; }
+    .empty { margin: 18px 4px; color: #94a3b8; font-size: 12px; line-height: 1.7; }
+    .main-panel { display: grid; grid-template-rows: auto minmax(0, auto) minmax(0, 1fr); overflow: hidden; }
+    .editor-heading { padding: 17px 18px 12px; }
+    .editor-heading h2 { font-size: 19px; }
+    .editor-heading p { margin: 5px 0 0; color: #789096; font-size: 12px; }
+    .status-actions { gap: 10px; }
+    .status { color: #789096; font-size: 12px; font-weight: 700; }
+    .status.saving { color: #b7791f; }
+    .status.saved { color: #0f766e; }
+    .status.error { color: #b42318; }
+    .primary, .secondary { padding: 0 13px; }
+    .metadata { position: relative; z-index: 2; overflow: visible; padding: 0 18px 12px; }
+    .metadata-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
+    .metadata-group { min-width: 0; margin: 0; padding: 13px; border: 1px solid #e3ecee; border-radius: 9px; background: #fbfefe; }
+    .metadata-group h3 { margin-bottom: 3px; color: #25515a; font-size: 13px; }
+    .metadata-group > p { margin-bottom: 9px; color: #8aa0a5; font-size: 11px; }
+    .metadata-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-content: start; }
+    .metadata-group .path-row { margin-bottom: 10px; }
+    .field.wide { grid-column: 1 / -1; }
+    .required { color: #d14343; }
+    .multiselect-control { position: relative; align-self: start; width: 100%; min-width: 0; }
+    .multiselect-trigger { display: flex; width: 100%; height: 36px; min-height: 36px; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 9px; border: 1px solid #d7e3e5; border-radius: 7px; color: #1e293b; background: #fbfefe; font-size: 12px; font-weight: 600; text-align: left; }
+    .multiselect-trigger:hover, .multiselect-trigger[aria-expanded="true"] { border-color: #36a79b; color: #0f766e; background: #fff; }
+    .multiselect-trigger:focus-visible { outline: 3px solid rgba(20, 184, 166, .14); outline-offset: 1px; }
+    .multiselect-label { overflow: hidden; color: #1e293b; text-overflow: ellipsis; white-space: nowrap; }
+    .multiselect-label.empty { color: #91a4a8; font-weight: 500; }
+    .multiselect-chevron { color: #6d8389; font-size: 14px; line-height: 1; }
+    .multiselect-menu { position: absolute; z-index: 12; top: calc(100% + 5px); right: 0; left: 0; max-height: 220px; overflow: auto; padding: 5px; border: 1px solid #cfe0e2; border-radius: 8px; background: #fff; box-shadow: 0 12px 26px rgba(15, 63, 70, .14); }
+    .multiselect-menu[hidden] { display: none; }
+    .multiselect-option { position: relative; display: flex; width: 100%; min-height: 32px; align-items: center; padding: 0 8px 0 30px; border: 0; border-radius: 6px; color: #47636a; background: transparent; font-size: 11px; font-weight: 600; text-align: left; cursor: pointer; }
+    .multiselect-option:hover, .multiselect-option.is-selected { color: #0f766e; background: #eaf9f6; }
+    .multiselect-option::before { position: absolute; left: 8px; width: 16px; flex: 0 0 16px; color: #0f766e; content: ""; font-size: 13px; font-weight: 800; line-height: 1; }
+    .multiselect-option.is-selected::before { content: "✓"; }
+    .multiselect-option > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .multiselect-option input { position: absolute; width: 1px !important; height: 1px !important; min-height: 1px !important; margin: -1px; padding: 0 !important; border: 0 !important; opacity: 0; pointer-events: none; }
+    .multiselect-option:focus-within { outline: 2px solid rgba(20, 184, 166, .18); outline-offset: -1px; }
+    .links-list { display: grid; gap: 7px; }
+    .link-row { display: grid; grid-template-columns: minmax(120px, .75fr) minmax(180px, 1.25fr) auto; gap: 6px; }
+    .link-row input { min-height: 34px; padding: 6px 8px; border: 1px solid #d7e3e5; border-radius: 7px; outline: 0; }
+    .remove-link { width: 34px; border: 1px solid #efd0d0; border-radius: 7px; color: #b42318; background: #fff; }
+    .add-link { margin-top: 7px; padding: 0 10px; }
+    .editor-workspace { --editor-content-gap: 24px; position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 0; border: 1px solid #dbe5e7; border-radius: 8px; overflow: hidden; background: #fff; }
+    .editor-sync-controls { position: absolute; top: 50%; left: 50%; z-index: 3; display: grid; gap: 3px; transform: translate(-50%, -50%); padding: 4px; border: 1px solid #dbe5e7; border-radius: 999px; background: #fff; box-shadow: 0 5px 14px rgba(15, 63, 70, .13); }
+    .editor-sync-button { display: grid; width: 25px; height: 25px; min-width: 25px; place-items: center; padding: 0; border: 0; border-radius: 50%; color: #647b82; background: transparent; }
+    .editor-sync-button:hover { color: #0f766e; background: #e7f8f5; }
+    .editor-sync-button:focus-visible { outline: 2px solid rgba(20, 184, 166, .24); outline-offset: 1px; }
+    .editor-sync-button svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+    .editor-column { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; }
+    .editor-column:last-child { grid-template-rows: auto minmax(0, 1fr); }
+    .editor-column + .editor-column { border-left: 1px solid #e1eaec; }
+    .editor-label { min-height: 42px; justify-content: space-between; gap: 12px; padding: 0 13px; border-bottom: 1px solid #e1eaec; color: #153b42; font-size: 12px; font-weight: 800; }
+    .editor-label-title { display: inline-flex; align-items: center; gap: 7px; min-width: 0; }
+    .editor-label-title svg { width: 15px; height: 15px; flex: 0 0 auto; color: #47636a; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
+    .editor-label > span { color: #8aa0a5; font-size: 11px; font-weight: 600; }
+    .editor-toolbar { display: flex; align-items: center; gap: 2px; min-height: 37px; padding: 4px 8px; overflow-x: auto; border-bottom: 1px solid #e1eaec; background: #fbfefe; }
+    .editor-tool { display: inline-grid; width: 28px; min-width: 28px; height: 27px; flex: 0 0 auto; place-items: center; padding: 0 5px; border: 0; border-radius: 5px; color: #52656b; background: transparent; }
+    .editor-tool:hover { color: #0f766e; background: #e7f8f5; }
+    .editor-tool:focus-visible { outline: 2px solid rgba(20, 184, 166, .22); outline-offset: 1px; }
+    .editor-tool svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.55; }
+    .editor-tool svg text { fill: currentColor; stroke: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 8px; font-weight: 800; }
+    .editor-tool-divider { width: 1px; height: 20px; flex: 0 0 auto; margin: 0 5px; background: #e1eaec; }
+    .editor-pane { display: block; min-width: 0; min-height: 0; overflow: hidden; background: #fff; }
+    #body { display: block; width: 100%; max-width: 100%; min-width: 0; min-height: 0; height: 100%; padding: 15px var(--editor-content-gap) 15px 15px; border: 0; border-radius: 0; outline: 0; resize: none; overflow-x: hidden; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; color: #243b42; background: #fff; font: 12px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    #body:focus { box-shadow: inset 0 0 0 2px rgba(20, 184, 166, .12); }
+    .editor-footer { justify-content: space-between; gap: 8px; min-height: 32px; padding: 0 12px; border-top: 1px solid #e1eaec; color: #91a4a8; font-size: 10px; }
+    .preview { min-height: 0; overflow: auto; padding: 15px var(--editor-content-gap) 15px 15px; color: #334155; background: #fff; font-size: 13px; line-height: 1.75; transition: opacity .15s; }
+    .preview.is-loading { opacity: .62; }
+    .preview h1, .preview h2, .preview h3 { color: #21434a; line-height: 1.35; }
+    .preview h1 { font-size: 22px; }
+    .preview h2 { margin-top: 1.4em; font-size: 18px; }
+    .preview h3 { margin-top: 1.2em; font-size: 15px; }
+    .preview img { max-width: 100%; height: auto; }
+    .preview table { display: block; width: 100%; max-width: 100%; margin: .9rem 0; overflow: auto; border-collapse: collapse; }
+    .preview th, .preview td { padding: 6px 9px; border: 1px solid #d9e6e8; text-align: left; vertical-align: top; }
+    .preview th { color: #153b42; background: #eef7f6; }
+    .preview .is-sync-target { border-radius: 4px; background: #e7f8f5; box-shadow: 0 0 0 2px rgba(20, 184, 166, .14); }
+    .preview code { padding: 2px 4px; border-radius: 4px; background: #eef6f7; }
+    .preview pre { overflow: auto; padding: 10px; border-radius: 7px; color: #dcefed; background: #16363d; }
+    .preview pre code { padding: 0; background: transparent; }
+    .preview-placeholder { margin: 24px 0; color: #9aaeb2; }
+    @media (max-width: 980px) {
+      .admin { height: auto; min-height: 100vh; }
+      .workspace { grid-template-columns: 1fr; }
+      .sidebar { min-height: 380px; }
+      .main-panel { min-height: 1000px; }
+    }
+    @media (max-width: 1180px) {
+      .metadata-groups { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .admin { padding: 7px 8px 10px; }
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .topbar .brand, .topbar .tabs, .topbar-actions { width: 100%; }
+      .topbar .tabs { justify-content: flex-start; overflow-x: auto; }
+      .topbar-actions, .back-link { width: 100%; }
+      .back-link { justify-content: center; }
+      .search-row { grid-template-columns: minmax(0, 1fr) auto; }
+      .metadata-grid { grid-template-columns: 1fr; }
+      .field.wide { grid-column: auto; }
+      .editor-workspace { grid-template-columns: 1fr; min-height: 1000px; }
+      .editor-sync-controls { display: none; }
+      .editor-column + .editor-column { border-top: 1px solid #e1eaec; border-left: 0; }
+      .link-row { grid-template-columns: 1fr 1fr auto; }
+    }
+  </style>
+
+  <div class="admin">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">D</span>
+        <h1 class="brand-title">开发笔记后台</h1>
+        <span class="environment">开发环境</span>
+      </div>
+      <nav class="tabs" id="collection-tabs" aria-label="内容类型"></nav>
+      <div class="topbar-actions"><a class="back-link" href={`${base}`}>返回站点 ↗</a></div>
+    </header>
+
+    <div class="workspace">
+      <aside class="panel sidebar">
+        <div class="panel-heading"><h2 id="library-title">内容库</h2><span class="entry-count" id="entry-count">共 0 篇</span></div>
+        <div class="search-row">
+          <label class="search" aria-label="搜索内容"><input id="search" autocomplete="off" /></label>
+          <div class="list-tools-wrap" id="list-tools-wrap">
+            <div class="list-tools">
+              <button id="sort-toggle" type="button" aria-expanded="false" aria-controls="sort-popover"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="M5 2v12M5 2 2.5 4.5M5 2l2.5 2.5M11 14V2m0 12 2.5-2.5M11 14 8.5 11.5" /></svg></span><span>排序</span></button>
+              <button id="filter-toggle" type="button" aria-expanded="false" aria-controls="filter-popover"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="M2 3h12L9.5 8v4.5L6.5 14V8L2 3Z" /></svg></span><span>筛选</span><span class="filter-badge" id="filter-summary">0</span></button>
+            </div>
+          <div class="popover" id="filter-popover" role="dialog" aria-label="筛选内容" hidden>
+            <div class="popover-heading"><strong>筛选内容</strong><span>选择后立即生效</span></div>
+            <div class="filter-fields" id="filter-fields"></div>
+            <div class="popover-footer"><span id="filter-hint" class="popover-empty">当前没有筛选条件</span><button id="clear-filters" type="button">清空筛选</button></div>
+          </div>
+          <div class="popover" id="sort-popover" role="dialog" aria-label="排序内容" hidden>
+            <div class="popover-heading"><strong>排序方式</strong><span>选择后立即生效</span></div>
+            <div class="sort-options" id="sort-options"></div>
+          </div>
+          </div>
+        </div>
+        <div class="toolbar"><button id="new-entry" type="button">＋ 新建</button><button id="refresh" type="button">⟳ 刷新</button></div>
+        <div id="entry-list" class="entry-list"></div>
+      </aside>
+
+      <main class="panel main-panel">
+        <div class="editor-heading">
+          <div><h2 id="editor-title">编辑内容</h2><p id="editor-description">选择左侧条目，或新建一篇内容。</p></div>
+          <div class="status-actions"><span id="status" class="status">等待编辑</span><button id="save" class="primary" type="button">保存</button></div>
+        </div>
+        <section id="metadata" class="metadata"></section>
+        <div class="editor-workspace">
+          <div class="editor-column">
+            <div class="editor-label"><strong class="editor-label-title"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="1" /><path d="M5.5 5.5h5v5h-5z" /></svg><span>Markdown 内容</span></strong><span>实时预览</span></div>
+            <div class="editor-toolbar" role="toolbar" aria-label="Markdown 工具栏">
+              <button class="editor-tool" data-action="bold" type="button" aria-label="加粗" title="加粗"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 3.5h3.4a2.2 2.2 0 0 1 .5 4.34H4.5zM4.5 7.84h4a2.33 2.33 0 0 1 0 4.66h-4z" /></svg></button>
+              <button class="editor-tool" data-action="italic" type="button" aria-label="斜体" title="斜体"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5h6M4 12.5h6M10.5 3.5l-3 9" /></svg></button>
+              <span class="editor-tool-divider" aria-hidden="true"></span>
+              <button class="editor-tool" data-action="h1" type="button" aria-label="一级标题" title="一级标题"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5v9M2.5 8h5M7.5 3.5v9M10.5 4h3M10.5 8h3M10.5 12h3" /></svg></button>
+              <button class="editor-tool" data-action="h2" type="button" aria-label="二级标题" title="二级标题"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5v9M2.5 8h5M7.5 3.5v9M10.5 4h3M10.5 8h2M10.5 12h3" /></svg></button>
+              <button class="editor-tool" data-action="h3" type="button" aria-label="三级标题" title="三级标题"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5v9M2.5 8h5M7.5 3.5v9M10.5 4h2M10.5 8h3M10.5 12h2" /></svg></button>
+              <span class="editor-tool-divider" aria-hidden="true"></span>
+              <button class="editor-tool" data-action="bullet" type="button" aria-label="无序列表" title="无序列表"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="4" r=".8" fill="currentColor" stroke="none" /><circle cx="3" cy="8" r=".8" fill="currentColor" stroke="none" /><circle cx="3" cy="12" r=".8" fill="currentColor" stroke="none" /><path d="M6 4h7M6 8h7M6 12h7" /></svg></button>
+              <button class="editor-tool" data-action="numbered" type="button" aria-label="有序列表" title="有序列表"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5h1v2h-1M2.5 3.5h1M2.5 7.5h1M3.5 7.5l-1 1h1M2.5 11.5h1M2.5 13h1M6 4h7M6 8h7M6 12h7" /></svg></button>
+              <button class="editor-tool" data-action="quote" type="button" aria-label="引用" title="引用"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.2 5H3.1v3.1h2.2c-.2 1.2-1 2-2.2 2.4M12.9 5H9.8v3.1H12c-.2 1.2-1 2-2.2 2.4" /></svg></button>
+              <button class="editor-tool" data-action="code" type="button" aria-label="代码" title="代码"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5.5 4-3 4 3 4M10.5 4l3 4-3 4M9 2.5 7 13.5" /></svg></button>
+              <span class="editor-tool-divider" aria-hidden="true"></span>
+              <button class="editor-tool" data-action="link" type="button" aria-label="链接" title="链接"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6.2 9.8 3.6-3.6M5.3 11.7l-1 1a2.3 2.3 0 0 1-3.2-3.2l2-2a2.3 2.3 0 0 1 3.2 0M10.7 4.3l1-1a2.3 2.3 0 0 1 3.2 3.2l-2 2a2.3 2.3 0 0 1-3.2 0" /></svg></button>
+              <button class="editor-tool" data-action="image" type="button" aria-label="图片" title="图片"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3" width="11" height="10" rx="1" /><circle cx="5.5" cy="6" r="1" /><path d="m3.5 11 2.7-2.7 2 2 1.5-1.5 2.8 2.7" /></svg></button>
+              <button class="editor-tool" data-action="table" type="button" aria-label="表格" title="表格"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3" width="11" height="10" rx=".5" /><path d="M2.5 6.5h11M2.5 9.5h11M6 3v10M10 3v10" /></svg></button>
+            </div>
+            <div class="editor-pane"><textarea id="body" placeholder="在这里编辑 Markdown…" spellcheck="false"></textarea></div>
+            <div class="editor-footer"><span id="body-meta">0 字符</span><span>仅手动保存</span></div>
+          </div>
+          <div class="editor-column">
+            <div class="editor-label"><strong class="editor-label-title"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" /><circle cx="8" cy="8" r="2" fill="currentColor" stroke="none" /></svg><span>预览</span></strong></div>
+            <article id="preview" class="preview"><p class="preview-placeholder">Markdown 预览会显示在这里</p></article>
+          </div>
+          <div class="editor-sync-controls" aria-label="编辑器与预览定位">
+            <button class="editor-sync-button" id="sync-to-preview" type="button" aria-label="定位到预览" title="Markdown → 预览"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h10M8.5 4l4 4-4 4" /></svg></button>
+            <button class="editor-sync-button" id="sync-to-source" type="button" aria-label="定位到 Markdown" title="预览 → Markdown"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8h-10M7.5 4l-4 4 4 4" /></svg></button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script define:vars={{ base }}>
+    const $ = (id) => document.getElementById(id);
+    const apiBase = `${base}admin/api`;
+    const SORT_OPTIONS = [
+      { value: 'updated-desc', label: '最近更新' },
+      { value: 'date-desc', label: '发布日期' },
+      { value: 'title-asc', label: '标题 A → Z' },
+      { value: 'title-desc', label: '标题 Z → A' },
+    ];
+    const state = { collections: [], collectionId: '', entries: [], selectedPath: '', dirty: false, filters: {}, sort: 'updated-desc', previewId: 0 };
+    let previewTimer = 0;
+    let selectedPreviewNode = null;
+    let syncHighlightTimer = 0;
+
+    const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+    const activeCollection = () => state.collections.find((item) => item.id === state.collectionId);
+    const clone = (value) => JSON.parse(JSON.stringify(value));
+    const today = () => new Date().toISOString().slice(0, 10);
+    const setStatus = (message, kind = '') => { $('status').textContent = message; $('status').className = `status ${kind}`; };
+    const markDirty = () => { state.dirty = true; if (!$('status').classList.contains('error')) setStatus('有未保存修改', 'saving'); };
+    const compareDate = (left, right) => String(left || '').localeCompare(String(right || ''));
+    const compareText = (left, right) => String(left || '').localeCompare(String(right || ''), 'zh-CN');
+
+    async function request(path, options) {
+      const response = await fetch(`${apiBase}/${path}`, { cache: 'no-store', ...options });
+      const data = await response.json();
+      if (!response.ok) throw new Error((data.errors || [data.error || '请求失败']).join('；'));
+      return data;
+    }
+
+    function renderTabs() {
+      $('collection-tabs').innerHTML = state.collections.map((item) => `<button class="tab${item.id === state.collectionId ? ' active' : ''}" data-collection="${escapeHtml(item.id)}" type="button" aria-selected="${item.id === state.collectionId}">${escapeHtml(item.label)}</button>`).join('');
+      $('collection-tabs').querySelectorAll('.tab').forEach((button) => { button.onclick = () => switchCollection(button.dataset.collection); });
+    }
+
+    function fieldValue(entry, field) {
+      const value = entry?.[field.id];
+      if (Array.isArray(value)) return value.join('、');
+      return value || '';
+    }
+
+    function updateFilterSummary() {
+      const count = Object.values(state.filters).filter(Boolean).length;
+      $('filter-summary').textContent = String(count);
+      $('filter-hint').textContent = count ? `已启用 ${count} 项筛选` : '当前没有筛选条件';
+      $('filter-toggle').classList.toggle('has-active', count > 0);
+    }
+
+    function renderSortOptions() {
+      const current = SORT_OPTIONS.find((option) => option.value === state.sort) || SORT_OPTIONS[0];
+      $('sort-toggle').title = `排序：${current.label}`;
+      $('sort-toggle').setAttribute('aria-label', `排序：${current.label}`);
+      $('sort-options').innerHTML = SORT_OPTIONS.map((option) => `<button class="sort-option${option.value === state.sort ? ' active' : ''}" data-sort="${option.value}" type="button">${option.label}</button>`).join('');
+      $('sort-options').querySelectorAll('.sort-option').forEach((button) => {
+        button.onclick = () => {
+          state.sort = button.dataset.sort;
+          renderSortOptions();
+          renderEntries();
+          closePopovers();
+        };
+      });
+    }
+
+    function closePopovers() {
+      [['filter-popover', 'filter-toggle'], ['sort-popover', 'sort-toggle']].forEach(([popoverId, toggleId]) => {
+        $(popoverId).hidden = true;
+        $(toggleId).setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function togglePopover(popoverId, toggleId) {
+      const shouldOpen = $(popoverId).hidden;
+      closePopovers();
+      if (shouldOpen) {
+        $(popoverId).hidden = false;
+        $(toggleId).setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    function updateMultiselectLabel(fieldId) {
+      const selected = [...document.querySelectorAll(`[data-field="${fieldId}"]:checked`)].map((input) => input.value);
+      const label = $(`multiselect-label-${fieldId}`);
+      if (!label) return;
+      label.textContent = selected.length ? selected.join('、') : `请选择${activeCollection().fields.find((field) => field.id === fieldId)?.label || ''}`;
+      label.classList.toggle('empty', selected.length === 0);
+      document.querySelector(`[data-multiselect="${fieldId}"]`)?.querySelectorAll('.multiselect-option').forEach((option) => {
+        option.classList.toggle('is-selected', option.querySelector('input')?.checked === true);
+      });
+    }
+
+    function closeMultiselectMenus(exceptFieldId = '') {
+      document.querySelectorAll('[data-multiselect]').forEach((control) => {
+        if (control.dataset.multiselect === exceptFieldId) return;
+        control.querySelector('.multiselect-menu').hidden = true;
+        control.querySelector('.multiselect-trigger').setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function bindMultiselect(fieldId) {
+      const control = document.querySelector(`[data-multiselect="${fieldId}"]`);
+      if (!control) return;
+      const trigger = control.querySelector('.multiselect-trigger');
+      const menu = control.querySelector('.multiselect-menu');
+      trigger.onclick = (event) => {
+        event.stopPropagation();
+        const shouldOpen = menu.hidden;
+        closeMultiselectMenus();
+        menu.hidden = !shouldOpen;
+        trigger.setAttribute('aria-expanded', String(shouldOpen));
+      };
+      menu.querySelectorAll('input[type="checkbox"]').forEach((input) => {
+        input.onchange = () => updateMultiselectLabel(fieldId);
+      });
+      updateMultiselectLabel(fieldId);
+    }
+
+    function renderFilters() {
+      const config = activeCollection();
+      if (!config) return;
+      const filterFields = config.fields.filter((field) => field.filterable);
+      $('filter-fields').innerHTML = filterFields.map((field) => {
+        const values = new Set();
+        state.entries.forEach((entry) => {
+          const value = entry[field.id];
+          (Array.isArray(value) ? value : [value]).filter(Boolean).forEach((item) => values.add(String(item)));
+        });
+        const options = [...values].sort((left, right) => compareText(left, right));
+        return `<label class="filter-field"><span>${escapeHtml(field.label)}</span><select data-filter="${escapeHtml(field.id)}"><option value="">全部</option>${options.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join('')}</select></label>`;
+      }).join('');
+      $('filter-fields').querySelectorAll('select').forEach((select) => {
+        select.value = state.filters[select.dataset.filter] || '';
+        select.onchange = () => { state.filters[select.dataset.filter] = select.value; renderEntries(); };
+      });
+      updateFilterSummary();
+    }
+
+    function sortEntries(entries) {
+      const sort = state.sort;
+      return [...entries].sort((left, right) => {
+        if (sort === 'title-desc') return compareText(right.title, left.title);
+        if (sort === 'date-desc') return compareDate(right.date, left.date) || compareText(left.title, right.title);
+        if (sort === 'title-asc') return compareText(left.title, right.title);
+        return compareDate(right.updated || right.date, left.updated || left.date) || compareText(left.title, right.title);
+      });
+    }
+
+    function renderEntries() {
+      const query = $('search').value.trim().toLocaleLowerCase('zh-CN');
+      const visible = sortEntries(state.entries.filter((entry) => {
+        const searchable = [entry.title, entry.path, entry.description, entry.category, entry.subcategory, entry.subject, entry.site, entry.kind, ...(entry.technologies || []), ...(entry.categories || [])].filter(Boolean).join(' ').toLocaleLowerCase('zh-CN');
+        if (query && !searchable.includes(query)) return false;
+        return Object.entries(state.filters).every(([field, value]) => {
+          if (!value) return true;
+          const entryValue = entry[field];
+          return Array.isArray(entryValue) ? entryValue.includes(value) : String(entryValue || '') === value;
+        });
+      }));
+      $('entry-count').textContent = `共 ${visible.length} / ${state.entries.length} 篇`;
+      $('entry-list').innerHTML = visible.map((entry) => {
+        const meta = [entry.category || entry.site, entry.subcategory || entry.kind, entry.updated || entry.date].filter(Boolean).join(' · ');
+        return `<button class="entry${entry.path === state.selectedPath ? ' active' : ''}" data-path="${encodeURIComponent(entry.path)}" type="button"><strong>${escapeHtml(entry.title || entry.path)}</strong><small>${escapeHtml(entry.path)}</small><span class="entry-meta"><span>${escapeHtml(meta)}</span></span></button>`;
+      }).join('') || '<p class="empty">没有匹配内容。</p>';
+      $('entry-list').querySelectorAll('.entry').forEach((button) => { button.onclick = () => loadEntry(decodeURIComponent(button.dataset.path)); });
+      updateFilterSummary();
+    }
+
+    function customSelectRoot(id) {
+      return document.querySelector(`[data-custom-select="${id}"]`);
+    }
+
+    function closeCustomSelects(except = null) {
+      document.querySelectorAll('.custom-select.open').forEach((root) => {
+        if (root === except) return;
+        root.classList.remove('open');
+        root.querySelector('.custom-select-menu').hidden = true;
+        root.querySelector('.custom-select-trigger').setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function syncCustomSelect(id) {
+      const select = $(id);
+      const root = customSelectRoot(id);
+      if (!select || !root) return;
+      const trigger = root.querySelector('.custom-select-trigger');
+      const label = root.querySelector('.custom-select-label');
+      const menu = root.querySelector('.custom-select-menu');
+      const selected = [...select.options].find((option) => option.value === select.value) || select.options[0];
+      label.textContent = selected?.textContent || '';
+      trigger.disabled = select.disabled;
+      if (select.disabled) {
+        root.classList.remove('open');
+        menu.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+      menu.innerHTML = '';
+      [...select.options].forEach((option) => {
+        const item = document.createElement('button');
+        item.className = `custom-select-option${option.value === select.value ? ' is-selected' : ''}`;
+        item.type = 'button';
+        item.setAttribute('role', 'option');
+        item.setAttribute('aria-selected', String(option.value === select.value));
+        item.textContent = option.textContent;
+        item.onclick = (event) => {
+          event.stopPropagation();
+          if (select.disabled) return;
+          select.value = option.value;
+          syncCustomSelect(id);
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          closeCustomSelects();
+        };
+        menu.append(item);
+      });
+    }
+
+    function initializeCustomSelects() {
+      document.querySelectorAll('[data-custom-select]').forEach((root) => {
+        const id = root.dataset.customSelect;
+        const select = $(id);
+        const trigger = root.querySelector('.custom-select-trigger');
+        const menu = root.querySelector('.custom-select-menu');
+        trigger.onclick = (event) => {
+          event.stopPropagation();
+          if (select.disabled) return;
+          const shouldOpen = menu.hidden;
+          closeCustomSelects(root);
+          menu.hidden = !shouldOpen;
+          root.classList.toggle('open', shouldOpen);
+          trigger.setAttribute('aria-expanded', String(shouldOpen));
+        };
+        menu.onclick = (event) => event.stopPropagation();
+        syncCustomSelect(id);
+      });
+    }
+
+    function refreshDependentSelect(select, preferredValue = '') {
+      if (!select?.dataset.optionGroups) return;
+      const parent = $(`field-${select.dataset.dependsOn}`);
+      if (!parent) return;
+      let optionGroups = {};
+      try { optionGroups = JSON.parse(select.dataset.optionGroups); } catch { return; }
+      const options = optionGroups[parent.value] || [];
+      const currentValue = preferredValue || select.value;
+      select.innerHTML = options.map((option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('');
+      select.value = options.includes(currentValue) ? currentValue : (options[0] || '');
+      syncCustomSelect(select.id);
+    }
+
+    function bindDependentSelects() {
+      document.querySelectorAll('select[data-dependent-select]').forEach((select) => {
+        const parent = $(`field-${select.dataset.dependsOn}`);
+        if (!parent) return;
+        parent.onchange = () => { refreshDependentSelect(select); markDirty(); };
+        refreshDependentSelect(select);
+      });
+    }
+
+    function fieldControl(field) {
+      const required = field.required ? ' <span class="required">*</span>' : '';
+      const requiredAttribute = field.required ? ' required' : '';
+      const ariaRequired = field.required ? ' aria-required="true"' : '';
+      if (field.type === 'multiselect') {
+        const menuId = `multiselect-menu-${field.id}`;
+        return `<div class="field"><span>${escapeHtml(field.label)}${required}</span><div class="multiselect-control" data-multiselect="${escapeHtml(field.id)}"><button class="multiselect-trigger" id="multiselect-trigger-${escapeHtml(field.id)}" type="button" aria-expanded="false" aria-controls="${menuId}"${ariaRequired}><span class="multiselect-label empty" id="multiselect-label-${escapeHtml(field.id)}">请选择${escapeHtml(field.label)}</span><span class="multiselect-chevron" aria-hidden="true">⌄</span></button><div class="multiselect-menu" id="${menuId}" hidden>${field.options.map((option) => `<label class="multiselect-option"><input type="checkbox" data-field="${escapeHtml(field.id)}" value="${escapeHtml(option)}"><span>${escapeHtml(option)}</span></label>`).join('')}</div></div></div>`;
+      }
+      if (field.type === 'links') {
+        return `<div class="field wide"><span>${escapeHtml(field.label)}${required}</span><div class="links-list" id="links-${escapeHtml(field.id)}"></div><button class="add-link" data-add-links="${escapeHtml(field.id)}" type="button">＋ 添加链接</button></div>`;
+      }
+      if (field.type === 'select') {
+        const selectId = `field-${field.id}`;
+        const dependent = field.dependsOn ? ` data-dependent-select="true" data-depends-on="${escapeHtml(field.dependsOn)}" data-option-groups="${escapeHtml(JSON.stringify(field.optionsBy || {}))}"` : '';
+        return `<label class="field"><span>${escapeHtml(field.label)}${required}</span><div class="custom-select" data-custom-select="${selectId}"><select class="custom-select-native" id="${selectId}"${dependent}${requiredAttribute}${ariaRequired} aria-hidden="true" tabindex="-1">${field.options.map((option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('')}</select><button class="custom-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="${escapeHtml(field.label)}"${ariaRequired}><span class="custom-select-label">${escapeHtml(field.options[0] || '')}</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke-linecap="round" stroke-linejoin="round" /></svg></button><div class="custom-select-menu" role="listbox" hidden></div></div></label>`;
+      }
+      const tag = field.type === 'textarea' || field.type === 'tags' ? 'textarea' : 'input';
+      const type = field.type === 'date' ? ' type="date"' : '';
+      const placeholder = field.type === 'tags' ? '每行一个，或用逗号分隔' : '';
+      const autocomplete = tag === 'input' ? ' autocomplete="off"' : '';
+      return `<label class="field${field.type === 'textarea' || field.type === 'tags' ? ' wide' : ''}"><span>${escapeHtml(field.label)}${required}</span><${tag} id="field-${escapeHtml(field.id)}"${type}${autocomplete}${requiredAttribute}${ariaRequired} placeholder="${placeholder}"></${tag}></label>`;
+    }
+
+    function renderMetadata() {
+      const config = activeCollection();
+      if (!config) return;
+      const groups = [...new Set(config.fields.map((field) => field.section || '内容信息'))];
+      const pathSection = groups.includes('文件与发布') ? '文件与发布' : groups[groups.length - 1];
+      const groupMarkup = groups.map((section) => {
+        const pathMarkup = section === pathSection ? `<div class="path-row field"><span>文件路径（相对于 src/content/${escapeHtml(config.root)}/）</span><input id="entry-path" autocomplete="off" placeholder="${escapeHtml(config.defaultPath)}"></div>` : '';
+        const description = config.sectionDescriptions?.[section] || config.description;
+        return `<section class="metadata-group"><h3>${escapeHtml(section)}</h3><p>${escapeHtml(description)}</p>${pathMarkup}<div class="metadata-grid">${config.fields.filter((field) => (field.section || '内容信息') === section).map(fieldControl).join('')}</div></section>`;
+      }).join('');
+      $('metadata').innerHTML = `<div class="metadata-groups">${groupMarkup}</div>`;
+      initializeCustomSelects();
+      $('metadata').querySelectorAll('[data-multiselect]').forEach((control) => { bindMultiselect(control.dataset.multiselect); });
+      bindDependentSelects();
+      $('metadata').querySelectorAll('[data-add-links]').forEach((button) => { button.onclick = () => addLinkRow(button.dataset.addLinks); });
+      $('metadata').oninput = markDirty;
+      $('metadata').onchange = markDirty;
+    }
+
+    function addLinkRow(fieldId, value = {}) {
+      const list = $(`links-${fieldId}`);
+      const row = document.createElement('div');
+      row.className = 'link-row';
+      row.innerHTML = `<input class="link-title" autocomplete="off" placeholder="链接标题" value="${escapeHtml(value.title || '')}"><input class="link-url" autocomplete="off" placeholder="https://…" value="${escapeHtml(value.url || '')}"><button class="remove-link" type="button" aria-label="删除链接">×</button>`;
+      row.querySelector('.remove-link').onclick = () => { row.remove(); markDirty(); };
+      row.querySelectorAll('input').forEach((input) => { input.oninput = markDirty; });
+      list.append(row);
+    }
+
+    function setFormValue(frontmatter = {}, body = '', entryPath = '') {
+      $('entry-path').value = entryPath;
+      activeCollection().fields.forEach((field) => {
+        const value = frontmatter[field.id];
+        if (field.type === 'multiselect') {
+          document.querySelectorAll(`[data-field="${field.id}"]`).forEach((input) => { input.checked = Array.isArray(value) && value.includes(input.value); });
+        } else if (field.type === 'links') {
+          $(`links-${field.id}`).innerHTML = '';
+          (Array.isArray(value) ? value : []).forEach((link) => addLinkRow(field.id, link));
+        } else if ($(`field-${field.id}`)) {
+          $(`field-${field.id}`).value = Array.isArray(value) ? value.join('\n') : (value ?? '');
+        }
+      });
+      activeCollection().fields.filter((field) => field.dependsOn).forEach((field) => refreshDependentSelect($(`field-${field.id}`), frontmatter[field.id] || ''));
+      activeCollection().fields.filter((field) => field.type === 'select').forEach((field) => syncCustomSelect(`field-${field.id}`));
+      activeCollection().fields.filter((field) => field.type === 'multiselect').forEach((field) => updateMultiselectLabel(field.id));
+      $('body').value = body || '';
+      selectedPreviewNode = null;
+      updateBodyMeta();
+      schedulePreview();
+    }
+
+    function getFormValue() {
+      const result = {};
+      activeCollection().fields.forEach((field) => {
+        if (field.type === 'multiselect') result[field.id] = [...document.querySelectorAll(`[data-field="${field.id}"]:checked`)].map((input) => input.value);
+        else if (field.type === 'links') result[field.id] = [...$(`links-${field.id}`).querySelectorAll('.link-row')].map((row) => ({ title: row.querySelector('.link-title').value.trim(), url: row.querySelector('.link-url').value.trim() }));
+        else if (field.type === 'tags') result[field.id] = $(`field-${field.id}`).value.split(/[\n,]/).map((value) => value.trim()).filter(Boolean);
+        else result[field.id] = $(`field-${field.id}`).value;
+      });
+      return result;
+    }
+
+    function updateBodyMeta() { $('body-meta').textContent = `${$('body').value.length} 字符`; }
+
+    async function loadEntries() {
+      const data = await request(`entries?collection=${encodeURIComponent(state.collectionId)}`);
+      state.entries = data.entries;
+      renderFilters();
+      renderEntries();
+    }
+
+    async function loadEntry(entryPath) {
+      if (state.dirty && !window.confirm('当前内容有未保存修改，确定切换吗？')) return;
+      try {
+        const data = await request(`entry?collection=${encodeURIComponent(state.collectionId)}&path=${encodeURIComponent(entryPath)}`);
+        state.selectedPath = entryPath;
+        state.dirty = false;
+        setFormValue(data.frontmatter, data.body, data.path);
+        renderEntries();
+        setStatus('已读取', 'saved');
+      } catch (error) { setStatus(error.message, 'error'); }
+    }
+
+    function createNew() {
+      if (state.dirty && !window.confirm('当前内容有未保存修改，确定新建吗？')) return;
+      const config = activeCollection();
+      const frontmatter = clone(config.defaultFrontmatter);
+      frontmatter.date = today();
+      frontmatter.updated = today();
+      state.selectedPath = '';
+      state.dirty = false;
+      setFormValue(frontmatter, '', config.defaultPath);
+      renderEntries();
+      setStatus('新建模式');
+      $('field-title')?.focus();
+    }
+
+    async function saveEntry() {
+      const path = $('entry-path').value.trim();
+      const frontmatter = getFormValue();
+      $('save').disabled = true;
+      setStatus('保存中…', 'saving');
+      try {
+        const data = await request('entry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ collection: state.collectionId, path, frontmatter, body: $('body').value }) });
+        state.dirty = false;
+        state.selectedPath = data.path;
+        await loadEntries();
+        await loadEntry(data.path);
+        setStatus('已保存 · 刚刚', 'saved');
+      } catch (error) { setStatus(error.message, 'error'); }
+      finally { $('save').disabled = false; }
+    }
+
+    function schedulePreview() {
+      window.clearTimeout(previewTimer);
+      previewTimer = window.setTimeout(async () => {
+        const requestId = ++state.previewId;
+        const body = $('body').value;
+        if (!body.trim()) {
+          $('preview').innerHTML = '<p class="preview-placeholder">Markdown 预览会显示在这里</p>';
+          selectedPreviewNode = null;
+          $('preview').classList.remove('is-loading');
+          return;
+        }
+        $('preview').classList.add('is-loading');
+        try {
+          const data = await request('preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ collection: state.collectionId, body }) });
+          if (requestId === state.previewId) {
+            $('preview').innerHTML = data.html || '<p class="preview-placeholder">暂无预览</p>';
+            selectedPreviewNode = null;
+          }
+        } catch (error) {
+          if (requestId === state.previewId) {
+            $('preview').innerHTML = `<p class="preview-placeholder">预览失败：${escapeHtml(error.message)}</p>`;
+            selectedPreviewNode = null;
+          }
+        } finally {
+          if (requestId === state.previewId) $('preview').classList.remove('is-loading');
+        }
+      }, 180);
+    }
+
+    const previewBlockSelector = 'h1[data-source-start], h2[data-source-start], h3[data-source-start], p[data-source-start], ul[data-source-start], ol[data-source-start], blockquote[data-source-start], pre[data-source-start], table[data-source-start], li[data-source-start]';
+    function findPreviewBlock(node) {
+      const element = node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement;
+      const block = element?.closest?.(previewBlockSelector);
+      return block && $('preview').contains(block) ? block : null;
+    }
+    function sourceLineOffset(line, end = false) {
+      const source = $('body').value;
+      if (line <= 1) return end ? (source.indexOf('\n') === -1 ? source.length : source.indexOf('\n')) : 0;
+      let offset = 0;
+      for (let current = 1; current < line; current += 1) {
+        const newline = source.indexOf('\n', offset);
+        if (newline === -1) return source.length;
+        offset = newline + 1;
+      }
+      if (!end) return offset;
+      const newline = source.indexOf('\n', offset);
+      return newline === -1 ? source.length : newline;
+    }
+    function previewRange(node) {
+      const startLine = Number(node?.dataset.sourceStart);
+      const endLine = Number(node?.dataset.sourceEnd);
+      if (!startLine || !endLine) return null;
+      return { start: sourceLineOffset(startLine), end: sourceLineOffset(endLine, true), startLine, endLine };
+    }
+    function previewBlocks() {
+      return Array.from($('preview').querySelectorAll(previewBlockSelector));
+    }
+    function findPreviewBlockForLine(line) {
+      const blocks = previewBlocks();
+      const containing = blocks
+        .filter((node) => {
+          const range = previewRange(node);
+          return range && range.startLine <= line && range.endLine >= line;
+        })
+        .sort((left, right) => {
+          const leftRange = previewRange(left);
+          const rightRange = previewRange(right);
+          return (leftRange.endLine - leftRange.startLine) - (rightRange.endLine - rightRange.startLine);
+        });
+      if (containing[0]) return containing[0];
+      return blocks
+        .map((node) => ({ node, range: previewRange(node) }))
+        .filter((item) => item.range)
+        .sort((left, right) => Math.abs(left.range.startLine - line) - Math.abs(right.range.startLine - line))[0]?.node || null;
+    }
+    function highlightPreviewBlock(node) {
+      if (!node) return;
+      $('preview').querySelectorAll('.is-sync-target').forEach((target) => target.classList.remove('is-sync-target'));
+      node.classList.add('is-sync-target');
+      selectedPreviewNode = node;
+      node.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      window.clearTimeout(syncHighlightTimer);
+      syncHighlightTimer = window.setTimeout(() => node.classList.remove('is-sync-target'), 1400);
+    }
+    function syncSourceToPreview() {
+      const source = $('body').value;
+      const line = source.slice(0, $('body').selectionStart).split('\n').length;
+      const target = findPreviewBlockForLine(line);
+      if (!target) return setStatus('当前内容没有可定位的预览区域');
+      highlightPreviewBlock(target);
+    }
+    function syncPreviewToSource() {
+      const selection = window.getSelection();
+      const selectionNode = selection?.rangeCount && $('preview').contains(selection.anchorNode)
+        ? findPreviewBlock(selection.anchorNode)
+        : null;
+      const target = selectionNode || selectedPreviewNode;
+      const range = previewRange(target);
+      if (!target || !range) return setStatus('请先在预览中点击或选中一段内容');
+      const body = $('body');
+      body.focus();
+      body.setSelectionRange(range.start, range.end);
+      const lineHeight = Number.parseFloat(getComputedStyle(body).lineHeight) || 21;
+      body.scrollTop = Math.max(0, (range.startLine - 1) * lineHeight - body.clientHeight / 2);
+      updateBodyMeta();
+    }
+
+    function applyToolbar(action) {
+      const body = $('body');
+      const start = body.selectionStart;
+      const end = body.selectionEnd;
+      const selected = body.value.slice(start, end);
+      const templates = { bold: ['**', '**', '加粗文字'], italic: ['*', '*', '斜体文字'], code: ['`', '`', '代码'], link: ['[', '](https://example.com)', '链接文字'] };
+      if (templates[action]) {
+        const [before, after, placeholder] = templates[action];
+        body.setRangeText(`${before}${selected || placeholder}${after}`, start, end, 'select');
+      } else if (action === 'image') {
+        body.setRangeText('![图片描述](图片地址)', start, end, 'select');
+      } else if (action === 'table') {
+        body.setRangeText('| 项目 | 说明 |\n| --- | --- |\n| 内容 | 示例 |', start, end, 'end');
+      } else {
+        const prefix = { h1: '# ', h2: '## ', h3: '### ', bullet: '- ', quote: '> ' }[action];
+        const numbered = action === 'numbered';
+        const lineStart = body.value.lastIndexOf('\n', Math.max(0, start - 1)) + 1;
+        const lineEndIndex = body.value.indexOf('\n', end);
+        const lineEnd = lineEndIndex === -1 ? body.value.length : lineEndIndex;
+        if (prefix || numbered) {
+          const lines = body.value.slice(lineStart, lineEnd).split('\n').map((line, index) => `${numbered ? `${index + 1}. ` : prefix}${line}`);
+          body.setRangeText(lines.join('\n'), lineStart, lineEnd, 'select');
+        }
+      }
+      body.dispatchEvent(new Event('input', { bubbles: true }));
+      body.focus();
+    }
+
+    async function switchCollection(collectionId) {
+      if (collectionId === state.collectionId) return;
+      if (state.dirty && !window.confirm('当前内容有未保存修改，确定切换视图吗？')) return;
+      state.collectionId = collectionId;
+      state.selectedPath = '';
+      state.dirty = false;
+      state.filters = {};
+      closePopovers();
+      const config = activeCollection();
+      $('library-title').textContent = config.label;
+      $('editor-title').textContent = `编辑${config.label}`;
+      $('editor-description').textContent = config.description;
+      renderTabs();
+      renderMetadata();
+      createNew();
+      try { await loadEntries(); } catch (error) { setStatus(error.message, 'error'); }
+    }
+
+    $('search').oninput = renderEntries;
+    $('filter-toggle').onclick = () => togglePopover('filter-popover', 'filter-toggle');
+    $('sort-toggle').onclick = () => togglePopover('sort-popover', 'sort-toggle');
+    $('clear-filters').onclick = () => { state.filters = {}; renderFilters(); renderEntries(); };
+    document.addEventListener('click', (event) => { if (!event.target.closest('#list-tools-wrap')) closePopovers(); });
+    document.addEventListener('click', (event) => { if (!event.target.closest('[data-custom-select]')) closeCustomSelects(); });
+    document.addEventListener('click', (event) => { if (!event.target.closest('[data-multiselect]')) closeMultiselectMenus(); });
+    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closePopovers(); closeCustomSelects(); closeMultiselectMenus(); } });
+    $('refresh').onclick = () => loadEntries().catch((error) => setStatus(error.message, 'error'));
+    $('new-entry').onclick = createNew;
+    $('save').onclick = saveEntry;
+    $('body').oninput = () => { updateBodyMeta(); markDirty(); schedulePreview(); };
+    document.querySelectorAll('.editor-tool').forEach((button) => { button.onclick = () => applyToolbar(button.dataset.action); });
+    $('sync-to-preview').onclick = syncSourceToPreview;
+    $('sync-to-source').onclick = syncPreviewToSource;
+    $('preview').addEventListener('click', (event) => {
+      const block = findPreviewBlock(event.target);
+      if (block) selectedPreviewNode = block;
+    });
+    $('preview').addEventListener('mouseup', () => {
+      const selection = window.getSelection();
+      if (selection?.rangeCount && $('preview').contains(selection.anchorNode)) {
+        const block = findPreviewBlock(selection.anchorNode);
+        if (block) selectedPreviewNode = block;
+      }
+    });
+    renderSortOptions();
+
+    request('collections').then(async (data) => {
+      state.collections = data.collections;
+      const firstCollection = state.collections[0]?.id;
+      if (!firstCollection) throw new Error('没有可用的内容解析器');
+      await switchCollection(firstCollection);
+    }).catch((error) => setStatus(error.message, 'error'));
+  </script>
+</> : <p>本地 CMS 仅在 Astro 开发服务器中可用。</p>}
