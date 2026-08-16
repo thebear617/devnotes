@@ -1,9 +1,10 @@
 ---
-title: '猪窝 v1.8.0：升级 Astro 7 并迁移内容集合'
+title: "猪窝 v1.8.0：内容集合 - Astro 7 迁移"
 date: '2026-08-09'
-tags: [猪窝, 架构]
-site: 猪窝
-slug: 'home-v180'
+updated: '2026-08-09'
+description: '猪窝完成从 Astro 5 到 Astro 7.2.0 的升级，并将内容集合迁移到 Astro Content Layer，保留现有内容结构和页面兼容性。'
+subcategory: [架构]
+category: 猪窝
 ---
 
 猪窝完成从 Astro 5 到 Astro 7.2.0 的升级，并将内容集合迁移到 Astro Content Layer，保留现有内容结构和页面兼容性。

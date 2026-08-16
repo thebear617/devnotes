@@ -1,9 +1,10 @@
 ---
-title: '科研笔记 v0.2.0：升级为多板块科研笔记总站'
+title: "科研笔记 v0.2.0：站点架构 - 多板块科研笔记总站"
 date: '2026-07-09'
-tags: [科研笔记, 架构]
-site: 科研笔记
-slug: 'reanotes-v020'
+updated: '2026-07-09'
+description: '从单一表征学习主题升级为多板块科研笔记总站。'
+subcategory: [架构]
+category: 科研笔记
 ---
 
 从单一表征学习主题升级为多板块科研笔记总站。新增 BOARDS 索引 + 顶栏切换器 + 两级 hash 路由（#boardId/pageId），支持任意扩展新板块。

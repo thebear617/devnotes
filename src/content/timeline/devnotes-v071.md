@@ -1,9 +1,10 @@
 ---
-title: '开发笔记 v0.7.1：笔记中心分页与 MiniMax MCP 排障'
+title: "开发笔记 v0.7.1：笔记中心 - 分页与 MiniMax MCP 排障"
 date: '2026-07-29'
-tags: [开发笔记, 功能]
-site: 开发笔记
-slug: 'devnotes-v071'
+updated: '2026-07-29'
+description: '笔记中心新增 MiniMax MCP 与 MCP Python SDK 2.0 兼容性排障记录，并复用知识库的筛选后分页逻辑：每页 8 条、筛选回到第一页、支持页码和前后页切换。'
+subcategory: [功能]
+category: 开发笔记
 ---
 
 笔记中心新增 MiniMax MCP 与 MCP Python SDK 2.0 兼容性排障记录，并复用知识库的筛选后分页逻辑：每页 8 条、筛选回到第一页、支持页码和前后页切换。

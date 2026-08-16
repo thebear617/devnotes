@@ -1,9 +1,10 @@
 ---
-title: '安装 Oh My Zsh：经典 ZSH 配置管理框架'
+title: "Oh My Zsh：ZSH - 配置管理"
 date: '2026-07-17'
-tags: [工具, 功能]
-site: 工具
-slug: 'tool-ohmyzsh'
+updated: '2026-07-17'
+description: '安装了 Oh My Zsh，一个管理 ZSH 配置的经典框架。'
+subcategory: [功能]
+category: 工具
 ---
 
 安装了 Oh My Zsh，一个管理 ZSH 配置的经典框架。它内置主题、插件与大量社区维护的开箱即用功能，极大简化了 shell 环境的定制——但本质是个「配置框架」，并不会自动提供一个完整的「配置档案切换器」，切换逻辑通常要自己在 <code>~/.zshrc</code> 里写。

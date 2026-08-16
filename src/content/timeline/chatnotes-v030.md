@@ -1,9 +1,10 @@
 ---
-title: 'ChatNotes v0.3.0：工作区 UI/UX 与节点阅读体验收束'
+title: "聊天站 v0.3.0：工作区 - UI/UX 与节点阅读体验收束"
 date: '2026-08-12'
-tags: [ChatNotes, UI]
-site: ChatNotes
-slug: 'chatnotes-v030'
+updated: '2026-08-12'
+description: 'ChatNotes v0.3.0 完成一轮工作区 UI/UX 收束：保留本地优先的项目与节点模型，将主要阅读体验从无限画布调整为更适合连续阅读的宽幅卡片视图，并统一侧栏与内容区的暖米色视觉语言。'
+subcategory: [视觉]
+category: 聊天站
 ---
 
 ChatNotes v0.3.0 完成一轮工作区 UI/UX 收束：保留本地优先的项目与节点模型，将主要阅读体验从无限画布调整为更适合连续阅读的宽幅卡片视图，并统一侧栏与内容区的暖米色视觉语言。

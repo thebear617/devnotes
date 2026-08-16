@@ -1,9 +1,10 @@
 ---
-title: '安装 Bartender 6：菜单栏管理工具'
+title: "Bartender 6：菜单栏 - 图标管理"
 date: '2026-08-08'
-tags: [工具, 功能]
-site: 工具
-slug: 'tool-bartender'
+updated: '2026-08-08'
+description: 'Bartender 是 macOS 菜单栏管理工具，获得过多个奖项，核心是"完全掌控菜单栏图标的显示与隐藏，只在需要时显示"。'
+subcategory: [功能]
+category: 工具
 ---
 
 Bartender 是 macOS 菜单栏管理工具，获得过多个奖项，核心是"完全掌控菜单栏图标的显示与隐藏，只在需要时显示"。官网自称 "Raising the bar. Again."，专为 macOS Tahoe 重新设计（Liquid Glass），支持 Tahoe / Sequoia / Sonoma，Apple Silicon 和 Intel 都原生运行。

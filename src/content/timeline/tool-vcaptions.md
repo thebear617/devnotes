@@ -1,9 +1,10 @@
 ---
-title: '安装 vCaptions：B 站/YouTube 视频字幕列表浏览器插件'
+title: "vCaptions：浏览器插件 - B 站与 YouTube 字幕"
 date: '2026-08-06'
-tags: [工具, 功能]
-site: 工具
-slug: 'tool-vcaptions'
+updated: '2026-08-06'
+description: 'vCaptions（原名「哔哔君」bibijun）是一个浏览器扩展，为 Bilibili、YouTube 等视频网站添加字幕列表，便于阅读、跳转和导出字幕。'
+subcategory: [功能]
+category: 工具
 ---
 
 vCaptions（原名「哔哔君」bibijun）是一个浏览器扩展，为 Bilibili、YouTube 等视频网站添加字幕列表，便于阅读、跳转和导出字幕。

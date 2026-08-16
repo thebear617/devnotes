@@ -1,9 +1,10 @@
 ---
-title: '猫猫 v0.10.0：升级 Astro 7 内容集合'
+title: "猫猫 v0.10.0：内容集合 - Astro 7 迁移"
 date: '2026-08-09'
-tags: [猫猫, 架构, 内容]
-site: 猫猫
-slug: 'cats-v0100'
+updated: '2026-08-09'
+description: '猫猫手册完成从 Astro 5 到 Astro 7.2.0 的升级，并将科普文章集合适配到 Astro 7 的 Content Layer；猫只档案仍由 js/*.js 作为唯一事实源。'
+subcategory: [架构, 内容]
+category: 猫猫
 ---
 
 猫猫手册完成从 Astro 5 到 Astro 7.2.0 的升级，并将科普文章集合适配到 Astro 7 的 Content Layer；猫只档案仍由 `js/*.js` 作为唯一事实源。

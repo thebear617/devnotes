@@ -1,9 +1,10 @@
 ---
-title: '开发笔记 v0.3.0：迁入个人开发时间线与同步工作流'
+title: "开发笔记 v0.3.0：开发时间线 - 迁入与同步工作流"
 date: '2026-07-21'
-tags: [开发笔记, 架构]
-site: 开发笔记
-slug: 'devnotes-v030'
+updated: '2026-07-21'
+description: 'DevNotes 正式承接个人开发时间线，形成从 Git 版本检测、Markdown 内容维护到静态详情页发布的完整链路。'
+subcategory: [架构]
+category: 开发笔记
 ---
 
 DevNotes 正式承接个人开发时间线，形成从 Git 版本检测、Markdown 内容维护到静态详情页发布的完整链路。本次版本涉及 68 个文件，新增 1632 行、删除 7 行。

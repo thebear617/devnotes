@@ -1,9 +1,10 @@
 ---
-title: '开发笔记 v0.9.0：知识库 Markdown 渲染增强与写作体验优化'
+title: "开发笔记 v0.9.0：Markdown - 渲染与写作体验"
 date: '2026-08-05'
-tags: [开发笔记, 功能]
-site: 开发笔记
-slug: 'devnotes-v090'
+updated: '2026-08-05'
+description: '本次版本集中完善 Markdown 内容的展示与编辑两端：文章阅读侧增强表格、列表和悬浮内容的表现，编辑侧尽量保持 Markdown 原文简洁，降低组件化内容对写作顺序的干扰。'
+subcategory: [功能]
+category: 开发笔记
 ---
 
 - 知识库新增 Markdown 有序列表层级渲染，按层级使用数字、字母和罗马数字标记

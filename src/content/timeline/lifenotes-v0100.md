@@ -1,9 +1,10 @@
 ---
-title: '常识笔记 v0.10.0：升级 Astro 7 并迁移内容集合'
+title: "常识笔记 v0.10.0：内容集合 - Astro 7 迁移"
 date: '2026-08-09'
-tags: [常识笔记, 架构, 内容]
-site: 常识笔记
-slug: 'lifenotes-v0100'
+updated: '2026-08-09'
+description: '常识笔记完成从 Astro 5 到 Astro 7.2.0 的升级，并将生活、服务业、AI、汽车、动植物、金融和历史七个内容集合迁移到 Astro Content Layer。'
+subcategory: [架构, 内容]
+category: 常识笔记
 ---
 
 常识笔记完成从 Astro 5 到 Astro 7.2.0 的升级，并将生活、服务业、AI、汽车、动植物、金融和历史七个内容集合迁移到 Astro Content Layer。此次版本同时收束了内容命名、脚注阅读体验和近期常识资料整理。

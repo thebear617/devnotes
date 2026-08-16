@@ -1,9 +1,10 @@
 ---
-title: '新建 Agent Skill：xhs-image-note（小红书图集解析）'
+title: "xhs-image-note：小红书图集 - 笔记解析"
 date: '2026-08-02'
-tags: [skill, 工具]
-site: skill
-slug: 'skill-xhs-image-note'
+updated: '2026-08-02'
+description: '新增全局 Agent Skill ~/.claude/skills/xhs-image-note/，把小红书图集型笔记（正文很短、关键信息全在图片里）的解析流程封装成一条命令：抓 HTML → 提取标题/正文/图片 URL → 下载图片 → 拼图 → 交给 MiniMax 视觉工具读取。'
+subcategory: [功能]
+category: skill
 ---
 
 新增全局 Agent Skill `~/.claude/skills/xhs-image-note/`，把小红书图集型笔记（正文很短、关键信息全在图片里）的解析流程封装成一条命令：抓 HTML → 提取标题/正文/图片 URL → 下载图片 → 拼图 → 交给 MiniMax 视觉工具读取。

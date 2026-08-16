@@ -3,7 +3,11 @@ import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const entries = await getCollection('timeline');
-const resolved = entries.map(e => ({ ...e, slug: e.id.replace(/\.md$/, '') }));
+const resolved = entries.map(e => ({
+  ...e,
+  slug: e.id.replace(/\.md$/, ''),
+  secondaryCategories: e.data.subcategory,
+}));
 const sorted = resolved.sort((a, b) => {
   const d = b.data.date.localeCompare(a.data.date);
   if (d !== 0) return d;
@@ -15,7 +19,7 @@ const sorted = resolved.sort((a, b) => {
   return 0;
 });
 
-const allSites = [...new Set(resolved.map(e => e.data.site).filter(Boolean))].sort();
+const allCategories = [...new Set(resolved.map(e => e.data.category).filter(Boolean))].sort();
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
@@ -23,81 +27,420 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
   <main class="app-shell">
     <h2 class="view-title">开发时间线</h2>
     <p class="view-sub">记录个人项目、站点与开发工具的版本演进</p>
+    <p class="debug-guideline">标题命名规范：<code>对象 [版本]：模块 - 变更主题</code></p>
 
-    <div class="route-search">
-      <input id="timelineSearch" type="search" placeholder="搜索标题或标签..." aria-label="搜索开发时间线" />
-    </div>
-
-    <div class="filter-bar">
-      <div class="filter-row">
-        <span class="filter-label">站点</span>
-        <div class="filter-tags" data-filter="site">
-          {allSites.map(s => <button class="filter-tag" type="button">{s}</button>)}
-        </div>
-        <button class="filter-clear" id="filterClear" type="button">清空</button>
+    <div class="timeline-toolbar">
+      <div class="route-search">
+        <input id="timelineSearch" type="search" placeholder="搜索标题、描述或标签..." aria-label="搜索开发时间线" />
+      </div>
+      <div class="timeline-actions">
+        <button class="knowledge-sort" id="timelineSort" type="button" aria-pressed="false" title="切换开发时间线排序方式">
+          <span aria-hidden="true">↕</span>
+          <span id="timelineSortLabel">最近更新</span>
+        </button>
+        <button class="filter-trigger" id="timelineFilterTrigger" type="button" aria-expanded="false" aria-controls="timelineFilterModal">
+          <span aria-hidden="true">☷</span>
+          <span class="filter-trigger-label">筛选</span>
+          <span class="filter-badge" id="timelineFilterBadge" hidden>0</span>
+        </button>
+        <button class="view-toggle" id="timelineViewToggle" type="button" aria-pressed="false" title="切换到宫格视图">
+          <span class="view-toggle-icon" aria-hidden="true">▦</span>
+          <span id="timelineViewToggleLabel">宫格视图</span>
+        </button>
       </div>
     </div>
 
+    <div class="filter-backdrop" id="timelineFilterBackdrop" hidden></div>
+    <section class="filter-modal timeline-filter-modal" id="timelineFilterModal" hidden role="dialog" aria-modal="true" aria-labelledby="timelineFilterTitle">
+      <header class="filter-modal-header">
+        <div>
+          <h3 id="timelineFilterTitle">筛选开发时间线</h3>
+          <p>先选择一级分类，再缩小到对应的二级分类。</p>
+        </div>
+        <button class="filter-modal-close" id="timelineFilterClose" type="button" aria-label="关闭筛选">×</button>
+      </header>
+      <div class="filter-modal-body timeline-filter-options">
+        <div class="filter-fields">
+          <div class="filter-field">
+            <span>一级分类</span>
+            <div class="custom-select" data-custom-select="timeline-category">
+              <select class="custom-select-native" id="timeline-category" aria-hidden="true" tabindex="-1">
+                <option value="">全部一级分类</option>
+                {allCategories.map(category => <option value={category}>{category}</option>)}
+              </select>
+              <button class="custom-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="一级分类">
+                <span class="custom-select-label">全部一级分类</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+              <div class="custom-select-menu" role="listbox" hidden></div>
+            </div>
+          </div>
+          <div class="filter-field">
+            <span>二级分类</span>
+            <div class="custom-select" data-custom-select="timeline-subcategory">
+              <select class="custom-select-native" id="timeline-subcategory" aria-hidden="true" tabindex="-1" disabled>
+                <option value="">请先选择一级分类</option>
+              </select>
+              <button class="custom-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="二级分类" disabled>
+                <span class="custom-select-label">请先选择一级分类</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              </button>
+              <div class="custom-select-menu" role="listbox" hidden></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="filter-modal-footer">
+        <button class="filter-modal-clear" id="timelineFilterClear" type="button">清除筛选</button>
+        <button class="filter-modal-done" id="timelineFilterDone" type="button">完成</button>
+      </footer>
+    </section>
+
     <div class="tl" id="timelineList">
       {sorted.map(e => (
-        <a href={`${base}timeline/${e.slug}/`} class="tl-item" data-site={e.data.site} data-title={e.data.title.toLowerCase()} data-tags={e.data.tags.map(t => t.toLowerCase()).join(',')}>
+        <a
+          href={`${base}timeline/${e.slug}/`}
+          class="tl-item"
+          data-category={e.data.category}
+          data-title={e.data.title}
+          data-updated={e.data.updated}
+          data-subcategory={e.secondaryCategories.join(',')}
+          data-search={[e.data.title, e.data.description, e.data.category, ...e.data.subcategory].filter(Boolean).join(' ').toLowerCase()}
+        >
           <div class="tl-dot"></div>
           <div class="tl-card">
             <div class="tl-head">
               <span class="tl-date">{e.data.date}</span>
               <span class="tl-title">{e.data.title}</span>
             </div>
+            <p class="tl-description">{e.data.description}</p>
             <div class="tl-tags">
-              {e.data.tags.map(t => <span class="tl-tag">{t}</span>)}
+              <span class="tl-tag tl-tag-site">{e.data.category}</span>
+              {e.secondaryCategories.map(category => <span class="tl-tag">{category}</span>)}
             </div>
           </div>
         </a>
       ))}
     </div>
 
+    <nav class="list-pagination" id="timelinePagination" aria-label="开发时间线分页" hidden>
+      <button class="list-page-button" id="timelinePrevPage" type="button">← 上一页</button>
+      <div class="list-page-numbers" id="timelinePageNumbers"></div>
+      <button class="list-page-button" id="timelineNextPage" type="button">下一页 →</button>
+    </nav>
+
     <div id="emptyState" class="empty-state" hidden>没有匹配的条目</div>
 
-    <script>
-      let siteFilter = '';
+<script>
+  const filters = { category: '', subcategory: '' };
+  const searchInput = document.getElementById('timelineSearch');
+  const filterTrigger = document.getElementById('timelineFilterTrigger');
+  const filterBadge = document.getElementById('timelineFilterBadge');
+  const filterModal = document.getElementById('timelineFilterModal');
+  const filterBackdrop = document.getElementById('timelineFilterBackdrop');
+  const sortButton = document.getElementById('timelineSort');
+  const sortLabel = document.getElementById('timelineSortLabel');
+  const categorySelect = document.getElementById('timeline-category');
+  const subcategorySelect = document.getElementById('timeline-subcategory');
+  const timelineList = document.getElementById('timelineList');
+  const timelineItems = [...document.querySelectorAll('#timelineList .tl-item')];
+  const viewToggle = document.getElementById('timelineViewToggle');
+  const viewToggleIcon = document.querySelector('#timelineViewToggle .view-toggle-icon');
+  const viewToggleLabel = document.getElementById('timelineViewToggleLabel');
+  const timelineSubcategoryOrder = ['功能', '内容', '视觉', '架构', '修复'];
+  const originalOrder = new Map(timelineItems.map((item, index) => [item, index]));
+  const titleCollator = new Intl.Collator('zh-CN', { numeric: true, sensitivity: 'base' });
+  let sortMode = 'updated-desc';
+  let currentPage = 1;
+  const pageSizes = { grid: 12, list: 8 };
+  let viewMode = 'list';
 
-      document.querySelectorAll('.filter-bar .filter-tag').forEach(tag => {
-        tag.addEventListener('click', () => {
-          const on = tag.classList.toggle('on');
-          const row = tag.closest('.filter-row');
-          if (on) {
-            row.querySelectorAll('.filter-tag').forEach(t => { if (t !== tag) t.classList.remove('on'); });
-            siteFilter = tag.textContent;
-          } else {
-            siteFilter = '';
-          }
-          applyFilters();
-        });
+  try {
+    viewMode = localStorage.getItem('devnotes-timeline-view') === 'grid' ? 'grid' : 'list';
+  } catch {
+    viewMode = 'list';
+  }
+
+  function applyViewMode() {
+    const isGrid = viewMode === 'grid';
+    timelineList?.classList.toggle('is-grid', isGrid);
+    viewToggle?.setAttribute('aria-pressed', String(isGrid));
+    viewToggle?.setAttribute('title', isGrid ? '切换到列表视图' : '切换到宫格视图');
+    if (viewToggleIcon) viewToggleIcon.textContent = isGrid ? '☷' : '▦';
+    if (viewToggleLabel) viewToggleLabel.textContent = isGrid ? '列表视图' : '宫格视图';
+  }
+
+  function updateFilterTrigger() {
+    const count = Object.values(filters).filter(Boolean).length;
+    filterTrigger?.classList.toggle('active', count > 0);
+    if (filterBadge) {
+      filterBadge.textContent = String(count);
+      filterBadge.hidden = count === 0;
+    }
+  }
+
+  function setFilterOpen(open) {
+    if (!filterModal || !filterBackdrop) return;
+    closeCustomSelects();
+    filterModal.hidden = !open;
+    filterBackdrop.hidden = !open;
+    filterTrigger?.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('filter-open', open);
+    if (open) filterModal.querySelector('.custom-select-trigger')?.focus();
+  }
+
+  function customSelectRoot(id) {
+    return document.querySelector(`[data-custom-select="${id}"]`);
+  }
+
+  function closeCustomSelects(except = null) {
+    document.querySelectorAll('.custom-select.open').forEach(root => {
+      if (root === except) return;
+      root.classList.remove('open');
+      root.querySelector('.custom-select-menu').hidden = true;
+      root.querySelector('.custom-select-trigger').setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function syncCustomSelect(id) {
+    const select = document.getElementById(id);
+    const root = customSelectRoot(id);
+    if (!select || !root) return;
+    const trigger = root.querySelector('.custom-select-trigger');
+    const label = root.querySelector('.custom-select-label');
+    const menu = root.querySelector('.custom-select-menu');
+    const selected = [...select.options].find(option => option.value === select.value) || select.options[0];
+    label.textContent = selected?.textContent || '';
+    trigger.disabled = select.disabled;
+    if (select.disabled) {
+      root.classList.remove('open');
+      menu.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+    menu.replaceChildren(...[...select.options].map(option => {
+      const item = document.createElement('button');
+      item.className = `custom-select-option${option.value === select.value ? ' is-selected' : ''}`;
+      item.type = 'button';
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', String(option.value === select.value));
+      item.textContent = option.textContent;
+      item.addEventListener('click', event => {
+        event.stopPropagation();
+        if (select.disabled) return;
+        select.value = option.value;
+        syncCustomSelect(id);
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        closeCustomSelects();
       });
+      return item;
+    }));
+  }
 
-      document.getElementById('filterClear')?.addEventListener('click', () => {
-        document.querySelectorAll('.filter-bar .filter-tag.on').forEach(t => t.classList.remove('on'));
-        siteFilter = '';
-        applyFilters();
+  function initializeCustomSelects() {
+    document.querySelectorAll('#timelineFilterModal [data-custom-select]').forEach(root => {
+      const id = root.dataset.customSelect;
+      const select = document.getElementById(id);
+      const trigger = root.querySelector('.custom-select-trigger');
+      const menu = root.querySelector('.custom-select-menu');
+      trigger.addEventListener('click', event => {
+        event.stopPropagation();
+        if (select.disabled) return;
+        const shouldOpen = menu.hidden;
+        closeCustomSelects(root);
+        menu.hidden = !shouldOpen;
+        root.classList.toggle('open', shouldOpen);
+        trigger.setAttribute('aria-expanded', String(shouldOpen));
       });
+      menu.addEventListener('click', event => event.stopPropagation());
+      syncCustomSelect(id);
+    });
+  }
 
-      const searchInput = document.getElementById('timelineSearch');
-      searchInput?.addEventListener('input', applyFilters);
+  function populateSubcategoryOptions() {
+    const category = categorySelect?.value || '';
+    const currentSubcategory = subcategorySelect?.value || '';
+    const availableSubcategories = new Set(
+      timelineItems
+        .filter(item => category && item.dataset.category === category)
+        .flatMap(item => (item.dataset.subcategory || '').split(',').filter(Boolean)),
+    );
+    const values = [...availableSubcategories].sort((left, right) => {
+      const leftIndex = timelineSubcategoryOrder.indexOf(left);
+      const rightIndex = timelineSubcategoryOrder.indexOf(right);
+      return (leftIndex === -1 ? Infinity : leftIndex) - (rightIndex === -1 ? Infinity : rightIndex);
+    });
+    if (!subcategorySelect) return;
+    subcategorySelect.innerHTML = '';
+    const emptyOption = document.createElement('option');
+    emptyOption.value = '';
+    emptyOption.textContent = category ? '全部二级分类' : '请先选择一级分类';
+    subcategorySelect.append(emptyOption);
+    values.forEach(value => {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      subcategorySelect.append(option);
+    });
+    subcategorySelect.disabled = !category;
+    subcategorySelect.value = values.includes(currentSubcategory) ? currentSubcategory : '';
+    syncCustomSelect('timeline-subcategory');
+  }
 
-      function applyFilters() {
-        const query = (searchInput?.value || '').trim().toLowerCase();
-        const items = document.querySelectorAll('.tl-item');
-        let visible = 0;
-        items.forEach(item => {
-          const matchesSite = !siteFilter || item.dataset.site === siteFilter;
-          const title = item.dataset.title || '';
-          const tags = item.dataset.tags || '';
-          const matchesQuery = !query || title.includes(query) || tags.includes(query);
-          const show = matchesSite && matchesQuery;
-          item.hidden = !show;
-          if (show) visible++;
-        });
-        document.getElementById('emptyState').hidden = visible > 0;
+  function updateFilterState() {
+    filters.category = categorySelect?.value || '';
+    filters.subcategory = subcategorySelect?.value || '';
+    updateFilterTrigger();
+  }
+
+  categorySelect?.addEventListener('change', () => {
+    if (subcategorySelect) subcategorySelect.value = '';
+    populateSubcategoryOptions();
+    updateFilterState();
+    resetToFirstPage();
+  });
+
+  subcategorySelect?.addEventListener('change', () => {
+    updateFilterState();
+    resetToFirstPage();
+  });
+
+  sortButton?.addEventListener('click', () => {
+    sortMode = sortMode === 'updated-desc' ? 'title-asc' : 'updated-desc';
+    sortButton.setAttribute('aria-pressed', String(sortMode === 'title-asc'));
+    if (sortLabel) sortLabel.textContent = sortMode === 'title-asc' ? '名称排序' : '最近更新';
+    resetToFirstPage();
+  });
+
+  viewToggle?.addEventListener('click', () => {
+    viewMode = viewMode === 'grid' ? 'list' : 'grid';
+    applyViewMode();
+    applyFilters();
+    try {
+      localStorage.setItem('devnotes-timeline-view', viewMode);
+    } catch {
+      // 浏览器禁用本地存储时，仍保留本次页面会话的视图切换。
+    }
+  });
+
+  document.getElementById('timelineFilterClear')?.addEventListener('click', () => {
+    if (categorySelect) categorySelect.value = '';
+    populateSubcategoryOptions();
+    updateFilterState();
+    resetToFirstPage();
+  });
+
+  filterTrigger?.addEventListener('click', () => setFilterOpen(filterModal?.hidden ?? true));
+  document.getElementById('timelineFilterClose')?.addEventListener('click', () => setFilterOpen(false));
+  document.getElementById('timelineFilterDone')?.addEventListener('click', () => setFilterOpen(false));
+  filterBackdrop?.addEventListener('click', () => setFilterOpen(false));
+  document.addEventListener('click', () => closeCustomSelects());
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && filterModal && !filterModal.hidden) setFilterOpen(false);
+  });
+
+  searchInput?.addEventListener('input', resetToFirstPage);
+
+  document.getElementById('timelinePrevPage')?.addEventListener('click', () => {
+    currentPage -= 1;
+    applyFilters({ scrollToList: true });
+  });
+
+  document.getElementById('timelineNextPage')?.addEventListener('click', () => {
+    currentPage += 1;
+    applyFilters({ scrollToList: true });
+  });
+
+  document.getElementById('timelinePageNumbers')?.addEventListener('click', event => {
+    const page = Number(event.target.closest('[data-page]')?.dataset.page);
+    if (!page || page === currentPage) return;
+    currentPage = page;
+    applyFilters({ scrollToList: true });
+  });
+
+  function resetToFirstPage() {
+    currentPage = 1;
+    applyFilters();
+  }
+
+  function compareTimelineItems(a, b) {
+    if (sortMode === 'title-asc') {
+      return titleCollator.compare(a.dataset.title || '', b.dataset.title || '')
+        || originalOrder.get(a) - originalOrder.get(b);
+    }
+
+    const updatedDifference = (Date.parse(b.dataset.updated || '') || 0) - (Date.parse(a.dataset.updated || '') || 0);
+    return updatedDifference || originalOrder.get(a) - originalOrder.get(b);
+  }
+
+  function applyFilters({ scrollToList = false } = {}) {
+    const pageSize = pageSizes[viewMode];
+    const query = (searchInput?.value || '').trim().toLowerCase();
+    const orderedItems = [...timelineItems].sort(compareTimelineItems);
+    timelineList?.append(...orderedItems);
+    const filtered = orderedItems.filter(item => {
+      const subcategories = (item.dataset.subcategory || '').split(',').filter(Boolean);
+      const matchesCategory = !filters.category || item.dataset.category === filters.category;
+      const matchesSubcategory = !filters.subcategory || subcategories.includes(filters.subcategory);
+      const matchesQuery = !query || (item.dataset.search || '').includes(query);
+      return matchesCategory && matchesSubcategory && matchesQuery;
+    });
+    const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+    currentPage = Math.min(Math.max(currentPage, 1), totalPages);
+    const firstIndex = (currentPage - 1) * pageSize;
+    const pageItems = new Set(filtered.slice(firstIndex, firstIndex + pageSize));
+
+    timelineItems.forEach(item => { item.hidden = !pageItems.has(item); });
+    document.getElementById('emptyState').hidden = filtered.length > 0;
+    renderPagination(totalPages, filtered.length);
+
+    if (scrollToList) {
+      timelineList?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function renderPagination(totalPages, resultCount) {
+    const pageSize = pageSizes[viewMode];
+    const pagination = document.getElementById('timelinePagination');
+    const prev = document.getElementById('timelinePrevPage');
+    const next = document.getElementById('timelineNextPage');
+    const pageNumbers = document.getElementById('timelinePageNumbers');
+    if (!pagination || !prev || !next || !pageNumbers) return;
+
+    pagination.hidden = resultCount <= pageSize;
+    prev.disabled = currentPage === 1;
+    next.disabled = currentPage === totalPages;
+    const visiblePages = getVisiblePages(totalPages, currentPage);
+    pageNumbers.replaceChildren(...visiblePages.map(page => {
+      if (page === 'ellipsis') {
+        const ellipsis = document.createElement('span');
+        ellipsis.className = 'list-page-ellipsis';
+        ellipsis.textContent = '…';
+        ellipsis.setAttribute('aria-hidden', 'true');
+        return ellipsis;
       }
+
+      const button = document.createElement('button');
+      button.className = `list-page-number${page === currentPage ? ' on' : ''}`;
+      button.type = 'button';
+      button.dataset.page = String(page);
+      button.textContent = String(page);
+      if (page === currentPage) button.setAttribute('aria-current', 'page');
+      return button;
+    }));
+  }
+
+  function getVisiblePages(totalPages, page) {
+    if (totalPages <= 7) return Array.from({ length: totalPages }, (_, index) => index + 1);
+    if (page <= 4) return [1, 2, 3, 4, 5, 'ellipsis', totalPages];
+    if (page >= totalPages - 3) return [1, 'ellipsis', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    return [1, 'ellipsis', page - 1, page, page + 1, 'ellipsis', totalPages];
+  }
+
+  initializeCustomSelects();
+  populateSubcategoryOptions();
+  updateFilterState();
+  applyViewMode();
+  applyFilters();
 
     </script>
   </main>

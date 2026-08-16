@@ -1,9 +1,10 @@
 ---
-title: '安装 Breaks：支持热力图与离开检测的番茄钟'
+title: "Breaks：菜单栏番茄钟 - 热力图与离开检测"
 date: '2026-08-08'
-tags: [工具, 功能]
-site: 工具
-slug: 'tool-breaks'
+updated: '2026-08-08'
+description: 'Breaks 是一款常驻 Mac 菜单栏的小型番茄钟，用 SwiftUI 开发，沙盒化、无遥测、数据全部留在本地 UserDefaults。'
+subcategory: [功能]
+category: 工具
 ---
 
 Breaks 是一款常驻 Mac 菜单栏的小型番茄钟，用 SwiftUI 开发，沙盒化、无遥测、数据全部留在本地 UserDefaults。作者的自述是"它足够安静，会记住你专注了什么，还真的关心休息有没有效"——比传统番茄钟更贴近真实使用需求。

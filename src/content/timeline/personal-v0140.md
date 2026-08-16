@@ -1,9 +1,10 @@
 ---
-title: '熊窝 v0.14.0：每日看板迁移至猪窝'
+title: "熊窝 v0.14.0：每日看板 - 迁移至猪窝"
 date: '2026-07-25'
-tags: [熊窝, 架构]
-site: 熊窝
-slug: 'personal-v0140'
+updated: '2026-07-25'
+description: '熊窝 v0.14.0 移除每日看板功能，将其完整迁移至猪窝 home 站。'
+subcategory: [架构]
+category: 熊窝
 ---
 
 熊窝 v0.14.0 移除每日看板功能，将其完整迁移至猪窝 home 站。

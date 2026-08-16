@@ -1,9 +1,10 @@
 ---
-title: '常识笔记 v0.1.2：v0.1.2: 修复侧边栏导航项点击回跳总览'
+title: "常识笔记 v0.1.2：侧边栏 - 导航回跳修复"
 date: '2026-07-10'
-tags: [常识笔记, 功能]
-site: 常识笔记
-slug: 'lifenotes-v012'
+updated: '2026-07-10'
+description: '本次更新聚焦修复侧边栏导航项点击回跳总览。'
+subcategory: [功能]
+category: 常识笔记
 ---
 
 - 根因：renderNav 生成的侧边栏导航 <a> 写死 href="#"，

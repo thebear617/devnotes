@@ -72,7 +72,7 @@ def read_frontmatter(path):
     data = {}
     for line in header.splitlines():
         key, sep, value = line.partition(":")
-        if sep and key.strip() in {"title", "date", "site", "slug"}:
+        if sep and key.strip() in {"title", "date", "category"}:
             data[key.strip()] = unquote_yaml(value)
     return data
 
@@ -82,7 +82,7 @@ def timeline_all_versions():
     versions = {}
     for path in TIMELINE_DIR.glob("*.md"):
         data = read_frontmatter(path)
-        repo = ZH_TO_REPO.get(data.get("site", ""))
+        repo = ZH_TO_REPO.get(data.get("category", ""))
         version = parse_ver(data.get("title", ""))
         if not repo or not version:
             continue
@@ -132,10 +132,15 @@ def category(subject):
     if re.search(r"重构|迁移|统一|改造|改名|升级", subject):
         return "架构"
     if re.search(r"上线|诞生", subject):
-        return "站点"
+        return ""
     if re.search(r"内容|文章", subject):
         return "内容"
     return "功能"
+
+
+def one_sentence(value):
+    value = re.split(r"[。！？]", value, maxsplit=1)[0].strip()
+    return f"{value}。" if value else "本次版本更新。"
 
 
 def body_rest(full_body):
@@ -187,6 +192,8 @@ def collect_additions():
             old_sha = commits[all_vs[idx - 1]][2] if idx > 0 else ""
             full_body, date = commit_meta(repo, sha)
             matter = parse_subject(subject)
+            timeline_category = category(subject)
+            description = one_sentence(matter)
             body = body_rest(full_body) or f"{zh}升级到 {full_ver}：{matter}。"
             entry_id = f"{repo}-v{full_ver[1:].replace('.', '')}"
             additions.append({
@@ -195,7 +202,8 @@ def collect_additions():
                 "date": date, "subject": subject, "matter": matter,
                 "id": entry_id,
                 "title": f"{zh} {full_ver}：{matter}",
-                "tags": [zh, category(subject)],
+                "description": description,
+                "subcategory": [timeline_category] if timeline_category else [],
                 "body": body,
                 "file_stats": file_stats(repo, old_sha, sha),
             })
@@ -210,14 +218,15 @@ def yaml_quote(value):
 
 
 def entry_to_markdown(entry):
-    tags = ", ".join(entry["tags"])
+    subcategories = ", ".join(entry["subcategory"])
     return (
         "---\n"
         f"title: {yaml_quote(entry['title'])}\n"
         f"date: {yaml_quote(entry['date'])}\n"
-        f"tags: [{tags}]\n"
-        f"site: {entry['zh']}\n"
-        f"slug: {yaml_quote(entry['id'])}\n"
+        f"updated: {yaml_quote(entry['date'])}\n"
+        f"description: {yaml_quote(entry['description'])}\n"
+        f"category: {entry['zh']}\n"
+        f"subcategory: [{subcategories}]\n"
         "---\n\n"
         f"{entry['body'].rstrip()}\n"
     )

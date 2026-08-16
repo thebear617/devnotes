@@ -1,9 +1,10 @@
 ---
-title: '熊窝 v0.25.0：升级 Astro 7 运行环境'
+title: "熊窝 v0.25.0：运行环境 - Astro 7"
 date: '2026-08-09'
-tags: [熊窝, 架构, 功能]
-site: 熊窝
-slug: 'personal-v0250'
+updated: '2026-08-09'
+description: '熊窝完成从 Astro 5 到 Astro 7.2.0 的运行环境升级。'
+subcategory: [架构, 功能]
+category: 熊窝
 ---
 
 熊窝完成从 Astro 5 到 Astro 7.2.0 的运行环境升级。个人站点没有内容集合，因此本次保留原有 Astro 页面、Vue 运行时资源和静态数据结构，只更新构建依赖与相关文档。

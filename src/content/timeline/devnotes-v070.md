@@ -1,9 +1,10 @@
 ---
-title: '开发笔记 v0.7.0：统一知识库与文章归档体系'
+title: "开发笔记 v0.7.0：知识库 - 内容归档与分类体系"
 date: '2026-07-28'
-tags: [开发笔记, 架构]
-site: 开发笔记
-slug: 'devnotes-v070'
+updated: '2026-07-28'
+description: '将原博客与提示词库合并为单一 knowledge 内容集合，并按绿色的个人知识积累与紫色的 Agent Work 案例重建分类、子文件夹和中文文件名 / 英文 slug 约定。'
+subcategory: [架构]
+category: 开发笔记
 ---
 
 将原博客与提示词库合并为单一 `knowledge` 内容集合，并按绿色的个人知识积累与紫色的 Agent Work 案例重建分类、子文件夹和中文文件名 / 英文 slug 约定。

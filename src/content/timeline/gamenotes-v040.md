@@ -1,9 +1,10 @@
 ---
-title: '游戏笔记 v0.4.0：升级 Astro 7 运行环境'
+title: "游戏笔记 v0.4.0：运行环境 - Astro 7 升级"
 date: '2026-08-09'
-tags: [游戏笔记, 架构]
-site: 游戏笔记
-slug: 'gamenotes-v040'
+updated: '2026-08-09'
+description: '游戏笔记完成从 Astro 5 到 Astro 7.2.0 的运行环境升级。'
+subcategory: [架构]
+category: 游戏笔记
 ---
 
 游戏笔记完成从 Astro 5 到 Astro 7.2.0 的运行环境升级。站点没有 Astro 内容集合，继续保留英雄联盟和无畏契约页面的现有静态数据与路由结构，版本号由 0.3.1 升至 0.4.0。

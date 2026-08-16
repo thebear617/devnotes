@@ -1,9 +1,10 @@
 ---
-title: '猫猫 v0.5.0：迁移至 Astro 并重构知识科普'
+title: "猫猫 v0.5.0：知识科普 - Astro 迁移与内容重构"
 date: '2026-07-29'
-tags: [猫猫, 架构]
-site: 猫猫
-slug: 'cats-v050'
+updated: '2026-07-29'
+description: '猫猫手册完成 Astro 架构迁移，同时将原有的标准 SOP 整合为以 Markdown 为内容单元的知识科普模块。'
+subcategory: [架构]
+category: 猫猫
 ---
 
 猫猫手册完成 Astro 架构迁移，同时将原有的标准 SOP 整合为以 Markdown 为内容单元的知识科普模块。迁移以保留既有侧边栏与核心业务视图为前提，避免为换框架而重做站点视觉。

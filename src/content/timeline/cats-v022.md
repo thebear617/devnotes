@@ -1,9 +1,10 @@
 ---
-title: '猫猫 v0.2.2：v0.2.2: 首页统计卡片可点击筛选'
+title: "猫猫 v0.2.2：首页统计 - 点击筛选"
 date: '2026-07-06'
-tags: [猫猫, 功能]
-site: 猫猫
-slug: 'cats-v022'
+updated: '2026-07-06'
+description: '本次更新聚焦首页统计卡片可点击筛选。'
+subcategory: [功能]
+category: 猫猫
 ---
 
 - 首页 5 张统计卡片支持点击作为快捷筛选器，激活态高亮（summary-clickable / summary-active）

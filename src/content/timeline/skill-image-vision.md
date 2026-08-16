@@ -1,9 +1,10 @@
 ---
-title: '新建 Agent Skill：image-vision（图片查看与识别）'
+title: "image-vision：图片附件 - 查看与识别"
 date: '2026-08-02'
-tags: [skill, 工具]
-site: skill
-slug: 'skill-image-vision'
+updated: '2026-08-02'
+description: '新增全局 Agent Skill ~/.config/opencode/skills/image-vision/SKILL.md，把"纯文本模型看不了图片附件"的问题封装成可自动触发的技能：一旦对话中出现图片输入，任何 Agent 都能按统一流程把图片落到固定路径，再用 MiniMax 视觉工具真正看到内容。'
+subcategory: [功能]
+category: skill
 ---
 
 新增全局 Agent Skill `~/.config/opencode/skills/image-vision/SKILL.md`，把"纯文本模型看不了图片附件"的问题封装成可自动触发的技能：一旦对话中出现图片输入，任何 Agent 都能按统一流程把图片落到固定路径，再用 MiniMax 视觉工具真正看到内容。

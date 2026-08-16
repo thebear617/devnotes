@@ -3,8 +3,8 @@ title: "聊天站 v0.4.0：阅读画布 - 卡片视觉与思考过程重构"
 date: '2026-08-16'
 updated: '2026-08-16'
 description: 'ChatNotes v0.4.0 聚焦阅读画布与回答卡片视觉：收束卡片宽度和层级，重构思考过程展示、Markdown 内容和工作区弹窗，使连续阅读更稳定。'
-categories: [视觉]
-site: 聊天站
+subcategory: [视觉]
+category: 聊天站
 ---
 
 ChatNotes v0.4.0 聚焦阅读画布与回答卡片视觉：收束卡片宽度和层级，重构思考过程展示、Markdown 内容和工作区弹窗，使连续阅读更稳定。

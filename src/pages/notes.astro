@@ -1,68 +1,115 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { notes } from '../data/notes.js';
+import { getCollection } from 'astro:content';
 
-const sortedNotes = [...notes].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-const allProducts = [...new Set(notes.map(n => n.product))].sort();
-const allStacks = [...new Set(notes.flatMap(n => n.stacks))].sort();
-const allLangs = [...new Set(notes.flatMap(n => n.langs).filter(Boolean))].sort();
-const allTypes = [...new Set(notes.map(n => n.type))].sort();
-
-const noteDataForClient = sortedNotes.map(n => ({
-  id: n.id, title: n.title, date: n.date, product: n.product,
-  body: n.body, links: n.links || [],
-  stacks: n.stacks, langs: n.langs, type: n.type
-}));
+const notes = await getCollection('debug');
+const sortedNotes = [...notes].sort((a, b) => new Date(b.data.updated || b.data.date).getTime() - new Date(a.data.updated || a.data.date).getTime());
+const DEBUG_CATEGORIES = ['站点与应用', '开发工具', '系统与平台'];
+const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
 <Layout>
   <main class="app-shell">
-    <h2 class="view-title">笔记中心</h2>
-    <p class="view-sub">开发相关的使用心得、经验与排雷</p>
+    <h2 class="view-title">Debug 库</h2>
+    <p class="view-sub debug-sub">开发调试、问题排查与工具经验</p>
+    <p class="debug-guideline">标题命名规范：<code>对象：模块 - 问题</code></p>
 
-    <div class="filter-bar" id="filterBar">
-      <div class="filter-row">
-        <span class="filter-label">产品</span>
-        <div class="filter-tags" data-filter="product">
-          {allProducts.map(p => <button class="filter-tag">{p}</button>)}
-        </div>
+    <div class="knowledge-toolbar debug-toolbar">
+      <div class="list-search" id="debugSearch">
+        <span class="list-search-icon">🔍</span>
+        <input type="search" id="debugSearchInput" class="list-search-input" placeholder="搜索标题、描述、分类或产品" autocomplete="off" aria-label="搜索 Debug 库" />
+        <button class="list-search-clear" id="debugSearchClear" type="button" aria-label="清除搜索">✕</button>
       </div>
-      <div class="filter-row">
-        <span class="filter-label">技术栈</span>
-        <div class="filter-tags" data-filter="stacks">
-          {allStacks.map(s => <button class="filter-tag">{s}</button>)}
-        </div>
-      </div>
-      <div class="filter-row">
-        <span class="filter-label">语言</span>
-        <div class="filter-tags" data-filter="langs">
-          {allLangs.map(l => <button class="filter-tag">{l}</button>)}
-        </div>
-      </div>
-      <div class="filter-row">
-        <span class="filter-label">类型</span>
-        <div class="filter-tags" data-filter="type">
-          {allTypes.map(t => <button class="filter-tag">{t}</button>)}
-          <button class="filter-clear" id="filterClear">清除筛选</button>
-        </div>
+      <div class="knowledge-actions">
+        <button class="knowledge-sort" id="debugSort" type="button" aria-pressed="false" title="切换 Debug 库排序方式">
+          <span aria-hidden="true">↕</span>
+          <span id="debugSortLabel">最近更新</span>
+        </button>
+        <button class="filter-trigger" id="debugFilterTrigger" type="button" aria-expanded="false" aria-controls="debugFilterModal">
+          <span aria-hidden="true">☷</span>
+          <span class="filter-trigger-label">筛选</span>
+          <span class="filter-badge" id="debugFilterBadge" hidden>0</span>
+        </button>
+        <button class="view-toggle" id="notesViewToggle" type="button" aria-pressed="false" title="切换到列表视图">
+          <span class="view-toggle-icon" aria-hidden="true">☷</span>
+          <span id="notesViewToggleLabel">列表视图</span>
+        </button>
       </div>
     </div>
+
+    {notes.length > 0 && (
+      <>
+        <div class="filter-backdrop" id="debugFilterBackdrop" hidden></div>
+        <section class="filter-modal debug-filter-modal" id="debugFilterModal" hidden role="dialog" aria-modal="true" aria-labelledby="debugFilterTitle">
+          <header class="filter-modal-header">
+            <div>
+              <h3 id="debugFilterTitle">筛选 Debug 库</h3>
+              <p>先选择一级分类，再缩小到对应的二级分类。</p>
+            </div>
+            <button class="filter-modal-close" id="debugFilterClose" type="button" aria-label="关闭筛选">×</button>
+          </header>
+          <div class="filter-modal-body debug-filter-options">
+            <div class="filter-fields">
+              <div class="filter-field">
+                <span>一级分类</span>
+                <div class="custom-select" data-custom-select="debug-category">
+                  <select class="custom-select-native" id="debug-category" aria-hidden="true" tabindex="-1">
+                    <option value="">全部分类</option>
+                    {DEBUG_CATEGORIES.map(category => <option value={category}>{category}</option>)}
+                  </select>
+                  <button class="custom-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="一级分类">
+                    <span class="custom-select-label">全部分类</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  </button>
+                  <div class="custom-select-menu" role="listbox" hidden></div>
+                </div>
+              </div>
+              <div class="filter-field">
+                <span>二级分类</span>
+                <div class="custom-select" data-custom-select="debug-subcategory">
+                  <select class="custom-select-native" id="debug-subcategory" aria-hidden="true" tabindex="-1" disabled>
+                    <option value="">请先选择一级分类</option>
+                  </select>
+                  <button class="custom-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="二级分类" disabled>
+                    <span class="custom-select-label">请先选择一级分类</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                  </button>
+                  <div class="custom-select-menu" role="listbox" hidden></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="filter-modal-footer">
+            <button class="filter-modal-clear" id="debugFilterClear" type="button">清除筛选</button>
+            <button class="filter-modal-done" id="debugFilterDone" type="button">完成</button>
+          </footer>
+        </section>
+      </>
+    )}
 
     <div class="note-list" id="noteList">
       {sortedNotes.map(n => (
-        <button class="note-card" data-id={n.id} data-product={n.product} data-stacks={n.stacks.join(',')} data-langs={n.langs.join(',')} data-type={n.type}>
-          <div class="note-card-title">{n.title}</div>
+        <a
+          href={`${base}notes/${n.data.slug}/`}
+          class="note-card"
+          data-category={n.data.category}
+          data-subcategory={n.data.subcategory}
+          data-title={n.data.title}
+          data-updated={n.data.updated || n.data.date}
+          data-search={[n.data.title, n.data.description, n.data.category, n.data.subcategory].filter(Boolean).join(' ')}
+        >
+          <div class="note-card-title">{n.data.title}</div>
+          {n.data.description && <p class="note-card-desc">{n.data.description}</p>}
           <div class="note-tags">
-            {n.stacks.map(s => <span class="note-tag">{s}</span>)}
-            {n.langs.filter(Boolean).map(l => <span class="note-tag">{l}</span>)}
-            <span class="note-tag type">{n.type}</span>
+            <span class="note-tag note-tag-category">{n.data.category}</span>
+            <span class="note-tag note-tag-subcategory">{n.data.subcategory}</span>
           </div>
-          <p class="note-card-meta">{n.date} · {n.product}</p>
-        </button>
+          <p class="note-card-meta">{n.data.date}</p>
+        </a>
       ))}
     </div>
 
-    <nav class="list-pagination" id="notesPagination" aria-label="笔记中心分页" hidden>
+    <nav class="list-pagination" id="notesPagination" aria-label="Debug 库分页" hidden>
       <button class="list-page-button" id="notesPrevPage" type="button">← 上一页</button>
       <div class="list-page-numbers" id="notesPageNumbers"></div>
       <button class="list-page-button" id="notesNextPage" type="button">下一页 →</button>
@@ -70,63 +117,226 @@ const noteDataForClient = sortedNotes.map(n => ({
 
     <section class="empty-state" id="emptyState" style="display:none">没有匹配的笔记</section>
 
-    <div id="noteDetail" style="display:none"></div>
   </main>
 </Layout>
 
-<script define:vars={{ noteData: noteDataForClient }}>
-  function escapeHtml(str) {
-    const d = document.createElement('div');
-    d.textContent = str;
-    return d.innerHTML;
-  }
-
-  function renderNoteTagsObj(note) {
-    return note.stacks.map(s => '<span class="note-tag">' + escapeHtml(s) + '</span>').join('')
-      + note.langs.filter(Boolean).map(l => '<span class="note-tag">' + escapeHtml(l) + '</span>').join('')
-      + '<span class="note-tag type">' + escapeHtml(note.type) + '</span>';
-  }
-
-  function renderNoteDetail(note) {
-    let linksHtml = '';
-    if (note.links.length) {
-      linksHtml = '<div class="note-links">' + note.links.map(l =>
-        '<a href="' + l.url + '" class="note-link" target="_blank" rel="noopener">↗ ' + escapeHtml(l.title) + '</a>'
-      ).join('') + '</div>';
-    }
-    return '<div class="note-detail" id="noteDetailInner">' +
-      '<div class="note-detail-header">' +
-        '<span class="note-detail-title">' + escapeHtml(note.title) + '</span>' +
-        '<button class="note-detail-close" id="noteDetailClose">✕</button>' +
-      '</div>' +
-      '<div class="note-detail-meta">' + renderNoteTagsObj(note) + '</div>' +
-      '<div class="note-detail-body">' + note.body + '</div>' +
-      linksHtml +
-    '</div>';
-  }
-
-  let filters = {};
+<script>
+  const filters = { category: '', subcategory: '' };
+  let searchTerm = '';
+  let sortMode = 'updated-desc';
   let currentPage = 1;
-  const pageSize = 8;
-  document.querySelectorAll('.filter-bar .filter-tag').forEach(tag => {
-    tag.addEventListener('click', () => {
-      const row = tag.closest('.filter-row');
-      const filterKey = row.querySelector('.filter-tags').dataset.filter;
-      const on = tag.classList.toggle('on');
-      if (on) {
-        row.querySelectorAll('.filter-tag').forEach(t => { if (t !== tag) t.classList.remove('on'); });
-        filters[filterKey] = tag.textContent;
-      } else {
-        delete filters[filterKey];
-      }
-      resetToFirstPage();
+  const pageSizes = { grid: 12, list: 8 };
+  const cards = [...document.querySelectorAll('.note-card')];
+  const noteList = document.getElementById('noteList');
+  const categorySelect = document.getElementById('debug-category');
+  const subcategorySelect = document.getElementById('debug-subcategory');
+  const searchInput = document.getElementById('debugSearchInput');
+  const searchClear = document.getElementById('debugSearchClear');
+  const sortButton = document.getElementById('debugSort');
+  const sortLabel = document.getElementById('debugSortLabel');
+  const filterTrigger = document.getElementById('debugFilterTrigger');
+  const filterBadge = document.getElementById('debugFilterBadge');
+  const filterModal = document.getElementById('debugFilterModal');
+  const filterBackdrop = document.getElementById('debugFilterBackdrop');
+  const viewToggle = document.getElementById('notesViewToggle');
+  const viewToggleIcon = document.querySelector('#notesViewToggle .view-toggle-icon');
+  const viewToggleLabel = document.getElementById('notesViewToggleLabel');
+  const originalOrder = new Map(cards.map((card, index) => [card, index]));
+  const titleCollator = new Intl.Collator('zh-CN', { numeric: true, sensitivity: 'base' });
+  let viewMode = 'grid';
+
+  try {
+    viewMode = localStorage.getItem('devnotes-debug-view') === 'list' ? 'list' : 'grid';
+  } catch {
+    viewMode = 'grid';
+  }
+
+  function applyViewMode() {
+    const isList = viewMode === 'list';
+    noteList?.classList.toggle('is-list', isList);
+    viewToggle?.setAttribute('aria-pressed', String(isList));
+    viewToggle?.setAttribute('title', isList ? '切换到宫格视图' : '切换到列表视图');
+    if (viewToggleIcon) viewToggleIcon.textContent = isList ? '▦' : '☷';
+    if (viewToggleLabel) viewToggleLabel.textContent = isList ? '宫格视图' : '列表视图';
+  }
+
+  function updateFilterTrigger() {
+    const count = Object.values(filters).filter(Boolean).length;
+    filterTrigger?.classList.toggle('active', count > 0);
+    if (filterBadge) {
+      filterBadge.textContent = String(count);
+      filterBadge.hidden = count === 0;
+    }
+  }
+
+  function setFilterOpen(open) {
+    if (!filterModal || !filterBackdrop) return;
+    closeCustomSelects();
+    filterModal.hidden = !open;
+    filterBackdrop.hidden = !open;
+    filterTrigger?.setAttribute('aria-expanded', String(open));
+    document.body.classList.toggle('filter-open', open);
+    if (open) filterModal.querySelector('.custom-select-trigger')?.focus();
+  }
+
+  function customSelectRoot(id) {
+    return document.querySelector(`[data-custom-select="${id}"]`);
+  }
+
+  function closeCustomSelects(except = null) {
+    document.querySelectorAll('#debugFilterModal .custom-select.open').forEach(root => {
+      if (root === except) return;
+      root.classList.remove('open');
+      root.querySelector('.custom-select-menu').hidden = true;
+      root.querySelector('.custom-select-trigger').setAttribute('aria-expanded', 'false');
     });
+  }
+
+  function syncCustomSelect(id) {
+    const select = document.getElementById(id);
+    const root = customSelectRoot(id);
+    if (!select || !root) return;
+    const trigger = root.querySelector('.custom-select-trigger');
+    const label = root.querySelector('.custom-select-label');
+    const menu = root.querySelector('.custom-select-menu');
+    const selected = [...select.options].find(option => option.value === select.value) || select.options[0];
+    label.textContent = selected?.textContent || '';
+    trigger.disabled = select.disabled;
+    if (select.disabled) {
+      root.classList.remove('open');
+      menu.hidden = true;
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+    menu.replaceChildren(...[...select.options].map(option => {
+      const item = document.createElement('button');
+      item.className = `custom-select-option${option.value === select.value ? ' is-selected' : ''}`;
+      item.type = 'button';
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', String(option.value === select.value));
+      item.textContent = option.textContent;
+      item.addEventListener('click', event => {
+        event.stopPropagation();
+        if (select.disabled) return;
+        select.value = option.value;
+        syncCustomSelect(id);
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        closeCustomSelects();
+      });
+      return item;
+    }));
+  }
+
+  function initializeCustomSelects() {
+    document.querySelectorAll('#debugFilterModal [data-custom-select]').forEach(root => {
+      const id = root.dataset.customSelect;
+      const select = document.getElementById(id);
+      const trigger = root.querySelector('.custom-select-trigger');
+      const menu = root.querySelector('.custom-select-menu');
+      trigger.addEventListener('click', event => {
+        event.stopPropagation();
+        if (select.disabled) return;
+        const shouldOpen = menu.hidden;
+        closeCustomSelects(root);
+        menu.hidden = !shouldOpen;
+        root.classList.toggle('open', shouldOpen);
+        trigger.setAttribute('aria-expanded', String(shouldOpen));
+      });
+      menu.addEventListener('click', event => event.stopPropagation());
+      syncCustomSelect(id);
+    });
+  }
+
+  function populateSubcategoryOptions() {
+    const category = categorySelect?.value || '';
+    const currentSubcategory = subcategorySelect?.value || '';
+    const values = [...new Set(
+      cards
+        .filter(card => category && card.dataset.category === category)
+        .map(card => card.dataset.subcategory)
+        .filter(Boolean),
+    )].sort((left, right) => left.localeCompare(right, 'zh-CN'));
+    if (!subcategorySelect) return;
+    subcategorySelect.innerHTML = '';
+    const emptyOption = document.createElement('option');
+    emptyOption.value = '';
+    emptyOption.textContent = category ? '全部二级分类' : '请先选择一级分类';
+    subcategorySelect.append(emptyOption);
+    values.forEach(value => {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      subcategorySelect.append(option);
+    });
+    subcategorySelect.disabled = !category;
+    subcategorySelect.value = values.includes(currentSubcategory) ? currentSubcategory : '';
+    syncCustomSelect('debug-subcategory');
+  }
+
+  function updateFilterState() {
+    filters.category = categorySelect?.value || '';
+    filters.subcategory = subcategorySelect?.value || '';
+    updateFilterTrigger();
+  }
+
+  categorySelect?.addEventListener('change', () => {
+    if (subcategorySelect) subcategorySelect.value = '';
+    populateSubcategoryOptions();
+    updateFilterState();
+    resetToFirstPage();
   });
 
-  document.getElementById('filterClear').addEventListener('click', () => {
-    document.querySelectorAll('.filter-bar .filter-tag.on').forEach(t => t.classList.remove('on'));
-    filters = {};
+  subcategorySelect?.addEventListener('change', () => {
+    updateFilterState();
     resetToFirstPage();
+  });
+
+  document.getElementById('debugFilterClear')?.addEventListener('click', () => {
+    if (categorySelect) categorySelect.value = '';
+    populateSubcategoryOptions();
+    updateFilterState();
+    resetToFirstPage();
+  });
+
+  filterTrigger?.addEventListener('click', () => setFilterOpen(filterModal?.hidden ?? true));
+  document.getElementById('debugFilterClose')?.addEventListener('click', () => setFilterOpen(false));
+  document.getElementById('debugFilterDone')?.addEventListener('click', () => setFilterOpen(false));
+  filterBackdrop?.addEventListener('click', () => setFilterOpen(false));
+  document.addEventListener('click', () => closeCustomSelects());
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && filterModal && !filterModal.hidden) setFilterOpen(false);
+  });
+
+  searchInput?.addEventListener('input', () => {
+    searchTerm = searchInput.value.trim().toLowerCase();
+    if (searchClear) searchClear.style.display = searchTerm ? 'inline-flex' : 'none';
+    resetToFirstPage();
+  });
+
+  searchClear?.addEventListener('click', () => {
+    if (!searchInput) return;
+    searchInput.value = '';
+    searchTerm = '';
+    searchClear.style.display = 'none';
+    searchInput.focus();
+    resetToFirstPage();
+  });
+
+  sortButton?.addEventListener('click', () => {
+    sortMode = sortMode === 'updated-desc' ? 'title-asc' : 'updated-desc';
+    sortButton.setAttribute('aria-pressed', String(sortMode === 'title-asc'));
+    if (sortLabel) sortLabel.textContent = sortMode === 'title-asc' ? '名称排序' : '最近更新';
+    resetToFirstPage();
+  });
+
+  viewToggle?.addEventListener('click', () => {
+    viewMode = viewMode === 'grid' ? 'list' : 'grid';
+    applyViewMode();
+    applyFilters();
+    try {
+      localStorage.setItem('devnotes-debug-view', viewMode);
+    } catch {
+      // 浏览器禁用本地存储时，仍保留本次页面会话的视图切换。
+    }
   });
 
   document.getElementById('notesPrevPage')?.addEventListener('click', () => {
@@ -151,13 +361,24 @@ const noteDataForClient = sortedNotes.map(n => ({
     applyFilters();
   }
 
+  function compareCards(a, b) {
+    if (sortMode === 'title-asc') {
+      return titleCollator.compare(a.dataset.title || '', b.dataset.title || '')
+        || originalOrder.get(a) - originalOrder.get(b);
+    }
+
+    const updatedDifference = (Date.parse(b.dataset.updated || '') || 0) - (Date.parse(a.dataset.updated || '') || 0);
+    return updatedDifference || originalOrder.get(a) - originalOrder.get(b);
+  }
+
   function applyFilters({ scrollToList = false } = {}) {
-    const cards = [...document.querySelectorAll('.note-card')];
-    const filtered = cards.filter(card => (
-      (!filters.product || card.dataset.product === filters.product)
-        && (!filters.stacks || card.dataset.stacks.split(',').includes(filters.stacks))
-        && (!filters.langs || card.dataset.langs.split(',').includes(filters.langs))
-        && (!filters.type || card.dataset.type === filters.type)
+    const pageSize = pageSizes[viewMode];
+    const orderedCards = [...cards].sort(compareCards);
+    noteList?.append(...orderedCards);
+    const filtered = orderedCards.filter(card => (
+      (!filters.category || card.dataset.category === filters.category)
+        && (!filters.subcategory || card.dataset.subcategory === filters.subcategory)
+        && (!searchTerm || (card.dataset.search || '').toLowerCase().includes(searchTerm))
     ));
     const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
     currentPage = Math.min(Math.max(currentPage, 1), totalPages);
@@ -177,6 +398,7 @@ const noteDataForClient = sortedNotes.map(n => ({
   }
 
   function renderPagination(totalPages, resultCount) {
+    const pageSize = pageSizes[viewMode];
     const pagination = document.getElementById('notesPagination');
     const prev = document.getElementById('notesPrevPage');
     const next = document.getElementById('notesNextPage');
@@ -198,23 +420,9 @@ const noteDataForClient = sortedNotes.map(n => ({
     }));
   }
 
-  document.getElementById('noteList').addEventListener('click', (e) => {
-    const card = e.target.closest('.note-card');
-    if (!card) return;
-    const id = card.dataset.id;
-    const note = noteData.find(n => n.id === id);
-    if (!note) return;
-    const detail = document.getElementById('noteDetail');
-    detail.innerHTML = renderNoteDetail(note);
-    detail.style.display = '';
-    detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  });
-
-  document.getElementById('noteDetail').addEventListener('click', (e) => {
-    if (e.target.id === 'noteDetailClose') {
-      document.getElementById('noteDetail').style.display = 'none';
-    }
-  });
-
+  initializeCustomSelects();
+  populateSubcategoryOptions();
+  updateFilterState();
+  applyViewMode();
   applyFilters();
 </script>

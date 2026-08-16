@@ -1,9 +1,10 @@
 ---
-title: '新建 Agent Skill：lol-data-update（熊窝英雄联盟数据更新）'
+title: "lol-data-update：英雄联盟 - 数据更新"
 date: '2026-08-01'
-tags: [skill, 工具]
-site: skill
-slug: 'skill-lol-data-update'
+updated: '2026-08-01'
+description: '新增全局 Agent Skill ~/.claude/skills/lol-data-update/SKILL.md，将熊窝英雄联盟板块的数据更新方法封装成可被发现、可自动触发的技能，供任意 Agent 在 skill 注册表中调用。'
+subcategory: [功能]
+category: skill
 ---
 
 新增全局 Agent Skill `~/.claude/skills/lol-data-update/SKILL.md`，将熊窝英雄联盟板块的数据更新方法封装成可被发现、可自动触发的技能，供任意 Agent 在 skill 注册表中调用。

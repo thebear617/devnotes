@@ -1,9 +1,10 @@
 ---
-title: '科研笔记 v0.6.0：迁移 Astro 并重构四板块阅读体验'
+title: "科研笔记 v0.6.0：站点架构 - Astro 迁移与四板块阅读"
 date: '2026-07-31'
-tags: [科研笔记, 架构]
-site: 科研笔记
-slug: 'reanotes-v060'
+updated: '2026-07-31'
+description: 'ReaNotes 在 v0.6.0 完成从 VuePress 2 到 Astro 5 的框架迁移，并将原本以树状文档为中心的阅读方式收束为四个板块的博客式入口。'
+subcategory: [架构]
+category: 科研笔记
 ---
 
 ReaNotes 在 v0.6.0 完成从 VuePress 2 到 Astro 5 的框架迁移，并将原本以树状文档为中心的阅读方式收束为四个板块的博客式入口。Markdown 仍是唯一正文源，原有文章地址保留静态重定向。

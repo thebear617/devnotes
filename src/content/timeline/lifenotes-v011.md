@@ -1,9 +1,10 @@
 ---
-title: '常识笔记 v0.1.1：v0.1.1: 全量迁移至 9 领域'
+title: "常识笔记 v0.1.1：内容领域 - 迁移至 9 个领域"
 date: '2026-07-09'
-tags: [常识笔记, 架构]
-site: 常识笔记
-slug: 'lifenotes-v011'
+updated: '2026-07-09'
+description: '本次更新聚焦全量迁移至 9 领域。'
+subcategory: [架构]
+category: 常识笔记
 ---
 
 - PILOT_DOMAINS 设为 None，编译除「无畏契约」外全部 9 个领域

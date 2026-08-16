@@ -1,9 +1,10 @@
 ---
-title: '新建 Agent Skill：pdf2blog-zh（PDF 论文中文博客转换）'
+title: "pdf2blog-zh：论文 PDF - 中文博客转换"
 date: '2026-08-01'
-tags: [skill, 工具]
-site: skill
-slug: 'skill-pdf2blog-zh'
+updated: '2026-08-01'
+description: '新增全局 Agent Skill ~/.claude/skills/pdf2blog-zh/，将学术 PDF 转为可发布到 ReaNotes 的中文 Markdown 文章；流程只保留正文和正文实际引用的图片，不生成 Obsidian 入库、原文副本或质量报告等额外产物。'
+subcategory: [功能]
+category: skill
 ---
 
 新增全局 Agent Skill `~/.claude/skills/pdf2blog-zh/`，将学术 PDF 转为可发布到 ReaNotes 的中文 Markdown 文章；流程只保留正文和正文实际引用的图片，不生成 Obsidian 入库、原文副本或质量报告等额外产物。

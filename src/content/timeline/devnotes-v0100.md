@@ -1,9 +1,10 @@
 ---
-title: '开发笔记 v0.10.0：重建知识库主轴与内容分类体系'
+title: "开发笔记 v0.10.0：知识库 - 主轴与内容分类重建"
 date: '2026-08-05'
-tags: [开发笔记, 架构]
-site: 开发笔记
-slug: 'devnotes-v0100'
+updated: '2026-08-05'
+description: '本次版本完成了知识库从历史内容形态到“一级主轴 × 二级内容角色”的整体收束，后续新增内容可以沿着统一的文件树和 front matter 约定继续积累。'
+subcategory: [架构]
+category: 开发笔记
 ---
 
 - 重建知识库文件树：以 `development`、`research`、`reflections` 作为一级主轴，以 `overviews`、`fundamentals`、`cases`、`resources` 和 `essays` 表达内容角色

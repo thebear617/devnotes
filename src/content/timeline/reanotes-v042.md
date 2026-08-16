@@ -1,9 +1,10 @@
 ---
-title: '科研笔记 v0.4.2：发布 v0.4.2 论文翻译与发布工作流'
+title: "科研笔记 v0.4.2：论文处理 - 翻译与发布工作流"
 date: '2026-07-19'
-tags: [科研笔记, 功能]
-site: 科研笔记
-slug: 'reanotes-v042'
+updated: '2026-07-19'
+description: '将 paper-translate 从工作区工具迁入 ReaNotes 仓库，形成可版本管理、可质量阻断并能直接进入文献库的端到端论文处理能力。'
+subcategory: [功能]
+category: 科研笔记
 ---
 
 将 paper-translate 从工作区工具迁入 ReaNotes 仓库，形成可版本管理、可质量阻断并能直接进入文献库的端到端论文处理能力。

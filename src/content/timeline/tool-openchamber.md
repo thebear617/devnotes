@@ -1,9 +1,10 @@
 ---
-title: '了解 Open Chamber 插件：Open Code 的 VSCode 辅助侧边栏'
+title: "Open Chamber：VSCode 插件 - OpenCode 辅助侧边栏"
 date: '2026-07-20'
-tags: [工具, 功能]
-site: 工具
-slug: 'tool-openchamber'
+updated: '2026-07-20'
+description: 'Open Chamber 是一个 VSCode 插件，用于更好地渲染和使用 Open Code。'
+subcategory: [功能]
+category: 工具
 ---
 
 Open Chamber 是一个 VSCode 插件，用于更好地渲染和使用 Open Code。

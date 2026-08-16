@@ -1,9 +1,10 @@
 ---
-title: '常识笔记 v0.2.1：编译时过滤无价值条目（领域描述、文档骨架、待补TODO）'
+title: "常识笔记 v0.2.1：内容集合 - 编译时过滤无价值条目"
 date: '2026-07-10'
-tags: [常识笔记, 功能]
-site: 常识笔记
-slug: 'lifenotes-v021'
+updated: '2026-07-10'
+description: '本次更新聚焦编译时过滤无价值条目（领域描述、文档骨架、待补TODO）。'
+subcategory: [功能]
+category: 常识笔记
 ---
 
 - build-notes.py: parse_map_records 新增过滤逻辑，三种情况跳过：

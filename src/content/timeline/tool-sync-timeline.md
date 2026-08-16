@@ -1,9 +1,10 @@
 ---
-title: '建立个人开发时间线自动同步系统'
+title: "开发时间线同步：版本缺口 - 自动同步系统"
 date: '2026-07-20'
-tags: [熊窝, 工具]
-site: 熊窝
-slug: 'tool-sync-timeline'
+updated: '2026-07-20'
+description: '建立了个人开发时间线自动同步系统：脚本检测版本缺口 + Git hook 提醒 + Agent skill 按流程生成条目。'
+subcategory: [架构]
+category: 熊窝
 ---
 
 建立了个人开发时间线自动同步系统：脚本检测版本缺口 + Git hook 提醒 + Agent skill 按流程生成条目。

@@ -1,9 +1,10 @@
 ---
-title: '熊窝 v0.13.0：个人开发时间线迁移至 DevNotes'
+title: "熊窝 v0.13.0：开发时间线 - 迁移至 DevNotes"
 date: '2026-07-21'
-tags: [熊窝, 架构]
-site: 熊窝
-slug: 'personal-v0130'
+updated: '2026-07-21'
+description: '熊窝完成一次职责收缩：个人开发时间线从 personal 迁移到 DevNotes，旧入口、重复数据和本地同步实现全部移除。'
+subcategory: [架构]
+category: 熊窝
 ---
 
 熊窝完成一次职责收缩：个人开发时间线从 personal 迁移到 DevNotes，旧入口、重复数据和本地同步实现全部移除。本次版本涉及 11 个文件，新增 200 行、删除 1530 行。

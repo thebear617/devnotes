@@ -1,9 +1,10 @@
 ---
-title: '开发笔记 v0.12.0：升级 Astro 7 并提交第32周随笔'
+title: "开发笔记 v0.12.0：内容库 - Astro 7 升级与第 32 周随笔"
 date: '2026-08-09'
-tags: [开发笔记, 架构, 内容]
-site: 开发笔记
-slug: 'devnotes-v0120'
+updated: '2026-08-09'
+description: '开发笔记完成从 Astro 5 到 Astro 7.2.0 的升级，同时补充开发知识与第 32 周随笔内容。'
+subcategory: [架构, 内容]
+category: 开发笔记
 ---
 
 开发笔记完成从 Astro 5 到 Astro 7.2.0 的升级，同时补充开发知识与第 32 周随笔内容。

@@ -1,7 +1,7 @@
 ---
-title: 配置记录：OpenCode 模型路由
+title: "配置记录：OpenCode - 模型路由"
 date: '2026-08-05'
-updated: '2026-08-13'
+updated: '2026-08-14'
 category: 开发与实践
 subcategory: 配置记录
 description: 记录当前 OpenCode Go 当前的路由策略。
@@ -31,12 +31,12 @@ OpenCode 的 Agent 分为 primary agent 和 subagent；subagent 可以被主 Age
 | `@route-plan` | `opencode-go/deepseek-v4-pro` | 根因分析、架构设计、实施计划和风险判断 | 禁止编辑，Bash 允许 |
 | `@route-build` | `opencode-go/gpt-5.6-luna` | 实际修改代码、内容和配置，运行必要验证 | 编辑和 Bash 允许 |
 | `@route-review` | `opencode-go/deepseek-v4-pro` | 检查 diff、测试、构建、发布风险和敏感信息 | 禁止编辑，Bash 允许 |
-| `@route-docs` | `opencode-go/gpt-5.6-luna` | 中文 Markdown、文档、注释和结构化内容；涉及图片时使用模型原生视觉能力 | 编辑和 Bash 允许；默认不调用 `image-vision` skill |
-| `@route-vision` | `opencode-go/gpt-5.6-luna` | 使用模型原生视觉能力分析截图、界面布局、本地图片和 OCR，必要时处理图片并修改实现 | 编辑和 Bash 允许；默认不调用 `image-vision` skill |
+| `@route-docs` | `opencode-go/gpt-5.6-luna` | 中文 Markdown、文档、注释和结构化内容；GPT-5.6 Luna 可直接接收并理解图片 | 编辑和 Bash 允许；默认不调用 `image-vision` skill |
+| `@route-vision` | `opencode-go/gpt-5.6-luna` | GPT-5.6 Luna 直接分析截图、界面布局、本地图片和 OCR，必要时处理图片并修改实现 | 编辑和 Bash 允许；默认不调用 `image-vision` skill |
 
-全局默认模型仍是 `opencode-go/deepseek-v4-flash`；当前规划和审查任务使用 DeepSeek V4 Pro，Router、仓库探索、实际修改、中文文档和视觉任务使用 GPT-5.6 Luna。
+全局默认模型仍是 `opencode-go/deepseek-v4-flash`；当前默认入口 Agent 是 `router`。规划和审查任务使用 DeepSeek V4 Pro，Router、仓库探索、实际修改、中文文档和视觉任务使用 GPT-5.6 Luna。
 
-`route-docs` 和 `route-vision` 都具备 GPT-5.6 Luna 的原生视觉能力，不默认调用 `image-vision` skill。遇到需要图片理解或图片模态输入的任务，优先交给 `route-vision`；如果任务主体是文档处理，同时需要理解图片，则可以交给 `route-docs`。
+GPT-5.6 Luna 支持直接接收并理解图片输入，因此 `route-docs` 和 `route-vision` 都可以使用模型自身的视觉能力，不需要额外调用 `image-vision` skill。遇到需要图片理解或图片模态输入的任务，优先交给 `route-vision`；如果任务主体是文档处理，同时需要理解图片，则可以交给 `route-docs`。
 
 ## 三、典型工作流
 
@@ -80,15 +80,18 @@ OpenCode 的 Agent 分为 primary agent 和 subagent；subagent 可以被主 Age
 ~/.config/opencode/opencode.json
 ```
 
-当前只增加了默认模型：
+当前全局配置将默认模型设为 `opencode-go/deepseek-v4-flash`，并将默认入口 Agent 设为 `router`：
 
 ```json
 {
   "$schema": "https://opencode.ai/config.json",
   "model": "opencode-go/deepseek-v4-flash",
-  "mcp": {}
+  "mcp": {},
+  "default_agent": "router"
 }
 ```
+
+这样在没有显式指定 Agent 时，OpenCode 每次启动新会话都会默认进入 `router`，而不是内置的 `build`；需要时仍可以显式切换到其他 Agent。
 
 OpenCode 的全局用户配置使用 `~/.config/opencode/opencode.json`；全局 Agent 则放在同目录下的 `agents/` 文件夹。[Config 文档](https://opencode.ai/docs/config/)
 

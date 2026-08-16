@@ -1,9 +1,10 @@
 ---
-title: '新建 Agent Skill：share-scraper（AI 分享页爬取存档）'
+title: "share-scraper：AI 分享页 - 爬取存档"
 date: '2026-08-01'
-tags: [skill, 工具]
-site: skill
-slug: 'skill-share-scraper'
+updated: '2026-08-01'
+description: '新增全局 Agent Skill ~/.claude/skills/share-scraper/，把 AI 助手的公开分享页（Claude / ChatGPT 分享链接）抓取成干净 Markdown，用于存档、转笔记或二次处理。'
+subcategory: [功能]
+category: skill
 ---
 
 新增全局 Agent Skill `~/.claude/skills/share-scraper/`，把 AI 助手的公开分享页（Claude / ChatGPT 分享链接）抓取成干净 Markdown，用于存档、转笔记或二次处理。

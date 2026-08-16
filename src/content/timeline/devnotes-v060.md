@@ -1,9 +1,10 @@
 ---
-title: '开发笔记 v0.6.0：博客二级标签体系与 KaTeX 公式支持'
+title: "开发笔记 v0.6.0：博客 - 二级标签与 KaTeX"
 date: '2026-07-25'
-tags: [开发笔记, 功能]
-site: 开发笔记
-slug: 'devnotes-v060'
+updated: '2026-07-25'
+description: '博客页引入「一级 + 二级」双标签筛选，并接入数学公式渲染。'
+subcategory: [功能]
+category: 开发笔记
 ---
 
 博客页引入「一级 + 二级」双标签筛选，并接入数学公式渲染。

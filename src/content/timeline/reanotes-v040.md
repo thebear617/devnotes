@@ -1,9 +1,10 @@
 ---
-title: '科研笔记 v0.4.0：v0.4.0 引入卡片 Markdown 正文渲染'
+title: "科研笔记 v0.4.0：卡片正文 - Markdown 渲染"
 date: '2026-07-16'
-tags: [科研笔记, 功能]
-site: 科研笔记
-slug: 'reanotes-v040'
+updated: '2026-07-16'
+description: '本次更新聚焦v0.4.0 引入卡片 Markdown 正文渲染。'
+subcategory: [功能]
+category: 科研笔记
 ---
 
 - 新增 content/replearning/supervised/ 目录，存放 ImageNet 预训练范式与监督表示特性两篇正文

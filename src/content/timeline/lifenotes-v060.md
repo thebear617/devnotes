@@ -1,9 +1,10 @@
 ---
-title: '常识笔记 v0.6.0：迁移至 Astro 并完成全领域内容路由'
+title: "常识笔记 v0.6.0：站点架构 - Astro 迁移与全领域路由"
 date: '2026-07-22'
-tags: [常识笔记, 架构]
-site: 常识笔记
-slug: 'lifenotes-v060'
+updated: '2026-07-22'
+description: '常识笔记完成从 Python 编译脚本驱动的纯静态站点到 Astro 5 的架构迁移，正式内容改由 Astro Content Collections 管理，开发、构建和部署链路统一到 Node.js 与 GitHub Actions。'
+subcategory: [架构]
+category: 常识笔记
 ---
 
 常识笔记完成从 Python 编译脚本驱动的纯静态站点到 Astro 5 的架构迁移，正式内容改由 Astro Content Collections 管理，开发、构建和部署链路统一到 Node.js 与 GitHub Actions。

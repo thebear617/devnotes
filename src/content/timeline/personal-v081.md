@@ -1,9 +1,10 @@
 ---
-title: '熊窝 v0.8.1：路由表新增常用链接，会员补充 ChatGPT Plus，修复备注列截断'
+title: "熊窝 v0.8.1：路由表与会员订阅 - 链接、套餐与备注"
 date: '2026-07-13'
-tags: [熊窝, 功能]
-site: 熊窝
-slug: 'personal-v081'
+updated: '2026-07-13'
+description: '本次更新聚焦路由表新增常用链接，会员补充 ChatGPT Plus，修复备注列截断。'
+subcategory: [功能]
+category: 熊窝
 ---
 
 - 路由表 routeCategories 新增「🔗 常用链接」分类（LDXP 神秘小铺 / OpenTheRank / OpenRouter Rankings），置于「个人站点」之后

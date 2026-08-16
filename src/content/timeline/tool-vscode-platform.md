@@ -1,9 +1,10 @@
 ---
-title: 'VSCode 工作平台集成：Cloud Code + Code X + Open Code'
+title: "VSCode：工作平台 - Cloud Code、Codex 与 OpenCode 集成"
 date: '2026-07-20'
-tags: [工具, 功能]
-site: 工具
-slug: 'tool-vscode-platform'
+updated: '2026-07-20'
+description: '将主力工作环境整合到 VSCode 侧边栏，不再依赖 Work Body 之外的工具。'
+subcategory: [功能]
+category: 工具
 ---
 
 将主力工作环境整合到 VSCode 侧边栏，不再依赖 Work Body 之外的工具。

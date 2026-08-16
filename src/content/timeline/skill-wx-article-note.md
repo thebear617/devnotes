@@ -1,9 +1,10 @@
 ---
-title: '新建 Agent Skill：wx-article-note（微信文章解析）'
+title: "wx-article-note：微信公众号 - 文章解析"
 date: '2026-08-02'
-tags: [skill, 工具]
-site: skill
-slug: 'skill-wx-article-note'
+updated: '2026-08-02'
+description: '新增全局 Agent Skill ~/.claude/skills/wx-article-note/，把微信公众号文章（mp.weixin.qq.com/s/... 链接）解析成结构化笔记：抓 HTML → 判断文章类型 → 提取正文或下载全部图片 → 交给 MiniMax 视觉工具读取，无需登录。'
+subcategory: [功能]
+category: skill
 ---
 
 新增全局 Agent Skill `~/.claude/skills/wx-article-note/`，把微信公众号文章（`mp.weixin.qq.com/s/...` 链接）解析成结构化笔记：抓 HTML → 判断文章类型 → 提取正文或下载全部图片 → 交给 MiniMax 视觉工具读取，无需登录。

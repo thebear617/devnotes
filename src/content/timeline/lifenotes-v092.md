@@ -1,9 +1,10 @@
 ---
-title: '常识笔记 v0.9.2：标题命名统一 + 全领域 subcategory 对齐'
+title: "常识笔记 v0.9.2：内容命名 - 标题与 subcategory 对齐"
 date: '2026-07-30'
-tags: [常识笔记, 内容]
-site: 常识笔记
-slug: 'lifenotes-v092'
+updated: '2026-07-30'
+description: '常识笔记 v0.9.2 对全领域文章的标题命名和子分类做一次系统统一，并补充 auto 领域聚类。'
+subcategory: [内容]
+category: 常识笔记
 ---
 
 常识笔记 v0.9.2 对全领域文章的标题命名和子分类做一次系统统一，并补充 auto 领域聚类。

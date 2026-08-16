@@ -1,9 +1,10 @@
 ---
-title: '开发笔记 v0.2.0：Vue 3 → Astro 5 重构'
+title: "开发笔记 v0.2.0：站点架构 - Vue 3 到 Astro 5"
 date: '2026-07-19'
-tags: [开发笔记, 架构]
-site: 开发笔记
-slug: 'devnotes-v020'
+updated: '2026-07-19'
+description: '本次更新聚焦Vue 3 → Astro 5 重构。'
+subcategory: [架构]
+category: 开发笔记
 ---
 
 迁移内容：

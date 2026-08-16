@@ -1,9 +1,10 @@
 ---
-title: '猪窝 v0.2.0：新增美食记录 Tab'
+title: "猪窝 v0.2.0：美食记录 - Tab 新增"
 date: '2026-06-30'
-tags: [猪窝, 功能]
-site: 猪窝
-slug: 'home-v020'
+updated: '2026-06-30'
+description: '猪窝从单纯的物资管理扩展到美食记录。'
+subcategory: [功能]
+category: 猪窝
 ---
 
 猪窝从单纯的物资管理扩展到美食记录。新增 Tab 记录每日做饭菜品与花费，开始向「家庭生活全记录」演变。

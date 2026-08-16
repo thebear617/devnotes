@@ -3,8 +3,8 @@ title: "聊天站 v0.6.0：AI 网关 - 模型路由与联网接口"
 date: '2026-08-16'
 updated: '2026-08-16'
 description: 'ChatNotes v0.6.0 增加统一 AI 网关与模型路由：接入聊天、MiniMax 和预览接口，补齐 DeepSeek/MiniMax CLI、联网检索及流式响应的契约和实现文档。'
-categories: [架构]
-site: 聊天站
+subcategory: [架构]
+category: 聊天站
 ---
 
 ChatNotes v0.6.0 增加统一 AI 网关与模型路由：接入聊天、MiniMax 和预览接口，补齐 DeepSeek/MiniMax CLI、联网检索及流式响应的契约和实现文档。

@@ -1,9 +1,10 @@
 ---
-title: '熊窝 v0.7.0：新增个人开发时间线同步脚本 sync-timeline.py'
+title: "熊窝 v0.7.0：开发时间线 - 自动同步脚本"
 date: '2026-07-10'
-tags: [熊窝, 功能]
-site: 熊窝
-slug: 'personal-v070'
+updated: '2026-07-10'
+description: '本次更新聚焦新增个人开发时间线同步脚本 sync-timeline.py。'
+subcategory: [功能]
+category: 熊窝
 ---
 
 - scripts/sync-timeline.py：对比各仓库 main 带版本号 commit 与时间轴

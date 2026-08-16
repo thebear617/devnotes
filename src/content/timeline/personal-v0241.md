@@ -1,9 +1,10 @@
 ---
-title: '熊窝 v0.24.1–v0.24.2：路由表图标本地化与生活仪表盘追踪调整'
+title: "熊窝 v0.24.1–v0.24.2：路由表与生活仪表盘 - 图标本地化与追踪调整"
 date: '2026-08-09'
-tags: [熊窝, 功能]
-site: 熊窝
-slug: 'personal-v0241'
+updated: '2026-08-09'
+description: '把 personal 首页路由表的图标全部改为本地静态资源，彻底摆脱对第三方 favicon API 的运行时依赖。'
+subcategory: [功能]
+category: 熊窝
 ---
 
 把 personal 首页路由表的图标全部改为本地静态资源，彻底摆脱对第三方 favicon API 的运行时依赖。

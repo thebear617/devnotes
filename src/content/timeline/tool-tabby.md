@@ -1,9 +1,10 @@
 ---
-title: '安装 Tabby 终端：新一代跨平台终端模拟器'
+title: "Tabby：终端 - 跨平台终端模拟器"
 date: '2026-07-17'
-tags: [工具, 功能]
-site: 工具
-slug: 'tool-tabby'
+updated: '2026-07-17'
+description: '安装了 Tabby 终端模拟器，替代系统默认终端。'
+subcategory: [功能]
+category: 工具
 ---
 
 安装了 Tabby 终端模拟器，替代系统默认终端。支持多标签、分屏、SSH 客户端、主题自定义。

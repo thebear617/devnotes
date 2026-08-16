@@ -1,9 +1,10 @@
 ---
-title: '猪窝 v0.4.0：出发拆分为旅游 + 西安 walk 双 Tab'
+title: "猪窝 v0.4.0：出发 - 旅游与西安 walk 双 Tab"
 date: '2026-07-08'
-tags: [猪窝, 功能]
-site: 猪窝
-slug: 'home-v040'
+updated: '2026-07-08'
+description: '「出发」Tab 拆分为「旅游🛫」和「西安 walk」两个独立 Tab，两 Tab 共用参数化的时间线渲染（buildTravelTimeline 重构为支持不同数据源）。'
+subcategory: [功能]
+category: 猪窝
 ---
 
 「出发」Tab 拆分为「旅游🛫」和「西安 walk」两个独立 Tab，两 Tab 共用参数化的时间线渲染（buildTravelTimeline 重构为支持不同数据源）。

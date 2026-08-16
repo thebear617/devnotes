@@ -1,9 +1,10 @@
 ---
-title: '科研笔记 v0.7.0：建立 PDF 论文中文博客转换工作流'
+title: "科研笔记 v0.7.0：论文处理 - PDF 中文博客转换"
 date: '2026-08-01'
-tags: [科研笔记, 功能]
-site: 科研笔记
-slug: 'reanotes-v070'
+updated: '2026-08-01'
+description: 'ReaNotes v0.7.0 将论文 PDF 到中文博客的链路收束为 $pdf2blog-zh 全局 Skill 和仓库内可测试脚本；最终产物仅包含可发布的中文 Markdown 与实际引用图片。'
+subcategory: [功能]
+category: 科研笔记
 ---
 
 ReaNotes v0.7.0 将论文 PDF 到中文博客的链路收束为 `$pdf2blog-zh` 全局 Skill 和仓库内可测试脚本；最终产物仅包含可发布的中文 Markdown 与实际引用图片。

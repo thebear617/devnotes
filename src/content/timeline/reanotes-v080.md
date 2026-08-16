@@ -1,9 +1,10 @@
 ---
-title: '科研笔记 v0.8.0：升级 Astro 7 并迁移内容集合'
+title: "科研笔记 v0.8.0：内容集合 - Astro 7 迁移"
 date: '2026-08-09'
-tags: [科研笔记, 架构]
-site: 科研笔记
-slug: 'reanotes-v080'
+updated: '2026-08-09'
+description: '科研笔记完成从 Astro 5.18.2 到 Astro 7.2.0 的升级，继续以 docs/ 中的 Markdown 作为唯一内容源，并适配 Astro 7 的 Content Layer 与 Markdown 处理管线。'
+subcategory: [架构]
+category: 科研笔记
 ---
 
 科研笔记完成从 Astro 5.18.2 到 Astro 7.2.0 的升级，继续以 `docs/` 中的 Markdown 作为唯一内容源，并适配 Astro 7 的 Content Layer 与 Markdown 处理管线。

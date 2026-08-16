@@ -1,9 +1,10 @@
 ---
-title: '常识笔记 v0.1.0：站点上线'
+title: "常识笔记 v0.1.0：站点 - 上线"
 date: '2026-07-09'
-tags: [常识笔记, 站点]
-site: 常识笔记
-slug: 'lifenotes-v010'
+updated: '2026-07-09'
+description: '把 Obsidian「知识观察型笔记」编译为多领域常识站。'
+subcategory: [内容, 架构]
+category: 常识笔记
 ---
 
 把 Obsidian「知识观察型笔记」编译为多领域常识站。复用科研笔记引擎，品牌色暖橙 #c2410c。

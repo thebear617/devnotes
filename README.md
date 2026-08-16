@@ -5,7 +5,7 @@
 当前站点包含五个板块：
 
 - **开发时间线**：记录个人项目、站点与开发工具的版本演进；
-- **笔记中心**：开发工具使用心得、经验和排雷记录，支持按产品、技术栈、语言和类型筛选；
+- **Debug 库**：开发调试、问题排查与工具经验，支持按一级、二级分类筛选和关键词搜索；
 - **知识库**：统一收录开发与实践、科研和个人随笔；按一级领域与二级内容角色筛选，并支持关键词搜索；
 - **价格矩阵**：AI 编程产品及模型服务的订阅价格对比。
 
@@ -31,14 +31,14 @@ devnotes/
 │   ├── content.config.ts      # Content Layer 内容集合及 frontmatter 约束
 │   ├── content/
 │   │   ├── knowledge/        # Markdown 知识库，按一级领域与二级内容角色组织
-│   │   └── timeline/         # Markdown 开发时间线条目
+│   │   ├── timeline/         # Markdown 开发时间线条目
+│   │   └── debug/            # Markdown Debug 库条目
 │   ├── data/
-│   │   ├── notes.js          # 笔记中心数据
 │   │   └── pricing.js        # 价格矩阵数据与来源链接
 │   ├── layouts/
 │   │   └── Layout.astro      # 全站布局、侧栏与移动端导航
 │   ├── pages/
-│   │   ├── notes.astro       # 笔记中心
+│   │   ├── notes.astro       # Debug 库
 │   │   ├── pricing.astro     # 价格矩阵
 │   │   ├── knowledge/        # 知识库列表与详情页
 │   │   └── timeline/         # 时间线列表与独立详情页
@@ -66,7 +66,7 @@ npm install
 npm run dev
 ```
 
-Astro 默认使用 `http://localhost:4321`。访问根路径后会进入笔记中心。
+Astro 默认使用 `http://localhost:4321`。访问根路径后会进入 Debug 库。
 
 构建并检查生产版本：
 
@@ -107,45 +107,59 @@ src/content/knowledge/development/overviews/传统全栈开发.md
 title: 文章标题
 date: '2026-07-20'
 category: 开发与实践 # 开发与实践 | 科研 | 随想
-subcategory: 基础知识 # 基础知识 | 典型案例 | 学习资源 | 配置记录 | 综述 | 随笔
+subcategory: 基础知识 # 基础知识 | 典型案例 | 学习资源 | 配置记录 | 综述 | 随笔 | 时刻
 description: 用于知识库列表的简短摘要
-slug: traditional-full-stack-development # 可选；重命名既有文件时保留旧 URL
+slug: traditional-full-stack-development # 必填；用于生成知识库详情页 URL
 ---
 ```
 
 正文使用标准 Markdown，可以直接插入标题、列表、代码块、引用、链接和表格。知识库列表按 `updated`（若有）或 `date` 从新到旧排列。
 
-`category` 表示一级领域，`subcategory` 表示二级内容角色；两者应与文件所在目录保持一致。`category` 可使用 `开发与实践`、`科研`、`随想`，二级目录可使用 `基础知识`、`典型案例`、`学习资源`、`配置记录`、`综述`，随想目前使用 `随笔`。
+知识库标题统一使用 `内容类型：主题对象 - 具体内容` 格式。内容类型应与 `subcategory` 对应，例如 `基础知识：计算机网络`、`典型案例：Agentic IDE 的具体实践`、`配置记录：OpenCode - 模型路由`、`综述：世界模型`；基础知识、综述和学习资源可以直接写成“类型：主题”，配置记录、典型案例和时刻类内容在需要区分对象与主题时使用短破折号。
+
+`category` 表示一级领域，`subcategory` 表示二级内容角色；两者都是必填枚举，并应与文件所在目录保持一致。`category` 可使用 `开发与实践`、`科研`、`随想`，二级目录可使用 `基础知识`、`典型案例`、`学习资源`、`配置记录`、`综述`、`随笔`、`时刻`。
 
 旧的 `/blog/` 与 `/prompts/` 列表入口会跳转到 `/knowledge/`。既有详情地址通过 frontmatter 中的显式 `slug` 和 `src/data/legacy-knowledge-routes.js` 中的兼容映射继续访问，不依赖知识条目的额外类型字段。
 
 典型案例建议正文按 `# 案例集合`、案例步骤与 `# 参考资料` 结构组织，来源链接放在参考资料一节。
 
-## 更新笔记中心
+## 更新 Debug 库
 
-编辑 `src/data/notes.js`，向 `notes` 数组添加对象：
+在 `src/content/debug/` 下新增一个 Markdown 文件，每条 Debug 记录对应一个文件：
 
-```js
-{
-  id: 'unique-id',
-  product: 'Qoder',
-  stacks: ['前端', '全栈'],
-  langs: ['TypeScript'],
-  type: '心得',
-  title: '标题',
-  date: '2026-07-20',
-  body: '<p>笔记正文支持 HTML</p>',
-  links: [
-    { title: '官网', url: 'https://example.com' }
-  ]
-}
+```text
+src/content/debug/unique-id.md
 ```
 
-其中 `product`、`stacks`、`langs` 和 `type` 会自动生成筛选项。`id` 必须唯一。
+文件 frontmatter 使用以下字段：
+
+```yaml
+---
+title: 对象：模块 - 问题
+date: '2026-07-20'
+updated: '2026-07-20'
+category: 开发工具
+subcategory: Agent
+description: 用于 Debug 库列表的简短摘要
+slug: qoder-agent-debug
+---
+
+正文使用标准 Markdown；参考资料直接写在正文末尾，不再单独维护 `links` 字段。
+```
+
+Debug 标题统一使用 `对象：模块 - 问题` 格式：对象填写站点或应用名称，模块填写具体功能或子系统，最后用短破折号补充问题或记录主题。例如：`猪窝：美食地图 - 区域列表分页显示异常`、`MiniMax：MCP - SDK 版本不兼容`。文件名保持便于本地阅读，`slug` 使用英文 kebab-case，并作为详情页 URL 标识。
+
+Debug 库只使用两级分类：`category` 是一级领域，`subcategory` 是对应的二级主题。标题负责表达对象、模块和问题，正文负责记录具体技术细节；不再额外维护对象、记录类型和技术栈字段。`slug` 用于详情页路由，`updated` 省略时会自动与 `date` 保持一致。
+
+当前一级分类包括 `站点与应用`、`开发工具` 和 `系统与平台`。二级分类分别为：`站点与应用` 下的 `UI/UX`、`内容数据`、`构建部署`、`架构渲染`；`开发工具` 下的 `Agent`、`环境依赖`、`架构框架`；`系统与平台` 下的 `操作系统`、`计算机网络`。二级分类必须属于对应的一级分类，具体受 `src/content.config.ts` 中的 schema 校验。
 
 ## 更新开发时间线
 
-时间线的唯一数据源是 `src/content/timeline/*.md`。每条记录一个 Markdown 文件，frontmatter 包含 `title`、`date`、`tags`、`site` 和 `slug`，正文用于详情页。
+时间线的唯一数据源是 `src/content/timeline/*.md`。每条记录一个 Markdown 文件，frontmatter 使用 `title`、`date`、`updated`、`category`、`subcategory` 和 `description` 字段，正文用于详情页。其中 `updated` 和 `description` 可以按需省略；`updated` 省略时，初始值会自动与 `date` 保持一致。时间线详情地址直接由 Markdown 文件名生成。
+
+时间线标题统一使用 `对象 [版本]：模块 - 变更主题` 格式。版本型站点示例为 `猪窝 v1.10.0：美食地图 - 区域视图收尾`；工具或 Skill 没有版本时省略版本，例如 `Breaks：菜单栏番茄钟 - 热力图与离开检测`。版本号只出现一次，标题不再用“安装”“新建”“了解”等动作词作为统一前缀；已有文件名、slug 和详情地址保持不变。
+
+时间线筛选使用两级分类：`category` 对应原来的一级“站点”枚举，`subcategory` 对应原来的二级分类枚举，两个字段都必填；`subcategory` 至少选择一项，受控值包括功能、内容、视觉、架构和修复。当前 `category` 只允许开发笔记、常识笔记、游戏笔记、熊窝、猪窝、猫猫、科研笔记、聊天站、工具和 skill。
 
 检测各站点尚未记录的大版本：
 

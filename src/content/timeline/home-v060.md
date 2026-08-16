@@ -1,9 +1,10 @@
 ---
-title: '猪窝 v0.6.0：新增关系时间线 Tab'
+title: "猪窝 v0.6.0：关系时间线 - Tab 新增"
 date: '2026-07-09'
-tags: [猪窝, 功能]
-site: 猪窝
-slug: 'home-v060'
+updated: '2026-07-09'
+description: '将散落在各处的旅游、西安 walk、吵架复盘等生活记录收编到一个集中的时间线视图。'
+subcategory: [功能]
+category: 猪窝
 ---
 
 猪窝新增第 6 个 Tab。将散落在各处的旅游、西安 walk、吵架复盘等生活记录收编到一个集中的时间线视图。

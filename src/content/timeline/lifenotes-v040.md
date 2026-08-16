@@ -1,9 +1,10 @@
 ---
-title: '常识笔记 v0.4.0：架构升级为独立内容库与视频入库工作流'
+title: "常识笔记 v0.4.0：内容库 - 独立内容库与视频入库工作流"
 date: '2026-07-16'
-tags: [常识笔记, 架构]
-site: 常识笔记
-slug: 'lifenotes-v040'
+updated: '2026-07-16'
+description: '本次更新聚焦架构升级为独立内容库与视频入库工作流。'
+subcategory: [架构]
+category: 常识笔记
 ---
 
 - 将 59 篇 Markdown 迁入仓库内 content/，取消 Obsidian 运行时依赖

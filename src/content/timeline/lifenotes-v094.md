@@ -1,9 +1,10 @@
 ---
-title: '常识笔记 v0.9.4：内容 schema 迁移 date/updated 必填 + 新内容'
+title: "常识笔记 v0.9.4：内容 schema - date/updated 与新内容"
 date: '2026-08-06'
-tags: [常识笔记, 架构]
-site: 常识笔记
-slug: 'lifenotes-v094'
+updated: '2026-08-06'
+description: 'v0.9.3→v0.9.4 主要变更 = 内容 schema 迁移（date/updated 必填）补齐全站 frontmatter + 新增内容清单。'
+subcategory: [架构]
+category: 常识笔记
 ---
 
 v0.9.3→v0.9.4 主要变更 = 内容 schema 迁移（date/updated 必填）补齐全站 frontmatter + 新增内容清单。本次版本汇集 07-31 至 08-06 的 12 个未推送提交，改动 45 个文件（+509/-8）。

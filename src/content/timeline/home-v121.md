@@ -1,9 +1,10 @@
 ---
-title: '猪窝 v1.2.1：每日看板未来 todo 显示与双图标'
+title: "猪窝 v1.2.1：每日看板 - 未来待办与双图标"
 date: '2026-07-25'
-tags: [猪窝, 功能]
-site: 猪窝
-slug: 'home-v121'
+updated: '2026-07-25'
+description: '每日看板的 patch 更新，让未来 todo 在「待办」列自然可见，并补齐 due/create 双图标与中文日期格式。'
+subcategory: [功能]
+category: 猪窝
 ---
 
 每日看板的 patch 更新，让未来 todo 在「待办」列自然可见，并补齐 due/create 双图标与中文日期格式。
