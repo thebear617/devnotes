@@ -132,8 +132,38 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     <div id="emptyState" class="empty-state" hidden>没有匹配的条目</div>
 
 <script>
-  const filters = { category: '', subcategory: '' };
+  const STORAGE_KEY = 'devnotes-timeline-state';
+  function loadPersistedState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { search: '', sort: 'updated-desc', category: '', subcategory: '' };
+      const parsed = JSON.parse(raw);
+      return {
+        search: typeof parsed.search === 'string' ? parsed.search : '',
+        sort: parsed.sort === 'title-asc' ? 'title-asc' : 'updated-desc',
+        category: typeof parsed.category === 'string' ? parsed.category : '',
+        subcategory: typeof parsed.subcategory === 'string' ? parsed.subcategory : '',
+      };
+    } catch {
+      return { search: '', sort: 'updated-desc', category: '', subcategory: '' };
+    }
+  }
+  function savePersistedState() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        search: searchInput?.value || '',
+        sort: sortMode,
+        category: categorySelect?.value || '',
+        subcategory: subcategorySelect?.value || '',
+      }));
+    } catch {
+      // 浏览器禁用本地存储时，仅保留本次页面会话的筛选状态。
+    }
+  }
+  const persisted = loadPersistedState();
+  const filters = { category: persisted.category, subcategory: persisted.subcategory };
   const searchInput = document.getElementById('timelineSearch');
+  if (searchInput) searchInput.value = persisted.search;
   const filterTrigger = document.getElementById('timelineFilterTrigger');
   const filterBadge = document.getElementById('timelineFilterBadge');
   const filterModal = document.getElementById('timelineFilterModal');
@@ -150,7 +180,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
   const timelineSubcategoryOrder = ['功能', '内容', '视觉', '架构', '修复'];
   const originalOrder = new Map(timelineItems.map((item, index) => [item, index]));
   const titleCollator = new Intl.Collator('zh-CN', { numeric: true, sensitivity: 'base' });
-  let sortMode = 'updated-desc';
+  let sortMode = persisted.sort;
   let currentPage = 1;
   const pageSizes = { grid: 12, list: 8 };
   let viewMode = 'list';
@@ -296,11 +326,13 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     if (subcategorySelect) subcategorySelect.value = '';
     populateSubcategoryOptions();
     updateFilterState();
+    savePersistedState();
     resetToFirstPage();
   });
 
   subcategorySelect?.addEventListener('change', () => {
     updateFilterState();
+    savePersistedState();
     resetToFirstPage();
   });
 
@@ -308,6 +340,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     sortMode = sortMode === 'updated-desc' ? 'title-asc' : 'updated-desc';
     sortButton.setAttribute('aria-pressed', String(sortMode === 'title-asc'));
     if (sortLabel) sortLabel.textContent = sortMode === 'title-asc' ? '名称排序' : '最近更新';
+    savePersistedState();
     resetToFirstPage();
   });
 
@@ -326,6 +359,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     if (categorySelect) categorySelect.value = '';
     populateSubcategoryOptions();
     updateFilterState();
+    savePersistedState();
     resetToFirstPage();
   });
 
@@ -338,7 +372,10 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     if (event.key === 'Escape' && filterModal && !filterModal.hidden) setFilterOpen(false);
   });
 
-  searchInput?.addEventListener('input', resetToFirstPage);
+  searchInput?.addEventListener('input', () => {
+    savePersistedState();
+    resetToFirstPage();
+  });
 
   document.getElementById('timelinePrevPage')?.addEventListener('click', () => {
     currentPage -= 1;
@@ -437,7 +474,16 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
   }
 
   initializeCustomSelects();
-  populateSubcategoryOptions();
+  if (categorySelect && persisted.category) {
+    categorySelect.value = persisted.category;
+    populateSubcategoryOptions();
+    if (subcategorySelect && persisted.subcategory) subcategorySelect.value = persisted.subcategory;
+    syncCustomSelect('timeline-subcategory');
+  }
+  if (persisted.sort === 'title-asc') {
+    sortButton?.setAttribute('aria-pressed', 'true');
+    if (sortLabel) sortLabel.textContent = '名称排序';
+  }
   updateFilterState();
   applyViewMode();
   applyFilters();
