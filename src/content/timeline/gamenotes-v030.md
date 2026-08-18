@@ -20,3 +20,14 @@ category: 游戏笔记
 - 本地缓存 12 张 `@Bob玩瓦` 报点图，并为天枢云阙、霓虹町、深海明珠、莲华古城、隐世修所、源工重镇、盐海矿镇、森寒冬港、裂变峡谷接入 18 张 `@瓦瓦战术速递` 攻防封烟图。
 - 地图回归脚本验证 13 张地图的基础坐标、12 张报点图和 18 张封烟图，避免后续移动、删图或路径变更造成静默缺图。
 - 补充英雄索引的筛选与排序浮层层级修复：工具栏稳定覆盖英雄卡片网格，下拉菜单在桌面端可正常展开与点击。
+
+## UI 设计图留档
+
+以下截图按提交 `80ad2be` 复原，记录无畏契约地图区升级为资料库首页、侧栏地图索引与战术阅读区的布局。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/gamenotes-v030/ui-01.png" alt="游戏笔记 v0.3.0 无畏契约战术库首页" loading="lazy" />
+  <img src="/images/timeline/gamenotes-v030/ui-02.png" alt="游戏笔记 v0.3.0 亚海悬城地图详情" loading="lazy" />
+  <img src="/images/timeline/gamenotes-v030/ui-03.png" alt="游戏笔记 v0.3.0 防守与前压战术页" loading="lazy" />
+  <img src="/images/timeline/gamenotes-v030/ui-04.png" alt="游戏笔记 v0.3.0 展开的防守战术卡片" loading="lazy" />
+</div>

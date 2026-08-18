@@ -18,3 +18,12 @@ category: 游戏笔记
 
 - 英雄列表调整为 3×4 首屏网格，支持搜索、定位、排序、筛选和分页；173 位英雄均保留可访问的详情内容。
 - 右侧常驻详情面板按四种海克斯等级展示推荐，减少切换时的页面跳动；出装公式独立为整行内容区，避免被高内容面板拉伸。
+
+## UI 设计图留档
+
+以下截图按提交 `574ea08` 复原，记录海克斯大乱斗首页从普通速查页转为暗金战术工作台后的界面。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/gamenotes-v020/ui-01.png" alt="游戏笔记 v0.2.0 海克斯出装工作台" loading="lazy" />
+  <img src="/images/timeline/gamenotes-v020/ui-02.png" alt="游戏笔记 v0.2.0 选中英雄后的详情状态" loading="lazy" />
+</div>

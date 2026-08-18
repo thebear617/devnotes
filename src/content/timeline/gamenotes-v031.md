@@ -23,3 +23,13 @@ category: 游戏笔记
 
 - 将「英雄出装速查」标题与「数据源 RESG」按钮从纵向错开改为同一行排列。
 - 通过 `flex-direction: row` + 标题 `flex: 1` 占满剩余宽度、按钮固定在右侧，`base.css` 与 `lol.css` 两个断点同步调整。
+
+## UI 设计图留档
+
+以下截图按提交 `d81da67` 复原，记录英雄画廊排序与分页密度调整后的稳定三列资料卡布局。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/gamenotes-v031/ui-01.png" alt="游戏笔记 v0.3.1 桌面英雄画廊" loading="lazy" />
+  <img src="/images/timeline/gamenotes-v031/ui-02.png" alt="游戏笔记 v0.3.1 移动端英雄画廊" loading="lazy" />
+  <img src="/images/timeline/gamenotes-v031/ui-03.png" alt="游戏笔记 v0.3.1 移动端排序悬浮面板" loading="lazy" />
+</div>

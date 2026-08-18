@@ -16,3 +16,9 @@ category: 游戏笔记
 - 生产构建通过，共生成 2 个页面。
 
 构建仍提示 `public/valorant/index.html` 与 `src/pages/valorant/index.astro` 同名，Astro 跳过后者的重复输出；这是既有静态入口冲突，本次未改变页面产物。
+
+## UI 设计图留档
+
+以下截图按提交 `6a5e684` 复原，记录 Astro 7 运行环境升级后继续保留的英雄速查工作台界面。
+
+![游戏笔记 v0.4.0 UI 重建截图](/images/timeline/gamenotes-v040/ui-01.png)

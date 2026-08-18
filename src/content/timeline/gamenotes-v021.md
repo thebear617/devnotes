@@ -18,3 +18,12 @@ category: 游戏笔记
 
 - 海克斯推荐拆分为「单 / 双海克斯」和「三 / 四海克斯」两页，支持页签与上一页、下一页切换；切换英雄时默认回到第一页。
 - 英雄索引每页调整为 5 行 × 3 列（15 位英雄），桌面端右侧详情面板与左侧索引锁定等高，溢出内容在面板内滚动；移动端保持自然展开。
+
+## UI 设计图留档
+
+以下截图按提交 `3f556e5` 复原，展示英雄索引与右侧详情面板等高、四档海克斯分页后的信息布局。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/gamenotes-v021/ui-01.png" alt="游戏笔记 v0.2.1 单双海克斯详情页" loading="lazy" />
+  <img src="/images/timeline/gamenotes-v021/ui-02.png" alt="游戏笔记 v0.2.1 三四海克斯分页" loading="lazy" />
+</div>
