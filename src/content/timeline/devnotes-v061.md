@@ -13,3 +13,7 @@ category: 开发笔记
 - 交互增强：注意事项hover展开、代码块一键复制、图片点击预览
 - 侧栏自适应宽度、h1间距修正、代码块自动换行
 - 新增 AGENTS.md，指向 .workbuddy/memory/conventions/devnotes.md
+
+## UI 设计图留档
+
+![开发笔记 v0.6.1 历史提示词库 UI](/images/timeline/devnotes-v061/ui-01.png)

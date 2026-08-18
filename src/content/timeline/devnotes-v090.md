@@ -16,3 +16,11 @@ category: 开发笔记
 - 版本号 0.8.0 → 0.9.0
 
 本次版本集中完善 Markdown 内容的展示与编辑两端：文章阅读侧增强表格、列表和悬浮内容的表现，编辑侧尽量保持 Markdown 原文简洁，降低组件化内容对写作顺序的干扰。
+
+## UI 设计图留档
+
+![开发笔记 v0.9.0 历史知识库 UI](/images/timeline/devnotes-v090/ui-01.png)
+
+## 交互态 UI 留档
+
+![Markdown 文章主题样式悬浮框](/images/timeline/devnotes-v090/ui-02.png)

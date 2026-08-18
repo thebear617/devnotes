@@ -13,3 +13,15 @@ category: 开发笔记
 - 版本号 0.10.0 → 0.10.1
 
 本次更新进一步统一了知识库的内容命名和浏览方式，让文件树、页面标题与列表排序使用同一套分类表达。
+
+## UI 设计图留档
+
+![开发笔记 v0.10.1 历史知识库 UI](/images/timeline/devnotes-v0101/ui-01.png)
+
+## 交互态 UI 留档
+
+![知识库名称排序控件](/images/timeline/devnotes-v0101/ui-02.png)
+
+![知识库切换名称排序后的列表](/images/timeline/devnotes-v0101/ui-03.png)
+
+![知识库搜索标题与描述](/images/timeline/devnotes-v0101/ui-04.png)

@@ -14,3 +14,7 @@ category: 开发笔记
 - 放宽博客正文并完善响应式目录布局
 - 支持 ==文本== Markdown 高亮语法并跳过代码块
 - 版本升级至 0.2.2
+
+## UI 设计图留档
+
+![开发笔记 v0.2.2 历史博客 UI](/images/timeline/devnotes-v022/ui-01.png)

@@ -32,3 +32,13 @@ category: 开发笔记
 
 - 新增博客《综述：智能体工作》：梳理 Vibe Coding / Vibe Working / Agentic Knowledge Work / Office Agents / Computer-Use Agent 的谱系，含 Karpathy 推文与 Collins 词典引用。
 - 文章参考资料从隐藏的 reference link 改为可见的有序列表。
+
+## UI 设计图留档
+
+![开发笔记 v0.6.0 历史博客 UI](/images/timeline/devnotes-v060/ui-01.png)
+
+## 交互态 UI 留档
+
+![博客按编程分类筛选](/images/timeline/devnotes-v060/ui-02.png)
+
+![博客按方法子分类筛选](/images/timeline/devnotes-v060/ui-03.png)

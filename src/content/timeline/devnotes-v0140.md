@@ -24,3 +24,15 @@ category: 开发笔记
 ## UI 稿留档
 
 ![开发笔记后台 CMS UI v1](/images/timeline/devnotes-v0140/cms-ui-v1.png)
+
+## 交互态 UI 留档
+
+![CMS 知识库列表](/images/timeline/devnotes-v0140/ui-01.png)
+
+![CMS 开发时间线列表](/images/timeline/devnotes-v0140/ui-02.png)
+
+![CMS 时间线筛选面板展开](/images/timeline/devnotes-v0140/ui-03.png)
+
+![CMS 筛选聊天站后的列表](/images/timeline/devnotes-v0140/ui-04.png)
+
+![CMS 新建时间线编辑器](/images/timeline/devnotes-v0140/ui-05.png)

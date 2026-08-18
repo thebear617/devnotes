@@ -30,3 +30,13 @@ DevNotes 正式承接个人开发时间线，形成从 Git 版本检测、Markdo
 - 提交后扫描六个站点的 `(major, minor)` 版本缺口
 - 六个仓库共用同一提醒 hook，hook 只提示、不自动写入或提交
 - 更新 `sync-timeline` skill，使其只写 DevNotes Markdown 条目
+
+## UI 设计图留档
+
+![开发笔记 v0.3.0 历史时间线 UI](/images/timeline/devnotes-v030/ui-01.png)
+
+## 交互态 UI 留档
+
+![开发时间线选择站点筛选](/images/timeline/devnotes-v030/ui-02.png)
+
+![开发时间线搜索版本](/images/timeline/devnotes-v030/ui-03.png)

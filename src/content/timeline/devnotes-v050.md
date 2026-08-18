@@ -29,3 +29,15 @@ AI 排行榜完成一次完整的页面与数据链路改造，从原来的价�
 
 - 新增排行榜独立客户端模块 `src/scripts/pricing.js`
 - 将项目版本升级至 `0.5.0`
+
+## UI 设计图留档
+
+![开发笔记 v0.5.0 历史价格矩阵 UI](/images/timeline/devnotes-v050/ui-01.png)
+
+## 交互态 UI 留档
+
+![价格矩阵切换 AI 模型](/images/timeline/devnotes-v050/ui-02.png)
+
+![价格矩阵切换卡片视图](/images/timeline/devnotes-v050/ui-03.png)
+
+![价格矩阵按上下文排序](/images/timeline/devnotes-v050/ui-04.png)

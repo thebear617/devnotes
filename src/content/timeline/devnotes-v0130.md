@@ -30,3 +30,11 @@ category: 开发笔记
 ![开发时间线 UI 稿 2](/images/timeline/devnotes-v0130/timeline-02.png)
 
 ![知识库列表视图](/images/timeline/devnotes-v0130/knowledge-library.png)
+
+## 交互态 UI 留档
+
+![开发笔记 v0.13.0 历史知识库 UI](/images/timeline/devnotes-v0130/ui-01.png)
+
+![知识库筛选面板展开](/images/timeline/devnotes-v0130/ui-02.png)
+
+![知识库选择一级分类后的筛选态](/images/timeline/devnotes-v0130/ui-03.png)

@@ -12,3 +12,7 @@ category: 开发笔记
 - 版本号 0.7.1 → 0.8.0
 
 这篇笔记是 Vibe Coding 案例集合的起点，后续将把 Agent 前端开发的代表性案例持续积累进案例集合。
+
+## UI 设计图留档
+
+![开发笔记 v0.8.0 历史知识库 UI](/images/timeline/devnotes-v080/ui-01.png)

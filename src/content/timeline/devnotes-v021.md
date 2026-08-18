@@ -12,3 +12,7 @@ category: 开发笔记
 - README 更新为当前 Astro 5 架构及内容维护流程
 - 统一 package 与 lockfile 版本为 0.2.1
 - 清理既有博客尾部多余空行
+
+## UI 设计图留档
+
+![开发笔记 v0.2.1 历史笔记中心 UI](/images/timeline/devnotes-v021/ui-01.png)

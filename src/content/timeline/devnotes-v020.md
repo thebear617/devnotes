@@ -30,3 +30,7 @@ category: 开发笔记
 - 本地：npm run dev
 - 构建：npm run build，输出 dist/
 - GitHub Pages：SITE_BASE=/devnotes/ npm run build
+
+## UI 设计图留档
+
+![开发笔记 v0.2.0 历史笔记中心 UI](/images/timeline/devnotes-v020/ui-01.png)
