@@ -136,16 +136,18 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
   function loadPersistedState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { search: '', sort: 'updated-desc', category: '', subcategory: '' };
+      if (!raw) return { search: '', sort: 'updated-desc', category: '', subcategory: '', page: 1 };
       const parsed = JSON.parse(raw);
+      const page = Number.isFinite(Number(parsed.page)) ? Math.max(1, Number(parsed.page)) : 1;
       return {
         search: typeof parsed.search === 'string' ? parsed.search : '',
         sort: parsed.sort === 'title-asc' ? 'title-asc' : 'updated-desc',
         category: typeof parsed.category === 'string' ? parsed.category : '',
         subcategory: typeof parsed.subcategory === 'string' ? parsed.subcategory : '',
+        page,
       };
     } catch {
-      return { search: '', sort: 'updated-desc', category: '', subcategory: '' };
+      return { search: '', sort: 'updated-desc', category: '', subcategory: '', page: 1 };
     }
   }
   function savePersistedState() {
@@ -155,6 +157,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
         sort: sortMode,
         category: categorySelect?.value || '',
         subcategory: subcategorySelect?.value || '',
+        page: currentPage,
       }));
     } catch {
       // 浏览器禁用本地存储时，仅保留本次页面会话的筛选状态。
@@ -181,7 +184,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
   const originalOrder = new Map(timelineItems.map((item, index) => [item, index]));
   const titleCollator = new Intl.Collator('zh-CN', { numeric: true, sensitivity: 'base' });
   let sortMode = persisted.sort;
-  let currentPage = 1;
+  let currentPage = persisted.page;
   const pageSizes = { grid: 12, list: 8 };
   let viewMode = 'list';
 
@@ -379,11 +382,13 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
 
   document.getElementById('timelinePrevPage')?.addEventListener('click', () => {
     currentPage -= 1;
+    savePersistedState();
     applyFilters({ scrollToList: true });
   });
 
   document.getElementById('timelineNextPage')?.addEventListener('click', () => {
     currentPage += 1;
+    savePersistedState();
     applyFilters({ scrollToList: true });
   });
 
@@ -391,6 +396,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     const page = Number(event.target.closest('[data-page]')?.dataset.page);
     if (!page || page === currentPage) return;
     currentPage = page;
+    savePersistedState();
     applyFilters({ scrollToList: true });
   });
 
