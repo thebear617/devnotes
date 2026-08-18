@@ -5,11 +5,20 @@ import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const entries = await getCollection('knowledge');
-  return entries.map(entry => ({ params: { slug: entry.data.slug || entry.id }, props: { entry } }));
+  const legacyRedirects = {
+    '2026-week-32': '2026-08',
+    '2026-week-33': '2026-08',
+    '2026-week-34': '2026-08',
+  };
+  return [
+    ...entries.map(entry => ({ params: { slug: entry.data.slug || entry.id }, props: { entry } })),
+    ...Object.entries(legacyRedirects).map(([slug, target]) => ({ params: { slug }, props: { redirectTo: target } })),
+  ];
 }
 
-const { entry } = Astro.props;
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const { entry, redirectTo } = Astro.props;
+if (redirectTo) return Astro.redirect(`${base}knowledge/${redirectTo}/`, 301);
 ---
 
 <Layout><KnowledgeDetail entry={entry} backHref={`${base}knowledge/`} backLabel="返回知识库" /></Layout>

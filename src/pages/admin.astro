@@ -178,6 +178,11 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .preview h1 { font-size: 22px; }
     .preview h2 { margin-top: 1.4em; font-size: 18px; }
     .preview h3 { margin-top: 1.2em; font-size: 15px; }
+    .preview ul, .preview ol { margin: .4rem 0; padding-left: 1.3rem; }
+    .preview ol { list-style-type: decimal; }
+    .preview ol ol { list-style-type: lower-alpha; }
+    .preview ol ol ol { list-style-type: lower-roman; }
+    .preview ol ol ol ol { list-style-type: decimal; }
     .preview img { max-width: 100%; height: auto; cursor: zoom-in; }
     .preview img:focus-visible, .preview .timeline-image-link:focus-visible { outline: 3px solid rgba(20, 184, 166, .22); outline-offset: 3px; }
     .preview .timeline-image-link { cursor: zoom-in; }
@@ -206,6 +211,10 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .preview-footnote-popover-content { max-height: min(70vh, 560px); overflow: auto; overscroll-behavior: contain; min-height: 0; color: #334155; font-size: 13px; line-height: 1.75; }
     .preview-footnote-popover-content p { margin: 7px 0; }
     .preview-footnote-popover-content ul, .preview-footnote-popover-content ol { margin: 2px 0 0; padding-left: 22px; }
+    .preview-footnote-popover-content ol { list-style-type: decimal; }
+    .preview-footnote-popover-content ol ol { list-style-type: lower-alpha; }
+    .preview-footnote-popover-content ol ol ol { list-style-type: lower-roman; }
+    .preview-footnote-popover-content ol ol ol ol { list-style-type: decimal; }
     .preview-footnote-popover-content li { margin: 5px 0; padding-left: 2px; overflow-wrap: anywhere; }
     .preview-footnote-popover-content li::marker { color: #0f766e; font-weight: 800; }
     .preview-footnote-popover-content a { color: #0f766e; }
