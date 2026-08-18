@@ -31,3 +31,14 @@ ChatNotes v0.3.0 完成一轮工作区 UI/UX 收束：保留本地优先的项�
 <div class="timeline-ui-archive">
   <img src="/images/timeline/chatnotes-v030/ui-01.png" alt="ChatNotes v0.3.0 UI 设计图 1" loading="lazy" />
 </div>
+
+## 交互态 UI 留档
+
+补充 v0.3.0 在实际工作区中的几个关键状态：创建项目后的空根节点、项目操作菜单、收起侧栏，以及新建文件夹对话框。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/chatnotes-v030/ui-02.png" alt="ChatNotes v0.3.0 创建项目后的空根节点" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v030/ui-03.png" alt="ChatNotes v0.3.0 项目操作菜单展开状态" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v030/ui-04.png" alt="ChatNotes v0.3.0 侧栏收起状态" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v030/ui-05.png" alt="ChatNotes v0.3.0 新建文件夹对话框" loading="lazy" />
+</div>

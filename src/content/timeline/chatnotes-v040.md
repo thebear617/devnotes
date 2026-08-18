@@ -34,3 +34,15 @@ ChatNotes v0.4.0 聚焦阅读画布与回答卡片视觉：收束卡片宽度和
   <img src="/images/timeline/chatnotes-v040/design-05.png" alt="ChatNotes v0.4.0 UI 设计稿 5" loading="lazy" />
   <img src="/images/timeline/chatnotes-v040/design-06.jpg" alt="ChatNotes v0.4.0 UI 设计稿 6" loading="lazy" />
 </div>
+
+## 交互态 UI 留档
+
+补充 v0.4.0 阅读画布落地后的工作区空态、从根节点创建关系节点的对话框、项目菜单、新建文件夹对话框和侧栏收起状态。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/chatnotes-v040/ui-02.png" alt="ChatNotes v0.4.0 工作区空态" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/ui-03.png" alt="ChatNotes v0.4.0 创建关系节点对话框" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/ui-04.png" alt="ChatNotes v0.4.0 项目操作菜单展开状态" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/ui-05.png" alt="ChatNotes v0.4.0 新建文件夹对话框" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v040/ui-06.png" alt="ChatNotes v0.4.0 侧栏收起状态" loading="lazy" />
+</div>

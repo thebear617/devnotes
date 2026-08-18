@@ -30,3 +30,15 @@ ChatNotes v0.5.0 完善工作区交互：统一项目菜单和侧栏状态，支
 <div class="timeline-ui-archive">
   <img src="/images/timeline/chatnotes-v050/ui-01.png" alt="ChatNotes v0.5.0 工作区与阅读卡片 UI" loading="lazy" />
 </div>
+
+## 交互态 UI 留档
+
+补充 v0.5.0 的工作区空态、回答引擎菜单、联网搜索开启态、项目操作菜单和侧栏收起态，记录项目级交互与提问前工具状态的组合。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/chatnotes-v050/ui-02.png" alt="ChatNotes v0.5.0 工作区空态" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v050/ui-03.png" alt="ChatNotes v0.5.0 回答引擎菜单" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v050/ui-04.png" alt="ChatNotes v0.5.0 联网搜索开启状态" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v050/ui-05.png" alt="ChatNotes v0.5.0 项目操作菜单展开状态" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v050/ui-06.png" alt="ChatNotes v0.5.0 侧栏收起状态" loading="lazy" />
+</div>

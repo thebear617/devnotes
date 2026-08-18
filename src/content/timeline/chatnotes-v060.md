@@ -21,3 +21,15 @@ ChatNotes v0.6.0 增加统一 AI 网关与模型路由：接入聊天、MiniMax 
 - ChatNotes 发布提交：`a43ec4f feat(v0.6.0): 增加 AI 网关与模型路由`。
 - ChatNotes 已创建标签 `v0.6.0`，并已推送到 `origin/main`。
 - `npm run lint`、`npm run test:unit`（148 个测试）和 `npm run build` 均通过；构建保留 vinext 对动态 API 路由的既有分类提示，不影响构建完成。
+
+## 交互态 UI 留档
+
+虽然 v0.6.0 的主要变化在服务端 AI 网关，但前端已将回答引擎切换、联网搜索和项目操作收束到统一工作区。以下状态记录 OpenCode 默认态、联网搜索开启态、切换到 DeepSeek / MiniMax 后的状态，以及项目菜单。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/chatnotes-v060/ui-01.png" alt="ChatNotes v0.6.0 OpenCode 默认工作区" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v060/ui-02.png" alt="ChatNotes v0.6.0 联网搜索开启状态" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v060/ui-03.png" alt="ChatNotes v0.6.0 切换 DeepSeek 后的工作区" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v060/ui-04.png" alt="ChatNotes v0.6.0 切换 MiniMax 后的工作区" loading="lazy" />
+  <img src="/images/timeline/chatnotes-v060/ui-05.png" alt="ChatNotes v0.6.0 项目操作菜单展开状态" loading="lazy" />
+</div>
