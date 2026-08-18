@@ -29,3 +29,15 @@ category: 熊窝
 - `npm run build` 构建通过
 - Vue、数据脚本和页面资源均通过本地检查
 - `git diff --check` 通过
+
+## UI 设计图留档
+
+截图根据熊窝 v0.15.0 commit ec226e0 在本地重建，截图入口为无畏契约资料库。
+
+![熊窝 v0.15.0 UI 重建截图](/images/timeline/personal-v0150/ui-01.jpg)
+
+## 交互态 UI 留档
+
+补充 Astro 迁移后路由表输入“开发”进行搜索的状态，记录资料库从静态导航走向可检索工作台的早期交互。
+
+![熊窝 v0.15.0 路由表搜索状态](/images/timeline/personal-v0150/ui-02.png)

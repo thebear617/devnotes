@@ -13,3 +13,9 @@ category: 熊窝
 - 从此前的纯手写 DOM → Vue 响应式渲染
 - 组件化：每个 Tab 独立组件，数据通过 props 注入
 - 路由表、日历追踪、支出记录、Cookbook 四个 Tab 同期上线
+
+## UI 设计图留档
+
+截图根据熊窝 v0.1.0 commit e0f5fca 在本地重建，记录早期 Vue 3 单页布局。
+
+![熊窝 v0.1.0 UI 重建截图](/images/timeline/personal-v010/ui-01.jpg)

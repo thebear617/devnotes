@@ -29,3 +29,9 @@ category: 熊窝
 - 将 `Blog writing` 替换为 `Term walkthrough`，目标从每日 5 篇改为每日覆盖 20 个术语
 - 新增 `Read 100 pages`，每日阅读目标为 100 页
 - 保留旧快照数据，但不把旧博客篇数迁移为术语数，避免统计口径混淆
+
+## UI 设计图留档
+
+截图根据熊窝 v0.24.1 commit 70f7e6b 在本地重建，作为 v0.24 主线路由表视觉的代表快照。
+
+![熊窝 v0.24.1 UI 重建截图](/images/timeline/personal-v0241/ui-01.jpg)

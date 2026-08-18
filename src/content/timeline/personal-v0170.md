@@ -18,3 +18,9 @@ category: 熊窝
 ## 验证
 
 - `npm run build` 通过；熊窝静态路由不再生成会员订阅页面。
+
+## UI 设计图留档
+
+截图根据熊窝 v0.17.0 commit 8e397b7 在本地重建，记录会员板块迁出后的精简侧边栏。
+
+![熊窝 v0.17.0 UI 重建截图](/images/timeline/personal-v0170/ui-01.jpg)

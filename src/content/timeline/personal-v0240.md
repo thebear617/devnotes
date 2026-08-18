@@ -21,3 +21,9 @@ category: 熊窝
 - `astro.config.mjs`：本地数据与发布快照的同步合并逻辑。
 - `public/data/tracker-snapshot.json`：静态发布快照。
 - `public/css/style.css`：周/月/长期目标视图的视觉与响应式样式。
+
+## UI 设计图留档
+
+截图根据熊窝 v0.24.0 commit 8c313c4 在本地重建，截图入口为生活仪表盘。
+
+![熊窝 v0.24.0 UI 重建截图](/images/timeline/personal-v0240/ui-01.jpg)

@@ -24,3 +24,9 @@ category: 熊窝
 ## 验证
 
 - `npm run build` 与 `git diff --check` 通过
+
+## UI 设计图留档
+
+截图根据熊窝 v0.19.0 commit 40436f9 在本地重建，截图入口为路由表分组视图。
+
+![熊窝 v0.19.0 UI 重建截图](/images/timeline/personal-v0190/ui-01.jpg)

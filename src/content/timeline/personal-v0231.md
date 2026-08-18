@@ -23,3 +23,9 @@ category: 熊窝
 ## 发布校验
 
 - Git push 前和 GitHub Pages 构建中都增加追踪快照校验，确保发布数据与源码配置一致。
+
+## UI 设计图留档
+
+截图根据熊窝 v0.23.1 commit fdb2fa3 在本地重建，截图入口为生活仪表盘。
+
+![熊窝 v0.23.1 UI 重建截图](/images/timeline/personal-v0231/ui-01.jpg)

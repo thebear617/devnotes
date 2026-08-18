@@ -12,3 +12,9 @@ category: 熊窝
 ## 架构意义
 - 支出数据实现「记在 Obsidian / 展示在网站」的单源模式
 - 与日程编译共用 pre-commit hook 自动构建
+
+## UI 设计图留档
+
+截图根据熊窝 v0.5.0 commit a43fd1f 在本地重建，记录会员订阅 Tab 的早期表格形态。
+
+![熊窝 v0.5.0 UI 重建截图](/images/timeline/personal-v050/ui-01.jpg)

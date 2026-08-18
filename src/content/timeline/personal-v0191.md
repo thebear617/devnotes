@@ -23,3 +23,9 @@ category: 熊窝
 ## 验证
 
 - 熊窝与 DevNotes 均通过 `npm run build` 和 `git diff --check`
+
+## UI 设计图留档
+
+截图根据熊窝 v0.19.1 commit 3e6abb1 在本地重建，截图入口为生活仪表盘。
+
+![熊窝 v0.19.1 UI 重建截图](/images/timeline/personal-v0191/ui-01.jpg)

@@ -25,3 +25,9 @@ category: 熊窝
 - 修复 TodoBoard 组件未加载导致的空白页
 - 修正带参数筛选器误放 computed 导致的渲染中断
 - 以 v0.12.0 大版本发布并同步 README、CHANGELOG 与本地资源
+
+## UI 设计图留档
+
+截图根据熊窝 v0.12.0 commit d663645 在本地重建，记录英雄联盟与每日看板加入后的站点导航。
+
+![熊窝 v0.12.0 UI 重建截图](/images/timeline/personal-v0120/ui-01.jpg)

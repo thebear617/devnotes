@@ -12,3 +12,9 @@ Cookbook 从简单列表升级为 zigzag 时间轴布局（年/月分组 + 左�
 ## 同时沉淀
 - 纯静态站点五层渲染模型：Page → Tab → Section → Item → 点击行为
 - 三层数据与两层样式完全解耦的设计方法论
+
+## UI 设计图留档
+
+截图根据熊窝 v0.3.0 commit c0a7539 在本地重建，记录路由表与多 Tab 导航阶段。
+
+![熊窝 v0.3.0 UI 重建截图](/images/timeline/personal-v030/ui-01.jpg)

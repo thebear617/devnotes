@@ -12,3 +12,9 @@ category: 熊窝
 ## 架构
 - 删除 calendar/expense 两 Tab 与对应 JS 数据文件
 - 日记数据改由 home 编译，personal 不再持有
+
+## UI 设计图留档
+
+截图根据熊窝 v0.8.0 commit 158ee7f 在本地重建，记录个人主页回归路由表后的界面。
+
+![熊窝 v0.8.0 UI 重建截图](/images/timeline/personal-v080/ui-01.jpg)
