@@ -12,3 +12,9 @@ category: 猪窝
 ## 技术选型
 - 纯静态，无框架，GitHub Pages 部署
 - 数据驱动：JS 数据文件 + 手写渲染逻辑
+
+## UI 设计图留档
+
+以下截图根据猪窝 v0.1.0 commit `08812bf` 在本地重建，用于记录首版页面视觉状态。
+
+![猪窝 v0.1.0 UI 重建截图](/images/timeline/home-v010/ui-01.jpg)

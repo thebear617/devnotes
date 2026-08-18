@@ -28,4 +28,10 @@ category: 猪窝
 - `global.css` 新增 `.todo-card-badge` 样式。
 - 热力图、抽屉、分页逻辑不变。
 
+## UI 设计图留档
+
+以下截图根据猪窝 v1.6.1 commit `4c5eeed` 在本地打开「每日看板」路由重建，用于记录视频视图改为汇总视图后的页面状态。
+
+![猪窝 v1.6.1 UI 重建截图](/images/timeline/home-v161/ui-01.jpg)
+
 构建通过，`git diff --check` 干净。

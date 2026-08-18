@@ -13,3 +13,9 @@ category: 猪窝
 - 顶栏 Tab 改名「生活备忘录及物资采购」→「生活备忘录与物资采购」，并调整顺序
 - data.js 结构：follow-up 重构为 memo-supplies，数据拆 lifeMemo / procurement
 - setupFoodViews 通用化（胶囊切换 + 手风琴展开对美食日历与本 Tab 共用）
+
+## UI 设计图留档
+
+以下截图根据猪窝 v0.8.0 commit `32512be` 在本地切换「生活备忘录与物资采购」视图重建，用于记录胶囊双视图与区域手风琴卡片。
+
+![猪窝 v0.8.0 UI 重建截图](/images/timeline/home-v080/ui-01.jpg)

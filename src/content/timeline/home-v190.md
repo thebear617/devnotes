@@ -49,7 +49,18 @@ category: 猪窝
 以下图片作为本次美食地图 UI 设计与成品界面的视觉留档。
 
 <div class="foodmap-ui-archive">
-  <img src="/images/timeline/food-map-v190/ui-01.png" alt="美食地图 UI 设计图 1" loading="lazy" />
-  <img src="/images/timeline/food-map-v190/ui-02.png" alt="美食地图 UI 设计图 2" loading="lazy" />
-  <img src="/images/timeline/food-map-v190/ui-03.png" alt="美食地图 UI 设计图 3" loading="lazy" />
+  <img src="/images/timeline/food-map-v190/ui-01.png" alt="猪窝 v1.9.0 美食地图 UI 留档" loading="lazy" />
+</div>
+
+以下截图根据猪窝 v1.9.0 commit `1286098` 在本地打开「美食地图」路由重建，用于记录桌面端地图 / 目录二分视图与搜索筛选收束后的页面状态。
+
+![猪窝 v1.9.0 UI 重建截图](/images/timeline/home-v190/ui-01.jpg)
+
+## 交互态 UI 留档
+
+补充美食地图打开筛选面板，以及选择“粉面简餐”后的结果状态，记录地图目录视图中筛选器的展开与选中反馈。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/home-v190/ui-02.png" alt="猪窝 v1.9.0 美食地图筛选面板" loading="lazy" />
+  <img src="/images/timeline/home-v190/ui-03.png" alt="猪窝 v1.9.0 美食地图粉面简餐筛选状态" loading="lazy" />
 </div>
