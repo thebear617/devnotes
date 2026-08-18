@@ -338,6 +338,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       { value: 'title-asc', label: '标题 A → Z' },
       { value: 'title-desc', label: '标题 Z → A' },
     ];
+    const EDITOR_SESSION_KEY = 'devnotes-admin-editor-state-v1';
     const state = { collections: [], collectionId: '', entries: [], selectedPath: '', dirty: false, filters: {}, sort: 'updated-desc', previewId: 0 };
     let previewTimer = 0;
     let selectedPreviewNode = null;
@@ -359,6 +360,39 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       const data = await response.json();
       if (!response.ok) throw new Error((data.errors || [data.error || '请求失败']).join('；'));
       return data;
+    }
+
+    function rememberEditorSession() {
+      if (!state.collectionId) return;
+      const body = $('body');
+      const snapshot = {
+        collectionId: state.collectionId,
+        selectedPath: state.selectedPath || $('entry-path')?.value.trim() || '',
+        selectionStart: body.selectionStart,
+        selectionEnd: body.selectionEnd,
+        scrollTop: body.scrollTop,
+      };
+      try { sessionStorage.setItem(EDITOR_SESSION_KEY, JSON.stringify(snapshot)); } catch { /* sessionStorage may be unavailable in a restricted browser context. */ }
+    }
+
+    function readEditorSession() {
+      try {
+        const raw = sessionStorage.getItem(EDITOR_SESSION_KEY);
+        if (!raw) return null;
+        const snapshot = JSON.parse(raw);
+        return snapshot && typeof snapshot === 'object' ? snapshot : null;
+      } catch { return null; }
+    }
+
+    function restoreEditorPosition(snapshot) {
+      if (!snapshot) return;
+      const body = $('body');
+      const max = body.value.length;
+      const start = Math.min(Math.max(Number(snapshot.selectionStart) || 0, 0), max);
+      const end = Math.min(Math.max(Number(snapshot.selectionEnd) || start, start), max);
+      body.focus({ preventScroll: true });
+      body.setSelectionRange(start, end);
+      body.scrollTop = Math.min(Math.max(Number(snapshot.scrollTop) || 0, 0), body.scrollHeight);
     }
 
     function renderTabs() {
@@ -674,6 +708,38 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
 
     function updateBodyMeta() { $('body-meta').textContent = `${$('body').value.length} 字符`; }
 
+    function indentBodySelection() {
+      const body = $('body');
+      const start = body.selectionStart;
+      const end = body.selectionEnd;
+      const indent = '  ';
+      if (start === end) {
+        body.setRangeText(indent, start, end, 'end');
+      } else {
+        const value = body.value;
+        const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+        const selectionEndsAtLineStart = value[end - 1] === '\n';
+        const lineEnd = selectionEndsAtLineStart ? end : (value.indexOf('\n', end) === -1 ? value.length : value.indexOf('\n', end));
+        const lines = value.slice(lineStart, lineEnd).split('\n');
+        body.setRangeText(lines.map((line) => `${indent}${line}`).join('\n'), lineStart, lineEnd, 'select');
+        body.setSelectionRange(start + indent.length, end + indent.length * lines.length);
+      }
+      body.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    function handleBodyKeydown(event) {
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        indentBodySelection();
+        return;
+      }
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
+        event.preventDefault();
+        event.stopPropagation();
+        void saveEntry();
+      }
+    }
+
     async function loadEntries() {
       const data = await request(`entries?collection=${encodeURIComponent(state.collectionId)}`);
       state.entries = data.entries;
@@ -708,6 +774,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     }
 
     async function saveEntry() {
+      rememberEditorSession();
       const path = $('entry-path').value.trim();
       const frontmatter = getFormValue();
       $('save').disabled = true;
@@ -1115,7 +1182,9 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     $('refresh').onclick = () => loadEntries().catch((error) => setStatus(error.message, 'error'));
     $('new-entry').onclick = createNew;
     $('save').onclick = saveEntry;
+    $('body').addEventListener('keydown', handleBodyKeydown);
     $('body').oninput = () => { updateBodyMeta(); markDirty(); schedulePreview(); };
+    window.addEventListener('pagehide', rememberEditorSession);
     document.querySelectorAll('.editor-tool').forEach((button) => { button.onclick = () => applyToolbar(button.dataset.action); });
     $('sync-to-preview').onclick = syncSourceToPreview;
     $('sync-to-source').onclick = syncPreviewToSource;
@@ -1155,9 +1224,17 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
 
     request('collections').then(async (data) => {
       state.collections = data.collections;
-      const firstCollection = state.collections[0]?.id;
+      const savedSession = readEditorSession();
+      const firstCollection = state.collections.some((item) => item.id === savedSession?.collectionId)
+        ? savedSession.collectionId
+        : state.collections[0]?.id;
       if (!firstCollection) throw new Error('没有可用的内容解析器');
       await switchCollection(firstCollection);
+      const savedEntry = savedSession?.selectedPath && state.entries.find((entry) => entry.path === savedSession.selectedPath);
+      if (savedEntry) {
+        await loadEntry(savedEntry.path);
+        restoreEditorPosition(savedSession);
+      }
     }).catch((error) => setStatus(error.message, 'error'));
   </script>
 </> : <p>本地 CMS 仅在 Astro 开发服务器中可用。</p>}
