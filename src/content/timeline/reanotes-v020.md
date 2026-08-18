@@ -21,3 +21,9 @@ category: 科研笔记
 ## 双托管
 - Vercel 自定义域名 rea.thebear617.cn（主力）
 - GitHub Pages 作源/备用
+
+## UI 设计图留档
+
+以下截图按提交 `1f5f4dc` 复原，展示三板块科研笔记总站的总览卡片与顶栏切换器。
+
+![科研笔记 v0.2.0 UI 重建截图](/images/timeline/reanotes-v020/ui-01.jpg)

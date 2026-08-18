@@ -31,3 +31,9 @@ category: 科研笔记
 - 将 ReaNotes 版本提升至 0.4.2
 - 补充 v0.4.2 CHANGELOG 和版本入口
 - 将私有 output、真实 .env 与 Python 缓存保持忽略
+
+## UI 设计图留档
+
+以下截图按提交 `495388a` 复原，展示论文翻译与发布工作流落地后的文献库入口和索引导航。
+
+![科研笔记 v0.4.2 文献库 UI 重建截图](/images/timeline/reanotes-v042/ui-01.jpg)

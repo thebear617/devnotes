@@ -18,3 +18,9 @@ category: 科研笔记
 - 每张卡片紧跟领域标签（CV / NLP / ML·多模态 / 图 / RL / AI，按主题配色）
 - 含原贴备注说明（如 ICLR 名字带 Representations、CVPR 为视觉主场等）
 - 点开新标签页跳官方页
+
+## UI 设计图留档
+
+以下截图按提交 `f01b2e2` 复原，展示表征学习板块的导航侧栏与学术会议/期刊入口宫格。
+
+![科研笔记 v0.3.1 UI 重建截图](/images/timeline/reanotes-v031/ui-01.jpg)

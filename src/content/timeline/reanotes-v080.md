@@ -19,3 +19,18 @@ category: 科研笔记
 
 - 现有板块、论文译文、RSS、sitemap 和静态文章路由保持可用。
 - ReaNotes lint 通过，Astro 构建生成 16 个页面。
+
+## UI 设计图留档
+
+以下截图按提交 `3196bdd` 复原，记录 Astro 7 内容集合迁移后的板块列表与筛选布局。
+
+![科研笔记 v0.8.0 UI 重建截图](/images/timeline/reanotes-v080/ui-01.jpg)
+
+## 交互态 UI 留档
+
+补充文献库打开标签筛选，以及选中“论文译文”后的状态，记录内容集合迁移后筛选器的实际使用反馈。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/reanotes-v080/ui-02.png" alt="科研笔记 v0.8.0 文献库筛选面板" loading="lazy" />
+  <img src="/images/timeline/reanotes-v080/ui-03.png" alt="科研笔记 v0.8.0 论文译文筛选状态" loading="lazy" />
+</div>

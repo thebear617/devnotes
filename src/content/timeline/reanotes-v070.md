@@ -26,3 +26,9 @@ ReaNotes v0.7.0 将论文 PDF 到中文博客的链路收束为 `$pdf2blog-zh` �
 - 更新 Transformer 与 *A Cookbook of Self-Supervised Learning* 的中文译文，并新增 *A Survey on Self-Supervised Representation Learning*。
 - 后者端到端替换使用 59,135 tokens，费用 ¥0.05714472；图 6 段内公式、表 1 和表 4 均通过最终页面检查。
 - 补充 24 项脚本回归测试，并通过 ReaNotes lint 与 Astro build。
+
+## UI 设计图留档
+
+以下截图按提交 `b248924` 复原，展示论文正文的博客式阅读页、右侧目录与公式排版。
+
+![科研笔记 v0.7.0 文章阅读 UI 重建截图](/images/timeline/reanotes-v070/ui-01.jpg)
