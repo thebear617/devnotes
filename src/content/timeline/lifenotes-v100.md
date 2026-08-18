@@ -26,3 +26,12 @@ category: 常识笔记
 后台 UI 采用文章库与编辑表单的两栏布局，包含文章管理、元数据填写和 Markdown 实时预览，整体以橙红色为强调色。
 
 ![LifeNotes 本地 CMS 后台 UI 稿](/images/timeline/lifenotes-v100/ui-01.png)
+
+## 交互态 UI 留档
+
+补充 AI 内容列表打开筛选面板，以及选中“开发者工具”后的状态，记录分类筛选从展开到收束的反馈。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/lifenotes-v100/ui-02.png" alt="常识笔记 v1.0.0 AI 列表筛选面板" loading="lazy" />
+  <img src="/images/timeline/lifenotes-v100/ui-03.png" alt="常识笔记 v1.0.0 开发者工具筛选状态" loading="lazy" />
+</div>

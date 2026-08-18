@@ -13,3 +13,9 @@ category: 常识笔记
 - build-notes.py 处理 Obsidian 语法（callout、wiki 内链、表格）→ JS 数据文件
 - 试点 3 领域（美食/AI/汽车），同日全量迁移至 9 领域
 - 仅编译「领域地图 + QA」两页，排除转录/术语表
+
+## UI 设计图留档
+
+以下截图按提交 `67f0393` 复原，记录最初 3 个领域的常识笔记首页。
+
+![常识笔记 v0.1.0 UI 重建截图](/images/timeline/lifenotes-v010/ui-01.jpg)

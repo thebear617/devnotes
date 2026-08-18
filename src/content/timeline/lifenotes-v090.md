@@ -45,3 +45,9 @@ category: 常识笔记
 
 - `npm run build` 通过。
 - 七个板块 `/ai/ /biology/ /history/ /auto/ /life/ /hotel/ /finance/` 均显示 hero + 正确的「分类 / 子分类」两级筛选，侧栏当前页高亮。
+
+## UI 设计图留档
+
+以下截图按提交 `1862aca` 复原，记录板块重组后的列表、分页与两级筛选工具栏。
+
+![常识笔记 v0.9.0 UI 重建截图](/images/timeline/lifenotes-v090/ui-01.jpg)

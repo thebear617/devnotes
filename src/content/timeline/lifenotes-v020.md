@@ -12,3 +12,9 @@ category: 常识笔记
 ## 核心设计
 - parse_map_records 把 callout + H2/H3 文本块解析为 records（带日期/分类）
 - 与开发笔记「笔记中心」设计语言对齐：分类/时间轴双视角 + 记录点击展开
+
+## UI 设计图留档
+
+以下截图按提交 `c9d49b0` 复原，展示领域记录的分类/时间轴内容视图。
+
+![常识笔记 v0.2.0 UI 重建截图](/images/timeline/lifenotes-v020/ui-01.jpg)

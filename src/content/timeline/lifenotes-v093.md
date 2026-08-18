@@ -33,3 +33,9 @@ category: 常识笔记
 ## 验证
 
 - `npm run build` 通过，40 页无报错
+
+## UI 设计图留档
+
+以下截图按提交 `f5c4acc` 复原，并保留筛选浮窗打开状态，展示分类/子分类选择、清除与完成操作。
+
+![常识笔记 v0.9.3 筛选浮窗 UI 重建截图](/images/timeline/lifenotes-v093/ui-01.jpg)

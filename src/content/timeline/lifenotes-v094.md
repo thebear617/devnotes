@@ -30,3 +30,9 @@ v0.9.3→v0.9.4 主要变更 = 内容 schema 迁移（date/updated 必填）补�
 ## 验证
 
 - `npm run build` 通过
+
+## UI 设计图留档
+
+以下截图按提交 `9ac5f76` 复原，作为日期字段与内容更新后的列表视觉节点。
+
+![常识笔记 v0.9.4 UI 重建截图](/images/timeline/lifenotes-v094/ui-01.jpg)

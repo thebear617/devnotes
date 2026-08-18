@@ -28,3 +28,9 @@ category: 常识笔记
 - 新增 `npm run dev`、`npm run build`、`npm run preview` 以及锁定依赖的 `package-lock.json`
 - 新增 GitHub Actions：以 `SITE_BASE=/lifenotes/` 构建 `dist/` 并发布到 GitHub Pages
 - 更新 README、AGENTS 和 CLAUDE 项目文档，明确 Astro 内容源、开发命令和部署方式
+
+## UI 设计图留档
+
+以下截图按提交 `a20773e` 复原，记录 Astro 迁移后新的领域总览与内容卡片布局。
+
+![常识笔记 v0.6.0 UI 重建截图](/images/timeline/lifenotes-v060/ui-01.jpg)
