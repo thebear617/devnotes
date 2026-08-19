@@ -23,8 +23,20 @@ category: 猫猫
 
 ## UI 设计图留档
 
-- 桌面端视图：<a class="timeline-image-link" href="/images/timeline/cats-v0130/desktop.png" data-image-alt="猫猫 v0.13.0 桌面端首页目录视图">desktop.png</a> 展示目录工具栏、六列三行照片墙和分页控件。
-- 移动端视图：<a class="timeline-image-link" href="/images/timeline/cats-v0130/mobile.png" data-image-alt="猫猫 v0.13.0 移动端首页排序视图">mobile.png</a> 展示两列照片目录与排序浮窗。
+以下图片直接展示本次首页视觉和交互态，不需要点击文件名才能看到：
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/cats-v0130/desktop.png" alt="猫猫 v0.13.0 桌面端首页目录第 1 页，六列三行照片墙与分页控件">
+  <img src="/images/timeline/cats-v0130/desktop-page-02.png" alt="猫猫 v0.13.0 桌面端首页目录第 2 页，分页按钮切换后的照片墙">
+  <img src="/images/timeline/cats-v0130/mobile-grid.png" alt="猫猫 v0.13.0 移动端首页目录，两列照片宫格与搜索排序筛选工具栏">
+  <img src="/images/timeline/cats-v0130/mobile.png" alt="猫猫 v0.13.0 移动端排序浮窗，名称排序、区域排序和最近更新三项选项">
+  <img src="/images/timeline/cats-v0130/mobile-recent.png" alt="猫猫 v0.13.0 移动端选择最近更新后的照片宫格">
+  <img src="/images/timeline/cats-v0130/mobile-profile-pagination.png" alt="猫猫 v0.13.0 移动端猫咪详情悬浮窗，标签筛选、两列照片宫格与分页控件">
+</div>
+
+- 桌面端交互态：第 1 页与第 2 页分别保留，能直接看到分页后的 6×3 目录变化。
+- 移动端布局态：记录两列照片宫格、压缩后的搜索工具栏和排序入口。
+- 移动端排序态：记录排序浮窗以及“最近更新”选择后的目录结果；详情态补充猫咪档案悬浮窗的标签筛选与分页。
 
 ## 发布信息
 
