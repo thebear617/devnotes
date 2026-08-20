@@ -249,6 +249,15 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       .editor-column + .editor-column { border-top: 1px solid #e1eaec; border-left: 0; }
       .link-row { grid-template-columns: 1fr 1fr auto; }
     }
+
+    body.is-immersive { overflow: hidden; }
+    body.is-immersive .admin { grid-template-rows: minmax(0, 1fr); width: 100%; max-width: none; height: 100vh; min-height: 0; padding: 0; gap: 0; }
+    body.is-immersive .topbar,
+    body.is-immersive .sidebar,
+    body.is-immersive #metadata { display: none; }
+    body.is-immersive .workspace { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    body.is-immersive .main-panel { grid-template-rows: auto minmax(0, 1fr); min-height: 0; border-radius: 0; }
+    body.is-immersive .editor-workspace { min-height: 0; border-radius: 0; }
   </style>
 
   <div class="admin">
@@ -290,7 +299,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       <main class="panel main-panel">
         <div class="editor-heading">
           <div><h2 id="editor-title">编辑内容</h2><p id="editor-description">选择左侧条目，或新建一篇内容。</p></div>
-          <div class="status-actions"><span id="status" class="status">等待编辑</span><button id="save" class="primary" type="button">保存</button></div>
+           <div class="status-actions"><span id="status" class="status">等待编辑</span><button id="immersive-toggle" class="secondary" type="button" aria-pressed="false" aria-label="进入沉浸式编辑" title="进入沉浸式编辑">沉浸式编辑</button><button id="save" class="primary" type="button">保存</button></div>
         </div>
         <section id="metadata" class="metadata"></section>
         <div class="editor-workspace">
@@ -332,13 +341,14 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
   <script define:vars={{ base }}>
     const $ = (id) => document.getElementById(id);
     const apiBase = `${base}admin/api`;
-    const SORT_OPTIONS = [
+     const SORT_OPTIONS = [
       { value: 'updated-desc', label: '最近更新' },
       { value: 'date-desc', label: '发布日期' },
       { value: 'title-asc', label: '标题 A → Z' },
       { value: 'title-desc', label: '标题 Z → A' },
     ];
-    const EDITOR_SESSION_KEY = 'devnotes-admin-editor-state-v1';
+     const EDITOR_SESSION_KEY = 'devnotes-admin-editor-state-v1';
+     const IMMERSIVE_SESSION_KEY = 'devnotes-admin-immersive-v1';
     const state = { collections: [], collectionId: '', entries: [], selectedPath: '', dirty: false, filters: {}, sort: 'updated-desc', previewId: 0 };
     let previewTimer = 0;
     let selectedPreviewNode = null;
@@ -375,14 +385,46 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       try { sessionStorage.setItem(EDITOR_SESSION_KEY, JSON.stringify(snapshot)); } catch { /* sessionStorage may be unavailable in a restricted browser context. */ }
     }
 
-    function readEditorSession() {
+     function readEditorSession() {
       try {
         const raw = sessionStorage.getItem(EDITOR_SESSION_KEY);
         if (!raw) return null;
         const snapshot = JSON.parse(raw);
         return snapshot && typeof snapshot === 'object' ? snapshot : null;
       } catch { return null; }
-    }
+     }
+
+     function readImmersiveSession() {
+       try { return sessionStorage.getItem(IMMERSIVE_SESSION_KEY) === 'true'; } catch { return false; }
+     }
+
+     function setImmersiveMode(enabled, { focus = true, persist = true } = {}) {
+       const button = $('immersive-toggle');
+       document.body.classList.toggle('is-immersive', enabled);
+       button.setAttribute('aria-pressed', String(enabled));
+       button.textContent = enabled ? '退出沉浸式编辑' : '沉浸式编辑';
+       button.setAttribute('aria-label', enabled ? '退出沉浸式编辑' : '进入沉浸式编辑');
+       button.title = enabled ? '退出沉浸式编辑（Esc）' : '进入沉浸式编辑';
+       if (persist) {
+         try { sessionStorage.setItem(IMMERSIVE_SESSION_KEY, String(enabled)); } catch { /* sessionStorage may be unavailable. */ }
+       }
+       if (focus) (enabled ? $('body') : button).focus({ preventScroll: true });
+     }
+
+     function closeEscapeLayers() {
+       if (document.querySelector('.preview-lightbox')) return true;
+       if (document.querySelector('.preview-footnote-popover.is-visible')) {
+         activePreviewFootnoteClose?.();
+         return true;
+       }
+       const hasPopover = !$('filter-popover').hidden || !$('sort-popover').hidden;
+       const hasCustomSelect = document.querySelector('.custom-select.open');
+       const hasMultiselect = document.querySelector('[data-multiselect] .multiselect-menu:not([hidden])');
+       if (hasPopover) closePopovers();
+       if (hasCustomSelect) closeCustomSelects();
+       if (hasMultiselect) closeMultiselectMenus();
+       return hasPopover || Boolean(hasCustomSelect) || Boolean(hasMultiselect);
+     }
 
     function restoreEditorPosition(snapshot) {
       if (!snapshot) return;
@@ -1174,11 +1216,19 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     $('search').oninput = renderEntries;
     $('filter-toggle').onclick = () => togglePopover('filter-popover', 'filter-toggle');
     $('sort-toggle').onclick = () => togglePopover('sort-popover', 'sort-toggle');
-    $('clear-filters').onclick = () => { state.filters = {}; renderFilters(); renderEntries(); };
+     $('clear-filters').onclick = () => { state.filters = {}; renderFilters(); renderEntries(); };
+     $('immersive-toggle').onclick = () => setImmersiveMode(!document.body.classList.contains('is-immersive'));
     document.addEventListener('click', (event) => { if (!event.target.closest('#list-tools-wrap')) closePopovers(); });
     document.addEventListener('click', (event) => { if (!event.target.closest('[data-custom-select]')) closeCustomSelects(); });
     document.addEventListener('click', (event) => { if (!event.target.closest('[data-multiselect]')) closeMultiselectMenus(); });
-    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closePopovers(); closeCustomSelects(); closeMultiselectMenus(); } });
+     document.addEventListener('keydown', (event) => {
+       if (event.key !== 'Escape') return;
+       if (closeEscapeLayers()) return;
+       if (document.body.classList.contains('is-immersive')) {
+         event.preventDefault();
+         setImmersiveMode(false);
+       }
+     });
     $('refresh').onclick = () => loadEntries().catch((error) => setStatus(error.message, 'error'));
     $('new-entry').onclick = createNew;
     $('save').onclick = saveEntry;
@@ -1187,7 +1237,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     window.addEventListener('pagehide', rememberEditorSession);
     document.querySelectorAll('.editor-tool').forEach((button) => { button.onclick = () => applyToolbar(button.dataset.action); });
     $('sync-to-preview').onclick = syncSourceToPreview;
-    $('sync-to-source').onclick = syncPreviewToSource;
+     $('sync-to-source').onclick = syncPreviewToSource;
+     setImmersiveMode(readImmersiveSession(), { focus: false, persist: false });
     $('preview').addEventListener('click', (event) => {
       const target = event.target instanceof Element ? event.target : null;
       const imageLink = target?.closest('a.timeline-image-link');
