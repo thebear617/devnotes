@@ -84,6 +84,23 @@ export default function localCms() {
   return {
     name: 'devnotes-local-cms',
     configureServer(server) {
+      // CMS writes trigger the dev server's content-change broadcast, which full-reloads the admin page itself.
+      // Swallow update signals shortly after a self-write so saving does not refresh the editor.
+      let lastSelfWriteAt = 0;
+      const SUPPRESS_WINDOW_MS = 2500;
+      const hot = server.hot || server.ws;
+      if (hot) {
+        const originalSend = hot.send.bind(hot);
+        hot.send = (...args) => {
+          const payload = typeof args[0] === 'string' ? { type: args[0] } : (args[0] || {});
+          if ((payload.type === 'full-reload' || payload.type === 'update') && Date.now() - lastSelfWriteAt < SUPPRESS_WINDOW_MS) {
+            console.log(`[local-cms] swallowed ${payload.type} broadcast caused by CMS save`);
+            return;
+          }
+          return originalSend(...args);
+        };
+      }
+
       server.middlewares.use((request, response, next) => {
         const pathname = new URL(request.url || '/', 'http://localhost').pathname;
         if (pathname !== '/admin' && pathname !== '/admin/') return next();
@@ -130,6 +147,7 @@ export default function localCms() {
             if (errors.length || !targetPath) return json(response, 400, { errors: errors.length ? errors : ['文章路径不在允许的内容目录内'] });
             await fs.mkdir(path.dirname(safePath(postParser, targetPath)), { recursive: true });
             await fs.writeFile(safePath(postParser, targetPath), postParser.serialize(data.frontmatter, data.body || ''), 'utf8');
+            lastSelfWriteAt = Date.now();
             return json(response, 200, { ok: true, collection: postParser.id, path: targetPath });
           }
 
