@@ -1,10 +1,10 @@
 ---
-title: 基础知识：UI 设计与审美
-date: '2026-08-18'
-category: 开发与实践
-subcategory: 基础知识
-description: UI 设计与审美相关的经验积累。
-slug: ui-design-aesthetics
+title: "基础知识：UI 设计与审美"
+date: "2026-08-18"
+category: "开发与实践"
+subcategory: "基础知识"
+description: "UI 设计与审美相关的经验积累。"
+slug: "ui-design-aesthetics"
 ---
 
 ## 一、视觉层面的取舍
