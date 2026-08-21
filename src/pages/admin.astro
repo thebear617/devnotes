@@ -299,7 +299,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       <main class="panel main-panel">
         <div class="editor-heading">
           <div><h2 id="editor-title">编辑内容</h2><p id="editor-description">选择左侧条目，或新建一篇内容。</p></div>
-           <div class="status-actions"><span id="status" class="status">等待编辑</span><button id="immersive-toggle" class="secondary" type="button" aria-pressed="false" aria-label="进入沉浸式编辑" title="进入沉浸式编辑">沉浸式编辑</button><button id="save" class="primary" type="button">保存</button></div>
+           <div class="status-actions"><span id="status" class="status">等待编辑</span><button id="immersive-toggle" class="secondary" type="button" aria-pressed="false" aria-label="进入沉浸式编辑" title="进入沉浸式编辑">沉浸式编辑</button><button id="save" class="primary" type="button">立即保存</button></div>
         </div>
         <section id="metadata" class="metadata"></section>
         <div class="editor-workspace">
@@ -323,7 +323,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
               <button class="editor-tool" data-action="table" type="button" aria-label="表格" title="表格"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3" width="11" height="10" rx=".5" /><path d="M2.5 6.5h11M2.5 9.5h11M6 3v10M10 3v10" /></svg></button>
             </div>
             <div class="editor-pane"><textarea id="body" placeholder="在这里编辑 Markdown…" spellcheck="false"></textarea></div>
-            <div class="editor-footer"><span id="body-meta">0 字符</span><span>仅手动保存</span></div>
+            <div class="editor-footer"><span id="body-meta">0 字符</span><span>自动保存</span></div>
           </div>
           <div class="editor-column">
             <div class="editor-label"><strong class="editor-label-title"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" /><circle cx="8" cy="8" r="2" fill="currentColor" stroke="none" /></svg><span>预览</span></strong></div>
@@ -349,8 +349,11 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     ];
      const EDITOR_SESSION_KEY = 'devnotes-admin-editor-state-v1';
      const IMMERSIVE_SESSION_KEY = 'devnotes-admin-immersive-v1';
-    const state = { collections: [], collectionId: '', entries: [], selectedPath: '', dirty: false, filters: {}, sort: 'updated-desc', previewId: 0 };
+    const state = { collections: [], collectionId: '', entries: [], selectedPath: '', dirty: false, draftVersion: 0, filters: {}, sort: 'updated-desc', previewId: 0 };
     let previewTimer = 0;
+    let autoSaveTimer = 0;
+    let savePromise = null;
+    const AUTO_SAVE_DELAY = 900;
     let selectedPreviewNode = null;
     let syncHighlightTimer = 0;
     let previewFootnoteCleanup = () => {};
@@ -361,7 +364,21 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     const clone = (value) => JSON.parse(JSON.stringify(value));
     const today = () => new Date().toISOString().slice(0, 10);
     const setStatus = (message, kind = '') => { $('status').textContent = message; $('status').className = `status ${kind}`; };
-    const markDirty = () => { state.dirty = true; if (!$('status').classList.contains('error')) setStatus('有未保存修改', 'saving'); };
+    function scheduleAutoSave() {
+      window.clearTimeout(autoSaveTimer);
+      autoSaveTimer = 0;
+      if (!state.dirty) return;
+      autoSaveTimer = window.setTimeout(() => {
+        autoSaveTimer = 0;
+        void saveEntry();
+      }, AUTO_SAVE_DELAY);
+    }
+    const markDirty = () => {
+      state.dirty = true;
+      state.draftVersion += 1;
+      setStatus('等待自动保存', 'saving');
+      scheduleAutoSave();
+    };
     const compareDate = (left, right) => String(left || '').localeCompare(String(right || ''));
     const compareText = (left, right) => String(left || '').localeCompare(String(right || ''), 'zh-CN');
 
@@ -716,6 +733,9 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     }
 
     function setFormValue(frontmatter = {}, body = '', entryPath = '') {
+      window.clearTimeout(autoSaveTimer);
+      autoSaveTimer = 0;
+      state.draftVersion += 1;
       $('entry-path').value = entryPath;
       activeCollection().fields.forEach((field) => {
         const value = frontmatter[field.id];
@@ -748,6 +768,20 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       return result;
     }
 
+    async function flushAutoSave() {
+      while (state.dirty) {
+        const saved = await saveEntry();
+        if (!saved) return false;
+      }
+      return true;
+    }
+
+    async function ensureEditorSaved() {
+      if (!state.dirty) return true;
+      if (await flushAutoSave()) return true;
+      return window.confirm('自动保存失败，仍要切换吗？');
+    }
+
     function updateBodyMeta() { $('body-meta').textContent = `${$('body').value.length} 字符`; }
 
     function indentBodySelection() {
@@ -778,7 +812,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
         event.preventDefault();
         event.stopPropagation();
-        void saveEntry();
+        void saveEntry({ force: true });
       }
     }
 
@@ -790,7 +824,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     }
 
     async function loadEntry(entryPath) {
-      if (state.dirty && !window.confirm('当前内容有未保存修改，确定切换吗？')) return;
+      if (!(await ensureEditorSaved())) return;
       try {
         const data = await request(`entry?collection=${encodeURIComponent(state.collectionId)}&path=${encodeURIComponent(entryPath)}`);
         state.selectedPath = entryPath;
@@ -801,8 +835,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       } catch (error) { setStatus(error.message, 'error'); }
     }
 
-    function createNew() {
-      if (state.dirty && !window.confirm('当前内容有未保存修改，确定新建吗？')) return;
+    async function createNew() {
+      if (!(await ensureEditorSaved())) return;
       const config = activeCollection();
       const frontmatter = clone(config.defaultFrontmatter);
       frontmatter.date = today();
@@ -815,21 +849,44 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       $('field-title')?.focus();
     }
 
-    async function saveEntry() {
+    async function saveEntry({ force = false } = {}) {
+      if (savePromise) return savePromise;
+      if (!state.dirty && !force) return true;
+      window.clearTimeout(autoSaveTimer);
+      autoSaveTimer = 0;
       rememberEditorSession();
+      const collectionId = state.collectionId;
+      const draftVersion = state.draftVersion;
       const path = $('entry-path').value.trim();
       const frontmatter = getFormValue();
+      const body = $('body').value;
       $('save').disabled = true;
-      setStatus('保存中…', 'saving');
-      try {
-        const data = await request('entry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ collection: state.collectionId, path, frontmatter, body: $('body').value }) });
-        state.dirty = false;
-        state.selectedPath = data.path;
-        await loadEntries();
-        await loadEntry(data.path);
-        setStatus('已保存 · 刚刚', 'saved');
-      } catch (error) { setStatus(error.message, 'error'); }
-      finally { $('save').disabled = false; }
+      setStatus('自动保存中…', 'saving');
+      const promise = (async () => {
+        try {
+          const data = await request('entry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true, body: JSON.stringify({ collection: collectionId, path, frontmatter, body }) });
+          const isCurrentDraft = state.collectionId === collectionId && state.draftVersion === draftVersion;
+          if (isCurrentDraft) {
+            state.dirty = false;
+            state.selectedPath = data.path;
+            setStatus('已自动保存 · 刚刚', 'saved');
+          }
+          if (state.collectionId === collectionId) {
+            try { await loadEntries(); } catch { /* The content is saved even if the list refresh fails. */ }
+          }
+          if (!isCurrentDraft) {
+            setStatus('等待自动保存', 'saving');
+            scheduleAutoSave();
+          }
+          return true;
+        } catch (error) {
+          setStatus(error.message, 'error');
+          return false;
+        } finally { $('save').disabled = false; }
+      })();
+      savePromise = promise;
+      try { return await promise; }
+      finally { if (savePromise === promise) savePromise = null; }
     }
 
     function schedulePreview() {
@@ -1197,7 +1254,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
 
     async function switchCollection(collectionId) {
       if (collectionId === state.collectionId) return;
-      if (state.dirty && !window.confirm('当前内容有未保存修改，确定切换视图吗？')) return;
+      if (!(await ensureEditorSaved())) return;
       state.collectionId = collectionId;
       state.selectedPath = '';
       state.dirty = false;
@@ -1209,7 +1266,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       $('editor-description').textContent = config.description;
       renderTabs();
       renderMetadata();
-      createNew();
+      await createNew();
       try { await loadEntries(); } catch (error) { setStatus(error.message, 'error'); }
     }
 
@@ -1231,10 +1288,10 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
      });
     $('refresh').onclick = () => loadEntries().catch((error) => setStatus(error.message, 'error'));
     $('new-entry').onclick = createNew;
-    $('save').onclick = saveEntry;
+    $('save').onclick = () => { void saveEntry({ force: true }); };
     $('body').addEventListener('keydown', handleBodyKeydown);
     $('body').oninput = () => { updateBodyMeta(); markDirty(); schedulePreview(); };
-    window.addEventListener('pagehide', rememberEditorSession);
+    window.addEventListener('pagehide', () => { rememberEditorSession(); void saveEntry(); });
     document.querySelectorAll('.editor-tool').forEach((button) => { button.onclick = () => applyToolbar(button.dataset.action); });
     $('sync-to-preview').onclick = syncSourceToPreview;
      $('sync-to-source').onclick = syncPreviewToSource;
