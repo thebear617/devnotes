@@ -162,11 +162,9 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .editor-label-title svg { width: 15px; height: 15px; flex: 0 0 auto; color: #47636a; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.5; }
     .editor-label > span { color: #8aa0a5; font-size: 11px; font-weight: 600; }
     .editor-toolbar { display: flex; align-items: center; gap: 2px; min-height: 37px; padding: 4px 8px; overflow-x: auto; border-bottom: 1px solid #e1eaec; background: #fbfefe; }
-    .editor-tool { display: inline-grid; width: 28px; min-width: 28px; height: 27px; flex: 0 0 auto; place-items: center; padding: 0 5px; border: 0; border-radius: 5px; color: #52656b; background: transparent; }
+    .editor-tool { display: inline-grid; min-width: 27px; height: 27px; flex: 0 0 auto; place-items: center; padding: 0 5px; border: 0; border-radius: 5px; color: #52656b; background: transparent; font-size: 13px; font-weight: 700; }
     .editor-tool:hover { color: #0f766e; background: #e7f8f5; }
     .editor-tool:focus-visible { outline: 2px solid rgba(20, 184, 166, .22); outline-offset: 1px; }
-    .editor-tool svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.55; }
-    .editor-tool svg text { fill: currentColor; stroke: none; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 8px; font-weight: 800; }
     .editor-tool-divider { width: 1px; height: 20px; flex: 0 0 auto; margin: 0 5px; background: #e1eaec; }
     .editor-pane { display: block; min-width: 0; min-height: 0; overflow: hidden; background: #fff; }
     #body { display: block; width: 100%; max-width: 100%; min-width: 0; min-height: 0; height: 100%; padding: 15px var(--editor-content-gap) calc(15px + var(--editor-caret-space)) 15px; border: 0; border-radius: 0; outline: 0; resize: none; overflow-x: hidden; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; color: #243b42; background: #fff; font: 12px/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
@@ -306,21 +304,21 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
           <div class="editor-column">
             <div class="editor-label"><strong class="editor-label-title"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="1" /><path d="M5.5 5.5h5v5h-5z" /></svg><span>Markdown 内容</span></strong><span>实时预览</span></div>
             <div class="editor-toolbar" role="toolbar" aria-label="Markdown 工具栏">
-              <button class="editor-tool" data-action="bold" type="button" aria-label="加粗" title="加粗"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 3.5h3.4a2.2 2.2 0 0 1 .5 4.34H4.5zM4.5 7.84h4a2.33 2.33 0 0 1 0 4.66h-4z" /></svg></button>
-              <button class="editor-tool" data-action="italic" type="button" aria-label="斜体" title="斜体"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3.5h6M4 12.5h6M10.5 3.5l-3 9" /></svg></button>
+              <button class="editor-tool" type="button" data-action="bold" aria-label="加粗" title="加粗"><b>B</b></button>
+              <button class="editor-tool" type="button" data-action="italic" aria-label="斜体" title="斜体"><i>I</i></button>
               <span class="editor-tool-divider" aria-hidden="true"></span>
-              <button class="editor-tool" data-action="h1" type="button" aria-label="一级标题" title="一级标题"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5v9M2.5 8h5M7.5 3.5v9M10.5 4h3M10.5 8h3M10.5 12h3" /></svg></button>
-              <button class="editor-tool" data-action="h2" type="button" aria-label="二级标题" title="二级标题"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5v9M2.5 8h5M7.5 3.5v9M10.5 4h3M10.5 8h2M10.5 12h3" /></svg></button>
-              <button class="editor-tool" data-action="h3" type="button" aria-label="三级标题" title="三级标题"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5v9M2.5 8h5M7.5 3.5v9M10.5 4h2M10.5 8h3M10.5 12h2" /></svg></button>
+              <button class="editor-tool" type="button" data-action="h1" aria-label="一级标题" title="一级标题">H1</button>
+              <button class="editor-tool" type="button" data-action="h2" aria-label="二级标题" title="二级标题">H2</button>
+              <button class="editor-tool" type="button" data-action="h3" aria-label="三级标题" title="三级标题">H3</button>
               <span class="editor-tool-divider" aria-hidden="true"></span>
-              <button class="editor-tool" data-action="bullet" type="button" aria-label="无序列表" title="无序列表"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="3" cy="4" r=".8" fill="currentColor" stroke="none" /><circle cx="3" cy="8" r=".8" fill="currentColor" stroke="none" /><circle cx="3" cy="12" r=".8" fill="currentColor" stroke="none" /><path d="M6 4h7M6 8h7M6 12h7" /></svg></button>
-              <button class="editor-tool" data-action="numbered" type="button" aria-label="有序列表" title="有序列表"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 3.5h1v2h-1M2.5 3.5h1M2.5 7.5h1M3.5 7.5l-1 1h1M2.5 11.5h1M2.5 13h1M6 4h7M6 8h7M6 12h7" /></svg></button>
-              <button class="editor-tool" data-action="quote" type="button" aria-label="引用" title="引用"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6.2 5H3.1v3.1h2.2c-.2 1.2-1 2-2.2 2.4M12.9 5H9.8v3.1H12c-.2 1.2-1 2-2.2 2.4" /></svg></button>
-              <button class="editor-tool" data-action="code" type="button" aria-label="代码" title="代码"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5.5 4-3 4 3 4M10.5 4l3 4-3 4M9 2.5 7 13.5" /></svg></button>
+              <button class="editor-tool" type="button" data-action="bullet" aria-label="无序列表" title="无序列表">☷</button>
+              <button class="editor-tool" type="button" data-action="numbered" aria-label="有序列表" title="有序列表">☷</button>
+              <button class="editor-tool" type="button" data-action="quote" aria-label="引用" title="引用">❝</button>
+              <button class="editor-tool" type="button" data-action="code" aria-label="代码" title="代码">&lt;/&gt;</button>
               <span class="editor-tool-divider" aria-hidden="true"></span>
-              <button class="editor-tool" data-action="link" type="button" aria-label="链接" title="链接"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6.2 9.8 3.6-3.6M5.3 11.7l-1 1a2.3 2.3 0 0 1-3.2-3.2l2-2a2.3 2.3 0 0 1 3.2 0M10.7 4.3l1-1a2.3 2.3 0 0 1 3.2 3.2l-2 2a2.3 2.3 0 0 1-3.2 0" /></svg></button>
-              <button class="editor-tool" data-action="image" type="button" aria-label="图片" title="图片"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3" width="11" height="10" rx="1" /><circle cx="5.5" cy="6" r="1" /><path d="m3.5 11 2.7-2.7 2 2 1.5-1.5 2.8 2.7" /></svg></button>
-              <button class="editor-tool" data-action="table" type="button" aria-label="表格" title="表格"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="3" width="11" height="10" rx=".5" /><path d="M2.5 6.5h11M2.5 9.5h11M6 3v10M10 3v10" /></svg></button>
+              <button class="editor-tool" type="button" data-action="link" aria-label="链接" title="链接">↗</button>
+              <button class="editor-tool" type="button" data-action="image" aria-label="图片" title="图片">▧</button>
+              <button class="editor-tool" type="button" data-action="table" aria-label="表格" title="表格">▦</button>
             </div>
             <div class="editor-pane"><textarea id="body" placeholder="在这里编辑 Markdown…" spellcheck="false"></textarea></div>
             <div class="editor-footer"><span id="body-meta">0 字符</span><span>自动保存</span></div>
@@ -357,6 +355,11 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     let selectedPreviewNode = null;
     let pendingScrollRestore = null;
     let syncHighlightTimer = 0;
+    let editorState = null;
+    let undoStack = [];
+    let redoStack = [];
+    let isProgrammaticEdit = false;
+    const editorHistoryLimit = 100;
     let previewFootnoteCleanup = () => {};
     let activePreviewFootnoteClose = null;
 
@@ -787,6 +790,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       activeCollection().fields.filter((field) => field.type === 'select').forEach((field) => syncCustomSelect(`field-${field.id}`));
       activeCollection().fields.filter((field) => field.type === 'multiselect').forEach((field) => updateMultiselectLabel(field.id));
       $('body').value = body || '';
+      resetEditorHistory();
       selectedPreviewNode = null;
       updateBodyMeta();
       schedulePreview();
@@ -817,7 +821,90 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       return window.confirm('自动保存失败，仍要切换吗？');
     }
 
-    function updateBodyMeta() { $('body-meta').textContent = `${$('body').value.length} 字符`; }
+    function updateBodyMeta() {
+      $('body-meta').textContent = `${$('body').value.length} 字符`;
+      if (editorState && !isProgrammaticEdit) editorState = getEditorState();
+    }
+    function getEditorState() {
+      const body = $('body');
+      return { value: body.value, selectionStart: body.selectionStart, selectionEnd: body.selectionEnd };
+    }
+    function sameEditorValue(left, right) {
+      return left?.value === right?.value;
+    }
+    function pushUndo(state) {
+      if (!state || sameEditorValue(undoStack.at(-1), state)) return;
+      undoStack.push(state);
+      if (undoStack.length > editorHistoryLimit) undoStack.shift();
+      redoStack = [];
+    }
+    function resetEditorHistory() {
+      editorState = getEditorState();
+      undoStack = [];
+      redoStack = [];
+    }
+    function runEditorEdit(edit) {
+      const previous = editorState || getEditorState();
+      isProgrammaticEdit = true;
+      try {
+        edit();
+      } finally {
+        isProgrammaticEdit = false;
+      }
+      const next = getEditorState();
+      if (!sameEditorValue(previous, next)) pushUndo(previous);
+      editorState = next;
+      handleBodyChange();
+    }
+    function restoreEditorState(state) {
+      const body = $('body');
+      isProgrammaticEdit = true;
+      body.value = state.value;
+      body.focus();
+      const max = body.value.length;
+      body.setSelectionRange(Math.min(state.selectionStart, max), Math.min(state.selectionEnd, max));
+      isProgrammaticEdit = false;
+      editorState = getEditorState();
+      handleBodyChange();
+    }
+    function undoEditor() {
+      if (!undoStack.length) return;
+      const current = editorState || getEditorState();
+      const previous = undoStack.pop();
+      redoStack.push(current);
+      restoreEditorState(previous);
+    }
+    function redoEditor() {
+      if (!redoStack.length) return;
+      const current = editorState || getEditorState();
+      const next = redoStack.pop();
+      undoStack.push(current);
+      restoreEditorState(next);
+    }
+    function handleHistoryShortcut(event) {
+      const active = document.activeElement;
+      const inMarkdownEditor = active === $('body') || active?.classList.contains('editor-tool');
+      if (!inMarkdownEditor || (!event.metaKey && !event.ctrlKey) || event.altKey) return;
+      const key = event.key.toLowerCase();
+      const undo = key === 'z' && !event.shiftKey;
+      const redo = (key === 'z' && event.shiftKey) || (key === 'y' && !event.shiftKey);
+      if (!undo && !redo) return;
+      event.preventDefault();
+      if (undo) undoEditor();
+      if (redo) redoEditor();
+    }
+    function handleBodyChange() {
+      schedulePreview();
+      updateBodyMeta();
+      markDirty();
+    }
+    function handleBodyInput() {
+      if (isProgrammaticEdit) return;
+      const next = getEditorState();
+      if (!sameEditorValue(editorState, next)) pushUndo(editorState);
+      editorState = next;
+      handleBodyChange();
+    }
 
     function indentBodySelection() {
       const body = $('body');
@@ -1283,32 +1370,90 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       updateBodyMeta();
     }
 
-    function applyToolbar(action) {
+    function replaceSelection(before, after = '', placeholder = '') {
       const body = $('body');
       const start = body.selectionStart;
       const end = body.selectionEnd;
-      const selected = body.value.slice(start, end);
-      const templates = { bold: ['**', '**', '加粗文字'], italic: ['*', '*', '斜体文字'], code: ['`', '`', '代码'], link: ['[', '](https://example.com)', '链接文字'] };
-      if (templates[action]) {
-        const [before, after, placeholder] = templates[action];
-        body.setRangeText(`${before}${selected || placeholder}${after}`, start, end, 'select');
-      } else if (action === 'image') {
-        body.setRangeText('![图片描述](图片地址)', start, end, 'select');
-      } else if (action === 'table') {
-        body.setRangeText('| 项目 | 说明 |\n| --- | --- |\n| 内容 | 示例 |', start, end, 'end');
+      const selected = body.value.slice(start, end) || placeholder;
+      runEditorEdit(() => {
+        body.focus();
+        body.setRangeText(before + selected + after, start, end, 'select');
+      });
+    }
+    function isWrapped(value, before, after) {
+      if (value.length < before.length + after.length || !value.startsWith(before) || !value.endsWith(after)) return false;
+      if (before === '*' && after === '*' && (value.startsWith('**') || value.endsWith('**'))) return false;
+      return true;
+    }
+    function toggleWrap(before, after, placeholder = '') {
+      const body = $('body');
+      const start = body.selectionStart;
+      const end = body.selectionEnd;
+      const value = body.value;
+      const selected = value.slice(start, end);
+      const wrappedInside = isWrapped(selected, before, after);
+      const wrappedAround = start >= before.length
+        && value.slice(start - before.length, start) === before
+        && value.slice(end, end + after.length) === after;
+      let rangeStart = start;
+      let rangeEnd = end;
+      let replacement = selected || placeholder;
+      let selectionStart = start;
+      let selectionEnd = start + replacement.length;
+
+      if (wrappedInside) {
+        replacement = selected.slice(before.length, selected.length - after.length);
+        selectionEnd = start + replacement.length;
+      } else if (wrappedAround) {
+        rangeStart = start - before.length;
+        rangeEnd = end + after.length;
+        selectionStart = rangeStart;
+        selectionEnd = rangeStart + selected.length;
       } else {
-        const prefix = { h1: '# ', h2: '## ', h3: '### ', bullet: '- ', quote: '> ' }[action];
-        const numbered = action === 'numbered';
-        const lineStart = body.value.lastIndexOf('\n', Math.max(0, start - 1)) + 1;
-        const lineEndIndex = body.value.indexOf('\n', end);
-        const lineEnd = lineEndIndex === -1 ? body.value.length : lineEndIndex;
-        if (prefix || numbered) {
-          const lines = body.value.slice(lineStart, lineEnd).split('\n').map((line, index) => `${numbered ? `${index + 1}. ` : prefix}${line}`);
-          body.setRangeText(lines.join('\n'), lineStart, lineEnd, 'select');
-        }
+        replacement = before + replacement + after;
+        selectionEnd = start + replacement.length;
       }
-      body.dispatchEvent(new Event('input', { bubbles: true }));
-      body.focus();
+
+      runEditorEdit(() => {
+        body.focus();
+        body.setRangeText(replacement, rangeStart, rangeEnd, 'end');
+        body.setSelectionRange(selectionStart, selectionEnd);
+      });
+    }
+    function prefixLines(prefix, numbered = false) {
+      const body = $('body');
+      const start = body.selectionStart;
+      const end = body.selectionEnd;
+      const lineStart = body.value.lastIndexOf('\n', Math.max(0, start - 1)) + 1;
+      const nextLine = body.value.indexOf('\n', end);
+      const lineEnd = nextLine === -1 ? body.value.length : nextLine;
+      const selected = body.value.slice(lineStart, lineEnd);
+      const lines = selected.split('\n').map((line, index) => `${numbered ? `${index + 1}. ` : prefix}${line}`);
+      runEditorEdit(() => {
+        body.focus();
+        body.setRangeText(lines.join('\n'), lineStart, lineEnd, 'select');
+      });
+    }
+    function insertTemplate(template) {
+      const body = $('body');
+      runEditorEdit(() => {
+        body.focus();
+        body.setRangeText(template, body.selectionStart, body.selectionEnd, 'end');
+      });
+    }
+    function applyToolbarAction(action) {
+      if (action === 'bold') toggleWrap('**', '**', '加粗文字');
+      if (action === 'italic') toggleWrap('*', '*', '斜体文字');
+      if (action === 'h1') prefixLines('# ');
+      if (action === 'h2') prefixLines('## ');
+      if (action === 'h3') prefixLines('### ');
+      if (action === 'bullet') prefixLines('- ');
+      if (action === 'numbered') prefixLines('', true);
+      if (action === 'quote') prefixLines('> ');
+      if (action === 'code') toggleWrap('`', '`', '代码');
+      if (action === 'link') replaceSelection('[', '](https://example.com)', '链接文字');
+      if (action === 'image') insertTemplate('![图片描述](图片地址)');
+      if (action === 'table') insertTemplate('| 项目 | 说明 |\n| --- | --- |\n| 内容 | 示例 |');
     }
 
     async function switchCollection(collectionId) {
@@ -1349,9 +1494,10 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     $('new-entry').onclick = createNew;
     $('save').onclick = () => { void saveEntry({ force: true }); };
     $('body').addEventListener('keydown', handleBodyKeydown);
-    $('body').oninput = () => { updateBodyMeta(); markDirty(); schedulePreview(); };
+    $('body').oninput = handleBodyInput;
+    document.addEventListener('keydown', handleHistoryShortcut);
     window.addEventListener('pagehide', () => { rememberEditorSession(); void saveEntry(); });
-    document.querySelectorAll('.editor-tool').forEach((button) => { button.onclick = () => applyToolbar(button.dataset.action); });
+    document.querySelectorAll('.editor-tool').forEach((button) => { button.onclick = () => applyToolbarAction(button.dataset.action); });
     $('sync-to-preview').onclick = syncSourceToPreview;
      $('sync-to-source').onclick = syncPreviewToSource;
      setImmersiveMode(readImmersiveSession(), { focus: false, persist: false });
