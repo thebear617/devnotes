@@ -40,6 +40,10 @@ def parse_ver(value):
     return tuple(int(part) for part in match.groups()) if match else None
 
 
+def major_minor(version):
+    return version[:2]
+
+
 def release_version(subject):
     """提取仓库自身的正式版本，忽略时间线等文档标题中的跨仓库版本号。"""
     for pattern in RELEASE_PATTERNS:
@@ -175,6 +179,7 @@ def collect_additions():
         if not commits:
             continue
         existing = existing_all.get(repo, set())
+        existing_major_minor = {major_minor(version) for version in existing}
         if not existing:
             newest_ver = max(commits)
             newest_full = commits[newest_ver][0]
@@ -182,8 +187,8 @@ def collect_additions():
             new_sites.append({"repo": repo, "zh": zh})
             continue
 
-        tmin = min(existing)
-        gaps = sorted(v for v in commits if v >= tmin and v not in existing)
+        # Keep one timeline milestone for each major.minor; patch releases share it.
+        gaps = sorted(v for v in commits if major_minor(v) not in existing_major_minor)
 
         for v in gaps:
             full_ver, subject, sha = commits[v]
@@ -246,8 +251,8 @@ def print_status():
         current = max(existing) if existing else None
         current_text = f"v{current[0]}.{current[1]}.{current[2]}" if current else "（无）"
         if commits and existing:
-            tmin = min(existing)
-            gaps = [v for v in commits if v >= tmin and v not in existing]
+            existing_major_minor = {major_minor(version) for version in existing}
+            gaps = [v for v in commits if major_minor(v) not in existing_major_minor]
             flag = "  ← 有缺口" if gaps else ""
             newest_text = commits[max(commits)][0]
         else:
