@@ -46,6 +46,9 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     h2, h3, p { margin-top: 0; }
     .panel-heading h2, .editor-heading h2 { margin-bottom: 0; color: #153b42; letter-spacing: -.025em; }
     .panel-heading h2 { font-size: 18px; }
+    .panel-heading-actions { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .panel-heading-actions .secondary { flex: 0 0 auto; padding: 0 9px; }
+    .immersive-exit { display: none; align-items: center; justify-content: center; }
     .entry-count { color: #94a3b8; font-size: 11px; font-weight: 700; white-space: nowrap; }
     .search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px; margin: 14px 0 8px; }
     .search { position: relative; min-width: 0; }
@@ -231,7 +234,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .preview-footnote-popover-content img:focus-visible { outline: 3px solid rgba(20, 184, 166, .22); outline-offset: 3px; }
     .preview-footnote-popover-content > :last-child { margin-bottom: 0; }
     @keyframes preview-footnote-fade-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
-    @media (max-width: 980px) {
+    @media (max-width: 900px) {
       .admin { height: auto; min-height: 100vh; }
       .workspace { grid-template-columns: 1fr; }
       .sidebar { min-height: 380px; }
@@ -264,6 +267,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     body.is-immersive .workspace { grid-template-columns: minmax(0, 1fr); min-height: 0; }
     body.is-immersive .main-panel { grid-template-rows: auto minmax(0, 1fr); min-height: 0; border-radius: 0; }
     body.is-immersive .editor-workspace { min-height: 0; border-radius: 0; }
+    body.is-immersive .immersive-exit { display: inline-flex; }
   </style>
 
   <div class="admin">
@@ -279,7 +283,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
 
     <div class="workspace">
       <aside class="panel sidebar">
-        <div class="panel-heading"><h2 id="library-title">内容库</h2><span class="entry-count" id="entry-count">共 0 篇</span></div>
+        <div class="panel-heading"><h2 id="library-title">内容库</h2><div class="panel-heading-actions"><button id="immersive-toggle" class="secondary" type="button" aria-pressed="false" aria-label="进入沉浸式编辑" title="进入沉浸式编辑">沉浸式编辑</button><span class="entry-count" id="entry-count">共 0 篇</span></div></div>
         <div class="search-row">
           <label class="search" aria-label="搜索内容"><input id="search" autocomplete="off" /></label>
           <div class="list-tools-wrap" id="list-tools-wrap">
@@ -305,7 +309,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       <main class="panel main-panel">
         <div class="editor-heading">
           <div><h2 id="editor-title">编辑内容</h2><p id="editor-description">选择左侧条目，或新建一篇内容。</p></div>
-           <div class="status-actions"><span id="status" class="status">等待编辑</span><button id="immersive-toggle" class="secondary" type="button" aria-pressed="false" aria-label="进入沉浸式编辑" title="进入沉浸式编辑">沉浸式编辑</button><button id="save" class="primary" type="button">立即保存</button></div>
+           <div class="status-actions"><span id="status" class="status">等待编辑</span><button id="immersive-exit" class="secondary immersive-exit" type="button" aria-pressed="false" aria-label="退出沉浸式编辑" title="退出沉浸式编辑（Esc）">退出沉浸式编辑</button><button id="save" class="primary" type="button">立即保存</button></div>
         </div>
         <section id="metadata" class="metadata"></section>
         <div class="editor-workspace">
@@ -438,11 +442,15 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
 
      function setImmersiveMode(enabled, { focus = true, persist = true } = {}) {
        const button = $('immersive-toggle');
+       const exitButton = $('immersive-exit');
        document.body.classList.toggle('is-immersive', enabled);
        button.setAttribute('aria-pressed', String(enabled));
        button.textContent = enabled ? '退出沉浸式编辑' : '沉浸式编辑';
        button.setAttribute('aria-label', enabled ? '退出沉浸式编辑' : '进入沉浸式编辑');
        button.title = enabled ? '退出沉浸式编辑（Esc）' : '进入沉浸式编辑';
+       exitButton?.setAttribute('aria-pressed', String(enabled));
+       exitButton?.setAttribute('aria-label', enabled ? '退出沉浸式编辑' : '进入沉浸式编辑');
+       if (exitButton) exitButton.title = enabled ? '退出沉浸式编辑（Esc）' : '进入沉浸式编辑';
        if (persist) {
          try { sessionStorage.setItem(IMMERSIVE_SESSION_KEY, String(enabled)); } catch { /* sessionStorage may be unavailable. */ }
        }
@@ -1542,6 +1550,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     $('sort-toggle').onclick = () => togglePopover('sort-popover', 'sort-toggle');
      $('clear-filters').onclick = () => { state.filters = {}; renderFilters(); renderEntries(); };
      $('immersive-toggle').onclick = () => setImmersiveMode(!document.body.classList.contains('is-immersive'));
+    $('immersive-exit').onclick = () => setImmersiveMode(false);
     document.addEventListener('click', (event) => { if (!event.target.closest('#list-tools-wrap')) closePopovers(); });
     document.addEventListener('click', (event) => { if (!event.target.closest('[data-custom-select]')) closeCustomSelects(); });
     document.addEventListener('click', (event) => { if (!event.target.closest('[data-multiselect]')) closeMultiselectMenus(); });
