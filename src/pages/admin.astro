@@ -398,6 +398,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       { value: 'title-desc', label: '标题 Z → A' },
     ];
      const EDITOR_SESSION_KEY = 'devnotes-admin-editor-state-v1';
+     const EDITOR_DRAFT_KEY = 'devnotes-admin-editor-draft-v1';
      const IMMERSIVE_SESSION_KEY = 'devnotes-admin-immersive-v1';
     const state = { collections: [], collectionId: '', entries: [], selectedPath: '', dirty: false, draftVersion: 0, filters: {}, sort: 'updated-desc', previewId: 0 };
     let previewTimer = 0;
@@ -436,6 +437,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       state.dirty = true;
       state.draftVersion += 1;
       setStatus('等待自动保存', 'saving');
+      rememberEditorDraft();
       scheduleAutoSave();
     };
     const compareDate = (left, right) => String(left || '').localeCompare(String(right || ''));
@@ -461,6 +463,55 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
         pageScrollTop: window.scrollY,
       };
       try { sessionStorage.setItem(EDITOR_SESSION_KEY, JSON.stringify(snapshot)); } catch { /* sessionStorage may be unavailable in a restricted browser context. */ }
+    }
+
+    function rememberEditorDraft() {
+      if (!state.collectionId || !state.dirty) return;
+      const body = $('body');
+      const path = $('entry-path')?.value.trim() || '';
+      if (!path) return;
+      const snapshot = {
+        version: 1,
+        collectionId: state.collectionId,
+        selectedPath: state.selectedPath || '',
+        path,
+        frontmatter: getFormValue(),
+        body: body.value,
+        selectionStart: body.selectionStart,
+        selectionEnd: body.selectionEnd,
+        scrollTop: body.scrollTop,
+        previewScrollTop: $('preview').scrollTop,
+        pageScrollTop: window.scrollY,
+      };
+      try { localStorage.setItem(EDITOR_DRAFT_KEY, JSON.stringify(snapshot)); } catch { /* localStorage may be unavailable or full. */ }
+    }
+
+    function readEditorDraft() {
+      try {
+        const raw = localStorage.getItem(EDITOR_DRAFT_KEY);
+        if (!raw) return null;
+        const snapshot = JSON.parse(raw);
+        return snapshot && typeof snapshot === 'object' && snapshot.version === 1 ? snapshot : null;
+      } catch { return null; }
+    }
+
+    function clearEditorDraft() {
+      try { localStorage.removeItem(EDITOR_DRAFT_KEY); } catch { /* localStorage may be unavailable. */ }
+    }
+
+    function restoreEditorDraft(snapshot) {
+      if (!snapshot || snapshot.collectionId !== state.collectionId || typeof snapshot.body !== 'string') return false;
+      const path = String(snapshot.path || '').trim();
+      if (!path) return false;
+      const existingPath = snapshot.selectedPath || path;
+      if (snapshot.selectedPath && !state.entries.some((entry) => entry.path === existingPath || entry.path === path)) return false;
+      state.selectedPath = snapshot.selectedPath || '';
+      setFormValue(snapshot.frontmatter || {}, snapshot.body, path);
+      state.dirty = true;
+      renderEntries();
+      setStatus('已恢复未保存草稿', 'saving');
+      scheduleAutoSave();
+      return true;
     }
 
      function readEditorSession() {
@@ -1150,11 +1201,12 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       setStatus('自动保存中…', 'saving');
       const promise = (async () => {
         try {
-          const data = await request('entry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true, body: JSON.stringify({ collection: collectionId, path, previousPath, frontmatter, body }) });
+          const data = await request('entry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ collection: collectionId, path, previousPath, frontmatter, body }) });
           const isCurrentDraft = state.collectionId === collectionId && state.draftVersion === draftVersion;
           if (isCurrentDraft) {
             state.dirty = false;
             state.selectedPath = data.path;
+            clearEditorDraft();
             updateDeleteButton();
             setStatus('已自动保存 · 刚刚', 'saved');
           }
@@ -1703,7 +1755,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     $('scroll-to-top').onclick = () => scrollBodyToEdge('top');
     $('scroll-to-bottom').onclick = () => scrollBodyToEdge('bottom');
     document.addEventListener('keydown', handleHistoryShortcut);
-    window.addEventListener('pagehide', () => { rememberEditorSession(); void saveEntry(); });
+    window.addEventListener('pagehide', () => { rememberEditorSession(); rememberEditorDraft(); });
     document.querySelectorAll('.editor-tool').forEach((button) => { button.onclick = () => applyToolbarAction(button.dataset.action); });
     $('sync-to-preview').onclick = syncSourceToPreview;
      $('sync-to-source').onclick = syncPreviewToSource;
@@ -1748,6 +1800,11 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
         : state.collections[0]?.id;
       if (!firstCollection) throw new Error('没有可用的内容解析器');
       await switchCollection(firstCollection);
+      const savedDraft = readEditorDraft();
+      if (restoreEditorDraft(savedDraft)) {
+        restoreEditorPosition(savedDraft);
+        return;
+      }
       const savedEntry = savedSession?.selectedPath && state.entries.find((entry) => entry.path === savedSession.selectedPath);
       if (savedEntry) {
         await loadEntry(savedEntry.path);
