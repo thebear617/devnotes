@@ -1,5 +1,8 @@
 import fs from 'node:fs/promises';
+import { execFile } from 'node:child_process';
+import os from 'node:os';
 import path from 'node:path';
+import { promisify } from 'node:util';
 import { createMarkdownProcessor } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';
 import remarkFootnoteIndent from '../plugins/remark-footnote-indent.mjs';
@@ -12,6 +15,7 @@ import footnoteReferenceWithLabel from '../plugins/footnote-reference-with-label
 import { parserMap, parsers } from './parsers/index.mjs';
 
 const ROOT = path.resolve(process.cwd(), 'src/content');
+const execFileAsync = promisify(execFile);
 const markdownProcessor = createMarkdownProcessor({
   remarkPlugins: [remarkFootnoteIndent, remarkMath],
   rehypePlugins: [rehypeKatex, rehypeMark, rehypeTableWrap, rehypePopover, rehypeSourcePosition],
@@ -36,6 +40,57 @@ function normalizeRelativePath(parser, value) {
   const absolute = safePath(parser, value);
   if (!absolute) return null;
   return path.relative(path.resolve(ROOT, parser.root), absolute).split(path.sep).join('/');
+}
+
+function trashDirectory() {
+  return process.platform === 'darwin'
+    ? path.join(os.homedir(), '.Trash')
+    : path.join(os.homedir(), '.local', 'share', 'Trash', 'files');
+}
+
+async function moveToTrash(filePath) {
+  if (process.platform === 'darwin') {
+    const script = [
+      'on run argv',
+      '  set targetFile to POSIX file (item 1 of argv) as alias',
+      '  tell application "Finder"',
+      '    delete targetFile',
+      '  end tell',
+      'end run',
+    ].join('\n');
+    await execFileAsync('/usr/bin/osascript', ['-e', script, filePath]);
+    return filePath;
+  }
+
+  const directory = trashDirectory();
+  await fs.mkdir(directory, { recursive: true });
+  const originalName = path.basename(filePath);
+  const parsed = path.parse(originalName);
+  let target = path.join(directory, originalName);
+  let suffix = 1;
+  while (true) {
+    try {
+      await fs.access(target);
+      target = path.join(directory, `${parsed.name} (${suffix})${parsed.ext}`);
+      suffix += 1;
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+      break;
+    }
+  }
+  try {
+    await fs.rename(filePath, target);
+  } catch (error) {
+    if (error.code !== 'EXDEV') throw error;
+    await fs.copyFile(filePath, target);
+    try {
+      await fs.unlink(filePath);
+    } catch (removeError) {
+      await fs.rm(target, { force: true }).catch(() => {});
+      throw removeError;
+    }
+  }
+  return target;
 }
 
 async function walk(parser, relative = '') {
@@ -129,6 +184,19 @@ export default function localCms() {
             return json(response, 200, { collection, path: relativePath, ...parsed });
           }
 
+          if (request.method === 'DELETE' && url.pathname === '/entry' && parser && relativePath) {
+            const absolutePath = safePath(parser, relativePath);
+            try {
+              await fs.access(absolutePath);
+            } catch (error) {
+              if (error.code === 'ENOENT') return json(response, 404, { error: '文章不存在' });
+              throw error;
+            }
+            await moveToTrash(absolutePath);
+            lastSelfWriteAt = Date.now();
+            return json(response, 200, { ok: true, collection: parser.id, path: relativePath });
+          }
+
           if (request.method === 'POST' && url.pathname === '/preview') {
             const data = await readBody(request);
             const postParser = getParser(data.collection || collection);
@@ -143,10 +211,31 @@ export default function localCms() {
             const postParser = getParser(data.collection || collection);
             if (!postParser) return json(response, 404, { error: 'Unknown collection' });
             const targetPath = normalizeRelativePath(postParser, data.path);
+            const previousPath = data.previousPath ? normalizeRelativePath(postParser, data.previousPath) : null;
+            if (data.previousPath && !previousPath) return json(response, 400, { error: '原文章路径不在允许的内容目录内' });
             const errors = postParser.validate(data.frontmatter || {}, targetPath);
             if (errors.length || !targetPath) return json(response, 400, { errors: errors.length ? errors : ['文章路径不在允许的内容目录内'] });
-            await fs.mkdir(path.dirname(safePath(postParser, targetPath)), { recursive: true });
-            await fs.writeFile(safePath(postParser, targetPath), postParser.serialize(data.frontmatter, data.body || ''), 'utf8');
+            const targetFile = safePath(postParser, targetPath);
+            if (previousPath && previousPath !== targetPath) {
+              const previousFile = safePath(postParser, previousPath);
+              try {
+                await fs.access(previousFile);
+              } catch (error) {
+                if (error.code === 'ENOENT') return json(response, 404, { error: '原文章不存在' });
+                throw error;
+              }
+              try {
+                await fs.access(targetFile);
+                return json(response, 409, { error: '目标路径已存在，请先更换文件路径' });
+              } catch (error) {
+                if (error.code !== 'ENOENT') throw error;
+              }
+              await fs.mkdir(path.dirname(targetFile), { recursive: true });
+              await fs.rename(previousFile, targetFile);
+            } else {
+              await fs.mkdir(path.dirname(targetFile), { recursive: true });
+            }
+            await fs.writeFile(targetFile, postParser.serialize(data.frontmatter, data.body || ''), 'utf8');
             lastSelfWriteAt = Date.now();
             return json(response, 200, { ok: true, collection: postParser.id, path: targetPath });
           }

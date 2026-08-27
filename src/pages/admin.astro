@@ -122,6 +122,9 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .status.saving { color: #b7791f; }
     .status.saved { color: #0f766e; }
     .status.error { color: #b42318; }
+    .delete-button { min-height: 34px; padding: 0 13px; border: 1px solid #efd0d0; border-radius: 7px; color: #b42318; background: #fff; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .delete-button:hover { border-color: #e7a6a6; color: #9f1d1d; background: #fff5f5; }
+    .delete-button:disabled { border-color: #e5ebec; color: #aebdc0; background: #f7fafa; }
     .primary, .secondary { padding: 0 13px; }
     .metadata { position: relative; z-index: 2; overflow: visible; padding: 0 18px 12px; }
     .metadata-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
@@ -233,6 +236,23 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .preview-footnote-popover-content img { max-width: 100%; height: auto; cursor: zoom-in; }
     .preview-footnote-popover-content img:focus-visible { outline: 3px solid rgba(20, 184, 166, .22); outline-offset: 3px; }
     .preview-footnote-popover-content > :last-child { margin-bottom: 0; }
+    .delete-modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 24px; }
+    .delete-modal[hidden] { display: none; }
+    .delete-modal-backdrop { position: absolute; inset: 0; background: rgba(15, 63, 70, .28); }
+    .delete-modal-card { position: relative; width: min(100%, 420px); padding: 20px; border: 1px solid #dbe5e7; border-radius: 12px; background: #fff; box-shadow: 0 22px 60px rgba(15, 63, 70, .22); }
+    .delete-modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .delete-modal-header h3 { margin: 0; color: #153b42; font-size: 17px; }
+    .delete-modal-message { margin: 10px 0 0; color: #627a80; font-size: 12px; line-height: 1.7; word-break: break-word; }
+    .delete-modal-close { display: grid; width: 28px; height: 28px; flex: 0 0 auto; place-items: center; padding: 0; border: 0; border-radius: 50%; color: #789096; background: transparent; font-size: 22px; line-height: 1; }
+    .delete-modal-close:hover { color: #b42318; background: #fff5f5; }
+    .delete-modal-close:focus-visible { outline: 2px solid rgba(20, 184, 166, .28); outline-offset: 2px; }
+    .delete-modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+    .delete-modal-actions button { min-height: 34px; padding: 0 14px; border-radius: 7px; font-size: 12px; font-weight: 700; }
+    .delete-modal-cancel { border: 1px solid #d3e0e2; color: #587178; background: #fff; }
+    .delete-modal-cancel:hover { border-color: #64b9b0; color: #0f766e; background: #f0fdfa; }
+    .delete-modal-confirm { border: 1px solid #b42318; color: #fff; background: #b42318; }
+    .delete-modal-confirm:hover { border-color: #941c14; background: #941c14; }
+    .delete-modal-actions button:disabled { cursor: wait; opacity: .65; }
     @keyframes preview-footnote-fade-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
     @media (max-width: 900px) {
       .admin { height: auto; min-height: 100vh; }
@@ -309,7 +329,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       <main class="panel main-panel">
         <div class="editor-heading">
           <div><h2 id="editor-title">编辑内容</h2><p id="editor-description">选择左侧条目，或新建一篇内容。</p></div>
-           <div class="status-actions"><span id="status" class="status">等待编辑</span><button id="immersive-exit" class="secondary immersive-exit" type="button" aria-pressed="false" aria-label="退出沉浸式编辑" title="退出沉浸式编辑（Esc）">退出沉浸式编辑</button><button id="save" class="primary" type="button">立即保存</button></div>
+           <div class="status-actions"><span id="status" class="status">等待编辑</span><button id="immersive-exit" class="secondary immersive-exit" type="button" aria-pressed="false" aria-label="退出沉浸式编辑" title="退出沉浸式编辑（Esc）">退出沉浸式编辑</button><button id="save" class="primary" type="button">立即保存</button><button id="delete" class="delete-button" type="button" disabled title="新文章尚未保存">删除文章</button></div>
         </div>
         <section id="metadata" class="metadata"></section>
         <div class="editor-workspace">
@@ -354,6 +374,20 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     </div>
   </div>
 
+  <div class="delete-modal" id="delete-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" aria-describedby="delete-modal-message">
+    <div class="delete-modal-backdrop" data-delete-close></div>
+    <section class="delete-modal-card">
+      <div class="delete-modal-header">
+        <div><h3 id="delete-modal-title">确认删除文章？</h3><p class="delete-modal-message" id="delete-modal-message"></p></div>
+        <button class="delete-modal-close" id="delete-modal-close" type="button" aria-label="关闭删除确认框" title="关闭">×</button>
+      </div>
+      <div class="delete-modal-actions">
+        <button class="delete-modal-cancel" id="delete-modal-cancel" type="button">取消</button>
+        <button class="delete-modal-confirm" id="delete-modal-confirm" type="button">删除</button>
+      </div>
+    </section>
+  </div>
+
   <script define:vars={{ base }}>
     const $ = (id) => document.getElementById(id);
     const apiBase = `${base}admin/api`;
@@ -381,6 +415,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     const editorHistoryLimit = 100;
     let previewFootnoteCleanup = () => {};
     let activePreviewFootnoteClose = null;
+    let deleteReturnFocus = null;
+    let deletePromise = null;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     const activeCollection = () => state.collections.find((item) => item.id === state.collectionId);
@@ -457,8 +493,12 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
        if (focus) (enabled ? $('body') : button).focus({ preventScroll: true });
      }
 
-     function closeEscapeLayers() {
-       if (document.querySelector('.preview-lightbox')) return true;
+    function closeEscapeLayers() {
+      if (!$('delete-modal').hidden) {
+        if (!deletePromise) closeDeleteModal();
+        return true;
+      }
+      if (document.querySelector('.preview-lightbox')) return true;
        if (document.querySelector('.preview-footnote-popover.is-visible')) {
          activePreviewFootnoteClose?.();
          return true;
@@ -818,6 +858,87 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       selectedPreviewSourceRange = null;
       updateBodyMeta();
       schedulePreview();
+      updateDeleteButton();
+    }
+
+    function updateDeleteButton() {
+      const button = $('delete');
+      if (!button) return;
+      const canDelete = Boolean(state.selectedPath);
+      button.disabled = !canDelete || Boolean(deletePromise);
+      button.title = canDelete ? '将当前文章移入废纸篓' : '新文章尚未保存';
+    }
+
+    function setDeleteModalBusy(busy) {
+      $('delete-modal-confirm').disabled = busy;
+      $('delete-modal-cancel').disabled = busy;
+      $('delete-modal-close').disabled = busy;
+      $('delete-modal-confirm').textContent = busy ? '删除中…' : '删除';
+    }
+
+    function openDeleteModal() {
+      if (!state.selectedPath || deletePromise) return;
+      const title = $('field-title')?.value.trim() || state.selectedPath;
+      $('delete-modal-message').textContent = `确定要将“${title}”移入废纸篓吗？Markdown 文件仍可从废纸篓恢复。`;
+      deleteReturnFocus = document.activeElement;
+      $('delete-modal').hidden = false;
+      $('delete-modal').setAttribute('aria-hidden', 'false');
+      window.requestAnimationFrame(() => $('delete-modal-cancel').focus());
+    }
+
+    function closeDeleteModal({ restoreFocus = true } = {}) {
+      const modal = $('delete-modal');
+      if (modal.hidden) return;
+      modal.hidden = true;
+      modal.setAttribute('aria-hidden', 'true');
+      const returnFocus = deleteReturnFocus;
+      deleteReturnFocus = null;
+      if (restoreFocus && returnFocus instanceof HTMLElement && returnFocus.isConnected) returnFocus.focus({ preventScroll: true });
+    }
+
+    async function deleteCurrentEntry() {
+      if (!state.selectedPath || deletePromise) return false;
+      setDeleteModalBusy(true);
+      const collectionId = state.collectionId;
+      const promise = (async () => {
+        try {
+          if (state.dirty && !(await flushAutoSave())) {
+            setStatus('自动保存失败，未删除', 'error');
+            return false;
+          }
+          const entryPath = state.selectedPath;
+          if (!entryPath) return false;
+          await request(`entry?collection=${encodeURIComponent(collectionId)}&path=${encodeURIComponent(entryPath)}`, { method: 'DELETE' });
+          state.selectedPath = '';
+          state.dirty = false;
+          if (state.collectionId === collectionId) {
+            try { await loadEntries(); } catch { /* The file is already in the Trash even if the list refresh fails. */ }
+            const config = activeCollection();
+            const frontmatter = clone(config.defaultFrontmatter);
+            frontmatter.date = today();
+            frontmatter.updated = today();
+            setFormValue(frontmatter, '', config.defaultPath);
+            renderEntries();
+          }
+          closeDeleteModal({ restoreFocus: false });
+          setStatus('已移入废纸篓', 'saved');
+          $('field-title')?.focus();
+          return true;
+        } catch (error) {
+          setStatus(error.message, 'error');
+          return false;
+        } finally {
+          setDeleteModalBusy(false);
+        }
+      })();
+      deletePromise = promise;
+      try { return await promise; }
+      finally {
+        if (deletePromise === promise) {
+          deletePromise = null;
+          updateDeleteButton();
+        }
+      }
     }
 
     function getFormValue() {
@@ -1022,17 +1143,19 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       const collectionId = state.collectionId;
       const draftVersion = state.draftVersion;
       const path = $('entry-path').value.trim();
+      const previousPath = state.selectedPath;
       const frontmatter = getFormValue();
       const body = $('body').value;
       $('save').disabled = true;
       setStatus('自动保存中…', 'saving');
       const promise = (async () => {
         try {
-          const data = await request('entry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true, body: JSON.stringify({ collection: collectionId, path, frontmatter, body }) });
+          const data = await request('entry', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true, body: JSON.stringify({ collection: collectionId, path, previousPath, frontmatter, body }) });
           const isCurrentDraft = state.collectionId === collectionId && state.draftVersion === draftVersion;
           if (isCurrentDraft) {
             state.dirty = false;
             state.selectedPath = data.path;
+            updateDeleteButton();
             setStatus('已自动保存 · 刚刚', 'saved');
           }
           if (state.collectionId === collectionId) {
@@ -1565,6 +1688,11 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     $('refresh').onclick = () => loadEntries().catch((error) => setStatus(error.message, 'error'));
     $('new-entry').onclick = createNew;
     $('save').onclick = () => { void saveEntry({ force: true }); };
+    $('delete').onclick = openDeleteModal;
+    $('delete-modal-close').onclick = () => closeDeleteModal();
+    $('delete-modal-cancel').onclick = () => closeDeleteModal();
+    $('delete-modal-confirm').onclick = () => { void deleteCurrentEntry(); };
+    $('delete-modal').onclick = (event) => { if (!deletePromise && (event.target === event.currentTarget || (event.target instanceof Element && event.target.matches('[data-delete-close]')))) closeDeleteModal(); };
     $('body').addEventListener('keydown', handleBodyKeydown);
     $('body').oninput = handleBodyInput;
     function scrollBodyToEdge(edge) {
