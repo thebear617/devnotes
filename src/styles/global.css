@@ -68,28 +68,64 @@ button {
 
 .sidebar-toggle,
 .sidebar-backdrop,
-.sidebar-close {
+.sidebar-close,
+.sidebar-collapse {
   display: none;
 }
 
 .sidebar-brand {
-  padding: 1.6rem 1.2rem 1.2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, .12);
+  position: relative;
+  padding: 2.625rem 1.2rem 1.875rem;
+  text-align: center;
+}
+
+.sidebar-brand::after {
+  display: block;
+  width: calc(100% - .5rem);
+  margin: 1.25rem auto 0;
+  border-top: 1px solid rgba(255, 255, 255, .16);
+  content: '';
+}
+
+.sidebar-brand-mark {
+  display: block;
+  width: 2.35rem;
+  height: 2.35rem;
+  margin: 0 auto .975rem;
+  fill: none;
+  stroke: #5eead4;
+  stroke-width: 1.55;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, .22));
 }
 
 .sidebar-eyebrow {
   color: #5eead4;
+  font-family: Georgia, "Times New Roman", "Songti SC", STSong, serif;
   font-size: .72rem;
-  font-weight: 800;
-  letter-spacing: .08em;
+  font-weight: 600;
+  letter-spacing: .17em;
   text-transform: uppercase;
 }
 
 .sidebar-title {
-  margin-top: .15rem;
-  font-size: 1.35rem;
-  font-weight: 900;
-  line-height: 1.15;
+  margin-top: .225rem;
+  color: #d9fffa;
+  font-family: Georgia, "Songti SC", STSong, serif;
+  font-size: 1.55rem;
+  font-weight: 400;
+  letter-spacing: .11em;
+  line-height: 1.25;
+}
+
+.sidebar-subtitle {
+  display: block;
+  margin-top: .45rem;
+  color: rgba(217, 255, 250, .72);
+  font-family: Georgia, "Songti SC", STSong, serif;
+  font-size: .76rem;
+  letter-spacing: .15em;
 }
 
 .sidebar-nav {
@@ -133,6 +169,101 @@ button {
   width: 1.4rem;
   text-align: center;
   flex-shrink: 0;
+}
+
+@media (min-width: 720px) {
+  .sidebar {
+    width: 0;
+    overflow: hidden;
+    transition: width .28s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  body.sidebar-expanded .sidebar {
+    width: var(--sidebar-w);
+    overflow-y: auto;
+  }
+
+  .sidebar-brand,
+  .sidebar-nav {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-10px);
+    transition: opacity .18s ease, transform .28s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  body.sidebar-expanded .sidebar-brand,
+  body.sidebar-expanded .sidebar-nav {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+  }
+
+  .sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 50%;
+    left: 0;
+    z-index: 30;
+    width: 2.2rem;
+    height: 4.5rem;
+    border: 1px solid var(--line);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    background: rgba(255, 255, 255, .92);
+    color: var(--dark);
+    font-size: 1.05rem;
+    cursor: pointer;
+    transform: translateY(-50%);
+    box-shadow: var(--shadow);
+    transition: opacity .18s ease, background .15s ease, color .15s ease;
+  }
+
+  .sidebar-toggle:hover {
+    background: var(--surface-soft);
+    color: var(--accent);
+  }
+
+  body.sidebar-expanded .sidebar-toggle {
+    opacity: 0;
+    pointer-events: auto;
+  }
+
+  .sidebar-collapse {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: .5rem;
+    right: 1rem;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid transparent;
+    border-radius: .55rem;
+    background: transparent;
+    color: #99f6e4;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+
+  .sidebar-collapse:hover {
+    border-color: rgba(94, 234, 212, .24);
+    background: rgba(94, 234, 212, .1);
+    color: #fff;
+  }
+
+  .sidebar-collapse svg {
+    display: block;
+    width: 1.2rem;
+    height: 1.2rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 }
 
 /* ─── Main ─── */
@@ -2358,7 +2489,16 @@ body.filter-open {
   }
 
   .sidebar-close:hover { background: rgba(255, 255, 255, .18); color: #fff; }
-  .sidebar-brand { padding: 1.2rem .8rem .9rem; position: relative; }
+  .sidebar-brand { padding: 2.25rem .9rem 1.5rem; position: relative; }
+
+  .sidebar-brand::after { margin-top: 1.25rem; }
+
+  .sidebar-brand-mark {
+    width: 2.15rem;
+    height: 2.15rem;
+  }
+
+  .sidebar-title { font-size: 1.25rem; }
 
   .note-list { grid-template-columns: 1fr; }
   .note-list.is-list .note-tags { justify-content: flex-start; }

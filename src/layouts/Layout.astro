@@ -20,16 +20,21 @@ const navItems = [
     <link rel="icon" type="image/png" href={`${base}favicon.png`} />
     <title>开发笔记</title>
   </head>
-  <body>
+  <body class="sidebar-collapsed">
     <div class="layout">
-      <button class="sidebar-toggle" id="sidebarToggle" aria-label="打开侧边栏">☰</button>
+      <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="展开侧边栏" aria-expanded="false">☰</button>
       <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
       <nav class="sidebar" id="sidebar" aria-label="主导航">
         <div class="sidebar-brand">
-          <button class="sidebar-close" id="sidebarClose" aria-label="关闭侧边栏">✕</button>
-          <p class="sidebar-eyebrow">Dev Notes</p>
+          <button class="sidebar-close" id="sidebarClose" type="button" aria-label="关闭侧边栏">✕</button>
+          <button class="sidebar-collapse" id="sidebarCollapse" type="button" aria-label="收起侧边栏" title="收起侧边栏">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3.5" y="4" width="17" height="16" rx="2"></rect><path d="M9 4v16"></path><path d="m15 9-3 3 3 3"></path></svg>
+          </button>
+          <svg class="sidebar-brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m18 16 4-4-4-4"></path><path d="m6 8-4 4 4 4"></path><path d="m14.5 4-5 16"></path></svg>
+          <p class="sidebar-eyebrow">DEV NOTES</p>
           <h1 class="sidebar-title">开发笔记</h1>
+          <span class="sidebar-subtitle">个人开发知识库</span>
         </div>
         <div class="sidebar-nav">
           {
@@ -52,26 +57,7 @@ const navItems = [
     </div>
 
     <script>
-      const toggle = document.getElementById('sidebarToggle');
-      const backdrop = document.getElementById('sidebarBackdrop');
-      const sidebar = document.getElementById('sidebar');
-      const close = document.getElementById('sidebarClose');
-
-      function openSidebar() {
-        sidebar?.classList.add('open');
-        document.body.classList.add('sidebar-open');
-      }
-      function closeSidebar() {
-        sidebar?.classList.remove('open');
-        document.body.classList.remove('sidebar-open');
-      }
-
-      toggle?.addEventListener('click', openSidebar);
-      backdrop?.addEventListener('click', closeSidebar);
-      close?.addEventListener('click', closeSidebar);
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeSidebar();
-      });
+      import '../scripts/layout';
     </script>
   </body>
 </html>
