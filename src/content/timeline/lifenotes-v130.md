@@ -32,3 +32,9 @@ subcategory: [架构, 内容, 视觉]
 
 - 根路径和 `SITE_BASE=/lifenotes/` 构建均通过，共生成 59 个页面。
 - 迁移后所有文章的 slug 和详情页 URL 保持不变。
+
+## UI 浏览图留档
+
+补充常识笔记 v1.3.0 后台内容管理界面的浏览图，记录本次 Schema、目录与 CMS 编辑布局统一后的状态。
+
+![常识笔记 v1.3.0 后台 UI 浏览图](/images/timeline/lifenotes-v130/ui-01.png)
