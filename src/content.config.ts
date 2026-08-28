@@ -14,7 +14,10 @@ const knowledgeCollection = defineCollection({
     subcategory: z.enum(knowledgeSubcategories),
     description: z.string().default(''),
     slug: z.string(),
-  }),
+  }).transform(data => ({
+    ...data,
+    updated: data.updated || data.date,
+  })),
 });
 
 const timelineCategories = [
