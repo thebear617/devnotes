@@ -400,6 +400,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
      const EDITOR_SESSION_KEY = 'devnotes-admin-editor-state-v1';
      const EDITOR_DRAFT_KEY = 'devnotes-admin-editor-draft-v1';
      const IMMERSIVE_SESSION_KEY = 'devnotes-admin-immersive-v1';
+     const IMMERSIVE_WIDE_QUERY = '(min-width: 1181px)';
+     const immersiveMedia = window.matchMedia(IMMERSIVE_WIDE_QUERY);
     const state = { collections: [], collectionId: '', entries: [], selectedPath: '', dirty: false, draftVersion: 0, filters: {}, sort: 'updated-desc', previewId: 0 };
     let previewTimer = 0;
     let autoSaveTimer = 0;
@@ -560,6 +562,19 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
        try { return sessionStorage.getItem(IMMERSIVE_SESSION_KEY) === 'true'; } catch { return false; }
      }
 
+     function placeImmersiveToggle() {
+       const button = $('immersive-toggle');
+       const headingSlot = document.querySelector('.sidebar .panel-heading-actions');
+       if (!button || !headingSlot) return;
+       const wide = immersiveMedia.matches;
+       const immersive = document.body.classList.contains('is-immersive');
+       if (wide && !immersive) {
+         $('save').insertAdjacentElement('beforebegin', button);
+       } else if (button.parentElement !== headingSlot) {
+         headingSlot.insertBefore(button, $('entry-count'));
+       }
+     }
+
      function setImmersiveMode(enabled, { focus = true, persist = true } = {}) {
        const button = $('immersive-toggle');
        const exitButton = $('immersive-exit');
@@ -575,6 +590,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
          try { sessionStorage.setItem(IMMERSIVE_SESSION_KEY, String(enabled)); } catch { /* sessionStorage may be unavailable. */ }
        }
        if (focus) (enabled ? $('body') : button).focus({ preventScroll: true });
+       placeImmersiveToggle();
      }
 
     function closeEscapeLayers() {
@@ -1775,6 +1791,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
      $('clear-filters').onclick = () => { state.filters = {}; renderFilters(); renderEntries(); };
      $('immersive-toggle').onclick = () => setImmersiveMode(!document.body.classList.contains('is-immersive'));
     $('immersive-exit').onclick = () => setImmersiveMode(false);
+    immersiveMedia.addEventListener('change', placeImmersiveToggle);
+    placeImmersiveToggle();
     document.addEventListener('click', (event) => { if (!event.target.closest('#list-tools-wrap')) closePopovers(); });
     document.addEventListener('click', (event) => { if (!event.target.closest('[data-custom-select]')) closeCustomSelects(); });
     document.addEventListener('click', (event) => { if (!event.target.closest('[data-multiselect]')) closeMultiselectMenus(); });

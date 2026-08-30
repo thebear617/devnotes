@@ -117,7 +117,7 @@ OpenCode 的全局用户配置使用 `~/.config/opencode/opencode.json`；全局
 ~/.opencode/opencode.json
 ```
 
-`opencode.jsonc` 当前只保留 schema；`~/.opencode/opencode.json` 是另一个现存配置文件，目前只包含 MiniMax MCP。它与模型路由是两条独立链路，本次没有修改，也没有把任何 API key 写入知识库。
+`opencode.jsonc` 当前只保留 schema；`~/.opencode/opencode.json` 是另一条独立配置链路。MiniMax MCP 已于 2026-08-29 临时停用，模型路由仍保持独立；本记录不保存任何 API key。
 
 ## 五、用量观察策略
 
