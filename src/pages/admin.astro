@@ -424,6 +424,39 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     const clone = (value) => JSON.parse(JSON.stringify(value));
     const today = () => new Date().toISOString().slice(0, 10);
     const setStatus = (message, kind = '') => { $('status').textContent = message; $('status').className = `status ${kind}`; };
+
+    function managedPathStrategy(config = activeCollection()) {
+      return config?.pathStrategy || null;
+    }
+
+    function filenameFromTitle(value) {
+      const normalized = String(value || '')
+        .trim()
+        .replaceAll('\0', '')
+        .replaceAll('/', '／')
+        .replaceAll('\\', '＼')
+        .replace(/\.md$/i, '')
+        .trim();
+      return normalized && normalized !== '.' && normalized !== '..' ? `${normalized}.md` : '';
+    }
+
+    function derivedEntryPath(config = activeCollection()) {
+      const strategy = managedPathStrategy(config);
+      if (!strategy) return $('entry-path')?.value.trim() || '';
+      const category = $(`field-${strategy.categoryField}`)?.value;
+      const subcategory = $(`field-${strategy.subcategoryField}`)?.value;
+      const filename = filenameFromTitle($('field-title')?.value);
+      const categoryDirectory = strategy.categoryDirectories?.[category];
+      const subcategoryDirectory = strategy.subcategoryDirectories?.[subcategory];
+      if (!categoryDirectory || !subcategoryDirectory || !filename || filename.includes('/') || filename.includes('\\')) return '';
+      return `${categoryDirectory}/${subcategoryDirectory}/${filename}`;
+    }
+
+    function updateDerivedEntryPath() {
+      const strategy = managedPathStrategy();
+      if (!strategy) return;
+      $('entry-path').value = derivedEntryPath();
+    }
     function scheduleAutoSave() {
       window.clearTimeout(autoSaveTimer);
       autoSaveTimer = 0;
@@ -455,7 +488,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       const body = $('body');
       const snapshot = {
         collectionId: state.collectionId,
-        selectedPath: state.selectedPath || $('entry-path')?.value.trim() || '',
+        selectedPath: state.selectedPath || derivedEntryPath(),
         selectionStart: body.selectionStart,
         selectionEnd: body.selectionEnd,
         scrollTop: body.scrollTop,
@@ -468,7 +501,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     function rememberEditorDraft() {
       if (!state.collectionId || !state.dirty) return;
       const body = $('body');
-      const path = $('entry-path')?.value.trim() || '';
+      const path = derivedEntryPath();
       if (!path) return;
       const snapshot = {
         version: 1,
@@ -836,6 +869,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       const required = field.required ? ' <span class="required">*</span>' : '';
       const requiredAttribute = field.required ? ' required' : '';
       const ariaRequired = field.required ? ' aria-required="true"' : '';
+      const readonlyAttribute = field.readonly ? ' readonly aria-readonly="true"' : '';
       if (field.type === 'multiselect') {
         const menuId = `multiselect-menu-${field.id}`;
         return `<div class="field"><span>${escapeHtml(field.label)}${required}</span><div class="multiselect-control" data-multiselect="${escapeHtml(field.id)}"><button class="multiselect-trigger" id="multiselect-trigger-${escapeHtml(field.id)}" type="button" aria-expanded="false" aria-controls="${menuId}"${ariaRequired}><span class="multiselect-label empty" id="multiselect-label-${escapeHtml(field.id)}">请选择${escapeHtml(field.label)}</span><span class="multiselect-chevron" aria-hidden="true">⌄</span></button><div class="multiselect-menu" id="${menuId}" hidden>${field.options.map((option) => `<label class="multiselect-option"><input type="checkbox" data-field="${escapeHtml(field.id)}" value="${escapeHtml(option)}"><span>${escapeHtml(option)}</span></label>`).join('')}</div></div></div>`;
@@ -852,7 +886,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       const type = field.type === 'date' ? ' type="date"' : '';
       const placeholder = field.type === 'tags' ? '每行一个，或用逗号分隔' : '';
       const autocomplete = tag === 'input' ? ' autocomplete="off"' : '';
-      return `<label class="field${field.type === 'textarea' || field.type === 'tags' ? ' wide' : ''}"><span>${escapeHtml(field.label)}${required}</span><${tag} id="field-${escapeHtml(field.id)}"${type}${autocomplete}${requiredAttribute}${ariaRequired} placeholder="${placeholder}"></${tag}></label>`;
+      return `<label class="field${field.type === 'textarea' || field.type === 'tags' ? ' wide' : ''}"><span>${escapeHtml(field.label)}${required}</span><${tag} id="field-${escapeHtml(field.id)}"${type}${autocomplete}${requiredAttribute}${ariaRequired}${readonlyAttribute} placeholder="${placeholder}"></${tag}></label>`;
     }
 
     function renderMetadata() {
@@ -861,7 +895,11 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       const groups = [...new Set(config.fields.map((field) => field.section || '内容信息'))];
       const pathSection = groups.includes('文件与发布') ? '文件与发布' : groups[groups.length - 1];
       const groupMarkup = groups.map((section) => {
-        const pathMarkup = section === pathSection ? `<div class="path-row field"><span>文件路径（相对于 src/content/${escapeHtml(config.root)}/）</span><input id="entry-path" autocomplete="off" placeholder="${escapeHtml(config.defaultPath)}"></div>` : '';
+        const pathMarkup = section === pathSection
+          ? (managedPathStrategy(config)
+            ? `<div class="path-row field"><span>文件路径（由一级、二级分类和标题自动生成）</span><input id="entry-path" readonly aria-readonly="true"></div>`
+            : `<div class="path-row field"><span>文件路径（相对于 src/content/${escapeHtml(config.root)}/）</span><input id="entry-path" autocomplete="off" placeholder="${escapeHtml(config.defaultPath)}"></div>`)
+          : '';
         const description = config.sectionDescriptions?.[section] || config.description;
         return `<section class="metadata-group"><h3>${escapeHtml(section)}</h3><p>${escapeHtml(description)}</p>${pathMarkup}<div class="metadata-grid">${config.fields.filter((field) => (field.section || '内容信息') === section).map(fieldControl).join('')}</div></section>`;
       }).join('');
@@ -872,6 +910,13 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       $('metadata').querySelectorAll('[data-add-links]').forEach((button) => { button.onclick = () => addLinkRow(button.dataset.addLinks); });
       $('metadata').oninput = markDirty;
       $('metadata').onchange = markDirty;
+      const strategy = managedPathStrategy(config);
+      if (strategy) {
+        [`field-${strategy.categoryField}`, `field-${strategy.subcategoryField}`].forEach((id) => {
+          $(id)?.addEventListener('change', updateDerivedEntryPath);
+        });
+        $('field-title').addEventListener('input', updateDerivedEntryPath);
+      }
     }
 
     function addLinkRow(fieldId, value = {}) {
@@ -888,7 +933,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       window.clearTimeout(autoSaveTimer);
       autoSaveTimer = 0;
       state.draftVersion += 1;
-      $('entry-path').value = entryPath;
+      const strategy = managedPathStrategy();
+      if (!strategy) $('entry-path').value = entryPath;
       activeCollection().fields.forEach((field) => {
         const value = frontmatter[field.id];
         if (field.type === 'multiselect') {
@@ -903,6 +949,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       activeCollection().fields.filter((field) => field.dependsOn).forEach((field) => refreshDependentSelect($(`field-${field.id}`), frontmatter[field.id] || ''));
       activeCollection().fields.filter((field) => field.type === 'select').forEach((field) => syncCustomSelect(`field-${field.id}`));
       activeCollection().fields.filter((field) => field.type === 'multiselect').forEach((field) => updateMultiselectLabel(field.id));
+      if (strategy) updateDerivedEntryPath();
       $('body').value = body || '';
       resetEditorHistory();
       selectedPreviewNode = null;
@@ -1193,7 +1240,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       rememberEditorSession();
       const collectionId = state.collectionId;
       const draftVersion = state.draftVersion;
-      const path = $('entry-path').value.trim();
+      const path = derivedEntryPath();
       const previousPath = state.selectedPath;
       const frontmatter = getFormValue();
       const body = $('body').value;
@@ -1206,6 +1253,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
           if (isCurrentDraft) {
             state.dirty = false;
             state.selectedPath = data.path;
+            const updatedField = $('field-updated');
+            if (data.frontmatter?.updated && updatedField) updatedField.value = data.frontmatter.updated;
             clearEditorDraft();
             updateDeleteButton();
             setStatus('已自动保存 · 刚刚', 'saved');

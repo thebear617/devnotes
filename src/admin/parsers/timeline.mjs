@@ -24,7 +24,7 @@ export const timelineParser = {
     { id: 'category', label: '一级分类', type: 'select', options: categories, required: true, filterable: true, section: '内容归类' },
     { id: 'subcategory', label: '二级分类', type: 'multiselect', options: subcategories, required: true, filterable: true, section: '内容归类' },
     { id: 'date', label: '发布日期', type: 'date', required: true, section: '文件与发布' },
-    { id: 'updated', label: '更新日期', type: 'date', section: '文件与发布' },
+    { id: 'updated', label: '更新日期（保存时自动更新）', type: 'date', readonly: true, section: '文件与发布' },
   ],
   parse: parseFrontmatter,
   serialize(frontmatter, body) {

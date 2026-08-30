@@ -66,7 +66,15 @@ npm install
 npm run dev
 ```
 
-Astro 默认使用 `http://localhost:4321`。访问根路径后会进入 Debug 库。
+日常开发服务器固定为 `http://localhost:4323`；CMS 位于 <http://localhost:4323/admin/>，访问根路径后会进入 Debug 库。同一仓库只保留一个普通 `npm run dev` 实例。
+
+Agent 需要浏览器验收时，另开空闲端口运行：
+
+```bash
+npm run dev:verify -- --port 4401
+```
+
+该命令会把 `src/` 复制到系统临时目录，并使用独立的 Astro 缓存；验收中 CMS 的保存和自动保存只写入该副本，不会改动真实 `src/content/`。不要为了验收启动第二个普通 `npm run dev`。
 
 构建并检查生产版本：
 

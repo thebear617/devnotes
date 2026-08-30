@@ -8,7 +8,14 @@
 - 补充数据源：`src/data/`（notes.js / pricing.js）
 - 构建命令：`npm run build`
 - 本地开发：`npm run dev`
+- Agent 浏览器验收：`npm run dev:verify -- --port <空闲端口>`
 - 本地预览构建结果：`npm run preview`
+
+## 本地 CMS 与浏览器验收
+
+- 日常编辑使用唯一的 `npm run dev` 实例（端口 4323）；本地 CMS 访问 <http://localhost:4323/admin/>，保存会写入真实的 `src/content/`。
+- Agent 需要独立打开浏览器验收时，必须使用 `npm run dev:verify -- --port <空闲端口>`，不能再启动第二个普通 `npm run dev`。
+- `dev:verify` 会在系统临时目录复制 `src/`，并使用独立的 Astro 根目录、缓存和 `CMS_CONTENT_ROOT`；验收中 CMS 的保存与自动保存只会修改临时副本，不会改动仓库源内容。
 
 ## 文件边界
 
