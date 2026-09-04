@@ -1,14 +1,12 @@
 ---
-title: "配置记录：Harness-本地任务分配路由"
-date: '2026-08-16'
-updated: '2026-08-16'
-category: 开发
-subcategory: 配置记录
-description: 记录本地 harness 的任务分配路由。
-slug: local-harness-task-routing
+title: "配置记录：Agent-任务分配路由"
+date: "2026-08-16"
+updated: "2026-09-04 21:59"
+category: "开发"
+subcategory: "配置记录"
+description: "记录哪些 Agent 适合分配哪些任务"
+slug: "local-harness-task-routing"
 ---
-## 会话索引
-> VSCode 插件 CodeBuddy 的 '猪窝：追加新日程、收支、水电'，会话 ID：4f0c7dcae2f549d598e580e111d375b6
 
 ## 一、当前方案
 
@@ -34,3 +32,4 @@ slug: local-harness-task-routing
 ## 三、当前验证状态
 
 1. 已验证 CodeBuddy IDE 和 ChatGPT IDE 都具有浏览器视觉验收的功能。
+
