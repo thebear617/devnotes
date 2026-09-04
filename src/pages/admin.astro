@@ -126,7 +126,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .delete-button:hover { border-color: #e7a6a6; color: #9f1d1d; background: #fff5f5; }
     .delete-button:disabled { border-color: #e5ebec; color: #aebdc0; background: #f7fafa; }
     .primary, .secondary { padding: 0 13px; }
-    .metadata { position: relative; z-index: 2; overflow: visible; padding: 0 18px 12px; }
+    .metadata { position: relative; z-index: 2; grid-row: 2; overflow: visible; padding: 0 18px 12px; }
     .metadata-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: stretch; }
     .metadata-group { min-width: 0; margin: 0; padding: 13px; border: 1px solid #e3ecee; border-radius: 9px; background: #fbfefe; }
     .metadata-group h3 { margin-bottom: 3px; color: #25515a; font-size: 13px; }
@@ -156,14 +156,15 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .link-row input { min-height: 34px; padding: 6px 8px; border: 1px solid #d7e3e5; border-radius: 7px; outline: 0; }
     .remove-link { width: 34px; border: 1px solid #efd0d0; border-radius: 7px; color: #b42318; background: #fff; }
     .add-link { margin-top: 7px; padding: 0 10px; }
-    .editor-workspace { --editor-content-gap: 24px; --editor-caret-space: 10.2em; position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 0; border: 1px solid #dbe5e7; border-radius: 8px; overflow: hidden; background: #fff; }
+    .editor-workspace { --editor-content-gap: 24px; --editor-caret-space: 10.2em; position: relative; z-index: 1; grid-row: 3; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 0; border: 1px solid #dbe5e7; border-radius: 8px; overflow: hidden; background: #fff; }
     .editor-sync-controls { position: absolute; top: 50%; left: 50%; z-index: 3; display: grid; gap: 3px; transform: translate(-50%, -50%); padding: 4px; border: 1px solid #dbe5e7; border-radius: 999px; background: #fff; box-shadow: 0 5px 14px rgba(15, 63, 70, .13); }
     .editor-sync-button { display: grid; width: 25px; height: 25px; min-width: 25px; place-items: center; padding: 0; border: 0; border-radius: 50%; color: #647b82; background: transparent; }
     .editor-sync-button:hover { color: #0f766e; background: #e7f8f5; }
     .editor-sync-button:focus-visible { outline: 2px solid rgba(20, 184, 166, .24); outline-offset: 1px; }
     .editor-sync-button svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
     .editor-column { display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; min-width: 0; min-height: 0; }
-    .editor-column:last-child { grid-template-rows: auto minmax(0, 1fr); }
+    .editor-column:first-child { position: relative; }
+    .editor-column + .editor-column { grid-template-rows: auto minmax(0, 1fr); }
     .editor-column + .editor-column { border-left: 1px solid #e1eaec; }
     .editor-label { min-height: 42px; justify-content: space-between; gap: 12px; padding: 0 13px; border-bottom: 1px solid #e1eaec; color: #153b42; font-size: 12px; font-weight: 800; }
     .editor-label-title { display: inline-flex; align-items: center; gap: 7px; min-width: 0; }
@@ -309,7 +310,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     body.is-immersive #metadata { display: none; }
     body.is-immersive .workspace { grid-template-columns: minmax(0, 1fr); min-height: 0; }
     body.is-immersive .main-panel { grid-template-rows: auto minmax(0, 1fr); min-height: 0; border-radius: 0; }
-    body.is-immersive .editor-workspace { min-height: 0; border-radius: 0; }
+    body.is-immersive .editor-workspace { grid-row: 2; min-height: 0; border-radius: 0; }
     body.is-immersive .immersive-exit { display: inline-flex; }
   </style>
 
@@ -832,24 +833,57 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       menu.style.top = openUp ? `${Math.max(8, rect.top - menuHeight - 6)}px` : `${rect.bottom + 6}px`;
     }
 
+    // 筛选字段联动：子字段（如二级分类）只统计父字段（如一级分类）当前选中值下的取值
+    function collectFilterFieldOptions(field, parentFilterValue) {
+      const values = new Set();
+      state.entries.forEach((entry) => {
+        if (field.dependsOn && parentFilterValue) {
+          const rawParent = entry[field.dependsOn];
+          const parentValues = Array.isArray(rawParent) ? rawParent : [rawParent];
+          if (!parentValues.includes(parentFilterValue)) return;
+        }
+        const raw = entry[field.id];
+        (Array.isArray(raw) ? raw : [raw]).filter(Boolean).forEach((item) => values.add(String(item)));
+      });
+      return [...values].sort((left, right) => compareText(left, right));
+    }
+
+    // 重建某个依赖字段筛选下拉的选项；当前已选值不在新候选中时清除该筛选
+    function refreshDependentFilterSelect(childId) {
+      const select = $(`filter-select-${childId}`);
+      if (!select) return;
+      const config = activeCollection();
+      const childField = config?.fields.find((field) => field.id === childId && field.filterable);
+      if (!childField || !childField.dependsOn) return;
+      const parentValue = state.filters[childField.dependsOn] || '';
+      const options = collectFilterFieldOptions(childField, parentValue);
+      select.innerHTML = ['<option value="">全部</option>']
+        .concat(options.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`)).join('');
+      const current = state.filters[childId] || '';
+      if (!options.includes(current)) {
+        state.filters[childId] = '';
+        select.value = '';
+      } else {
+        select.value = current;
+      }
+      syncCustomSelect(select.id);
+      updateFilterSummary();
+    }
+
     function renderFilters() {
       const config = activeCollection();
       if (!config) return;
       const filterFields = config.fields.filter((field) => field.filterable);
       $('filter-fields').innerHTML = filterFields.map((field) => {
-        const values = new Set();
-        state.entries.forEach((entry) => {
-          const value = entry[field.id];
-          (Array.isArray(value) ? value : [value]).filter(Boolean).forEach((item) => values.add(String(item)));
-        });
-        const options = [...values].sort((left, right) => compareText(left, right));
+        const parentValue = field.dependsOn ? (state.filters[field.dependsOn] || '') : '';
+        const options = collectFilterFieldOptions(field, parentValue);
         const selectId = `filter-select-${field.id}`;
         const optionMarkup = ['<option value="">全部</option>']
           .concat(options.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`)).join('');
         // 与「内容归类」保持同一套自定义下拉结构，避免原生浏览器样式
         return `<div class="filter-field"><span>${escapeHtml(field.label)}</span><div class="custom-select" data-custom-select="${selectId}"><select class="custom-select-native" id="${selectId}" data-filter="${escapeHtml(field.id)}" aria-hidden="true" tabindex="-1">${optionMarkup}</select><button class="custom-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="${escapeHtml(field.label)}"><span class="custom-select-label">全部</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke-linecap="round" stroke-linejoin="round" /></svg></button><div class="custom-select-menu" role="listbox" hidden></div></div></div>`;
       }).join('');
-      // 初始化筛选自定义下拉、恢复当前筛选值并绑定变更
+      // 初始化筛选自定义下拉、恢复当前筛选值并绑定变更（含父子联动）
       $('filter-fields').querySelectorAll('[data-custom-select]').forEach((root) => {
         const id = root.dataset.customSelect;
         const select = $(id);
@@ -871,7 +905,14 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
         };
         menu.onclick = (event) => event.stopPropagation();
         select.value = state.filters[select.dataset.filter] || '';
-        select.addEventListener('change', () => { state.filters[select.dataset.filter] = select.value; renderEntries(); });
+        select.addEventListener('change', () => {
+          state.filters[select.dataset.filter] = select.value;
+          // 若它是其它筛选字段的父级，先重建其子级选项（联动），可能清掉失效子筛选
+          config.fields.filter((field) => field.filterable && field.dependsOn === select.dataset.filter).forEach((child) => {
+            refreshDependentFilterSelect(child.id);
+          });
+          renderEntries();
+        });
         syncCustomSelect(id);
       });
       updateFilterSummary();
