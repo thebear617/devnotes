@@ -1,12 +1,19 @@
 ---
-title: "随笔：todolist"
-date: "2026-08-28"
-updated: "2026-08-28"
+title: "随笔：草稿箱和todolist"
+date: "2026-09-04"
+updated: "2026-09-04"
 category: "随想"
 subcategory: "随笔"
-description: "所有 idea、未开始的设计思路的存放、所有要中转的东西"
-slug: "todo-list"
+description: "内容中转和草稿，暂存处｜所有 idea、未开始的设计思路的存放、所有要中转的东西"
+slug: "Drafts"
 ---
+
+## 草稿箱
+
+
+
+
+
 
 ## todo
 
@@ -34,6 +41,8 @@ slug: "todo-list"
       - 服务编排：Docker / 进程管理
   4. 增强 Codex 的生图能力: 可参考的接入实现为[88API-image-gen](https://github.com/blackdm666/88API-image-gen)。
 3. 
+
+
 
 
 
