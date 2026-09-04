@@ -2,8 +2,8 @@
 title: "综述：人工智能-vibe版"
 date: "2026-08-26"
 updated: "2026-08-28"
-category: "开发与实践"
-subcategory: "基础知识"
+category: "开发"
+subcategory: "综述"
 description: "Agentic Work 指南及观点收集"
 slug: "ai-overview-vibe"
 ---

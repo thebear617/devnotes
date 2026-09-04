@@ -1,10 +1,10 @@
 ---
-title: "典型案例：Agentic IDE 的具体实践"
+title: "工具使用心得：Agentic IDE"
 date: "2026-06-20"
 updated: "2026-08-15"
 slug: "agentic-ide-practice"
-category: "开发与实践"
-subcategory: "典型案例"
+category: "开发"
+subcategory: "工具使用心得"
 description: ""
 ---
 

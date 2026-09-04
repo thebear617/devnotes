@@ -85,27 +85,33 @@ npm run preview
 
 ## 添加知识条目
 
-在 `src/content/knowledge/` 对应的一级、二级目录中新增 `.md` 文件。当前目录约定如下：
+在 `src/content/knowledge/` 对应的一级、二级目录中新增 `.md` 文件。一级领域与二级分类如下，二级会随一级联动（如选「实践」时才可匹配到具体模态）：
 
 ```text
-development/overviews/  # 综述
-development/fundamentals/ # 基础知识
-development/cases/      # 典型案例
-development/resources/  # 学习资源
-development/configurations/ # 配置记录
-research/overviews/     # 综述
-research/fundamentals/  # 基础知识
-research/cases/         # 典型案例
-research/resources/     # 学习资源
-research/configurations/ # 配置记录
-reflections/essays/     # 随笔
+# 开发：知识、理论、工具与环境
+development/fundamentals/    # 基础知识
+development/overviews/       # 综述
+development/resources/       # 学习资源
+development/configurations/  # 配置记录
+development/tools/           # 工具使用心得
+# 实践：按产出模态归类
+practice/ppt/                # PPT
+practice/web/                # 网页
+practice/chart/              # 图表
+practice/video/              # 视频
+practice/report/             # 报告
+# 科研
+research/overviews/          # 综述
+# 随想
+reflections/essays/          # 随笔
+reflections/moments/         # 时刻
 ```
 
-文件名使用便于本地阅读的中文名称，slug 统一使用英文 kebab-case，例如：
+文件名使用便于本地阅读的中文名称（`标题：主题`），slug 统一使用英文 kebab-case，例如：
 
 ```text
-src/content/knowledge/development/overviews/传统全栈开发.md
-→ /knowledge/traditional-full-stack-development/
+src/content/knowledge/development/overviews/综述：传统全栈开发.md
+→ /knowledge/traditional-full-stack-development-overview/
 ```
 
 每篇文章必须包含以下 frontmatter：
@@ -114,8 +120,8 @@ src/content/knowledge/development/overviews/传统全栈开发.md
 ---
 title: 文章标题
 date: '2026-07-20'
-category: 开发与实践 # 开发与实践 | 科研 | 随想
-subcategory: 基础知识 # 基础知识 | 典型案例 | 学习资源 | 配置记录 | 综述 | 随笔 | 时刻
+category: 开发 # 开发 | 实践 | 科研 | 随想
+subcategory: 基础知识 # 视 category 联动：开发(基础知识/综述/学习资源/配置记录/工具使用心得)；实践(PPT/网页/图表/视频/报告)；科研(综述)；随想(随笔/时刻)
 description: 用于知识库列表的简短摘要
 slug: traditional-full-stack-development # 必填；用于生成知识库详情页 URL
 ---
@@ -123,13 +129,13 @@ slug: traditional-full-stack-development # 必填；用于生成知识库详情�
 
 正文使用标准 Markdown，可以直接插入标题、列表、代码块、引用、链接和表格。知识库列表按 `updated`（若有）或 `date` 从新到旧排列。
 
-知识库标题统一使用 `内容类型：主题对象 - 具体内容` 格式。内容类型应与 `subcategory` 对应，例如 `基础知识：计算机网络`、`典型案例：Agentic IDE 的具体实践`、`配置记录：OpenCode - 模型路由`、`综述：世界模型`；基础知识、综述和学习资源可以直接写成“类型：主题”，配置记录、典型案例和时刻类内容在需要区分对象与主题时使用短破折号。
+知识库标题统一使用 `内容类型：主题对象 - 具体内容` 格式，内容类型前缀应与 `subcategory` 对应：开发下的基础/综述/资源等直接写“类型：主题”，实践按模态写，例如 `基础知识：计算机网络`、`综述：世界模型`、`配置记录：OpenCode 模型路由`、`工具使用心得：Agentic IDE`、`PPT：传统方法制作`、`网页：纯前端开发`、`图表：专业制作`、`视频：调研转`、`报告：文献调研数据分类`；需要区分对象与主题时在主题后用短破折号。
 
-`category` 表示一级领域，`subcategory` 表示二级内容角色；两者都是必填枚举，并应与文件所在目录保持一致。`category` 可使用 `开发与实践`、`科研`、`随想`，二级目录可使用 `基础知识`、`典型案例`、`学习资源`、`配置记录`、`综述`、`随笔`、`时刻`。
+`category` 表示一级领域（`开发`、`实践`、`科研`、`随想`），`subcategory` 表示二级分类（开发=角色，实践=产出模态）；两者都是必填枚举，并与文件所在目录保持一致，二级必须属于对应的一级。
 
 旧的 `/blog/` 与 `/prompts/` 列表入口会跳转到 `/knowledge/`。既有详情地址通过 frontmatter 中的显式 `slug` 和 `src/data/legacy-knowledge-routes.js` 中的兼容映射继续访问，不依赖知识条目的额外类型字段。
 
-典型案例建议正文按 `# 案例集合`、案例步骤与 `# 参考资料` 结构组织，来源链接放在参考资料一节。
+实践类（典型案例）建议正文按 `# 案例集合`、案例步骤与 `# 参考资料` 结构组织，来源链接放在参考资料一节。
 
 ## 更新 Debug 库
 

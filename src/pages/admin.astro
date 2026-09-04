@@ -256,6 +256,26 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .delete-modal-confirm { border: 1px solid #b42318; color: #fff; background: #b42318; }
     .delete-modal-confirm:hover { border-color: #941c14; background: #941c14; }
     .delete-modal-actions button:disabled { cursor: wait; opacity: .65; }
+    .filter-modal { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 24px; }
+    .filter-modal[hidden] { display: none; }
+    .filter-modal-backdrop { position: absolute; inset: 0; background: rgba(15, 63, 70, .28); }
+    .filter-modal-card { position: relative; width: min(92vw, 440px); border: 1px solid #dbe5e7; border-radius: 12px; background: #fff; box-shadow: 0 22px 60px rgba(15, 63, 70, .22); }
+    .filter-modal-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 18px 20px 14px; border-bottom: 1px solid #e7eff0; }
+    .filter-modal-header h3 { margin: 0; color: #153b42; font-size: 17px; }
+    .filter-modal-header p { margin: 5px 0 0; color: #789096; font-size: 11px; }
+    .filter-modal-close { display: grid; width: 28px; height: 28px; flex: 0 0 auto; place-items: center; padding: 0; border: 0; border-radius: 50%; color: #789096; background: transparent; font-size: 22px; line-height: 1; }
+    .filter-modal-close:hover { color: #b42318; background: #fff5f5; }
+    .filter-modal-body { overflow: visible; padding: 18px 20px; }
+    .filter-modal-body .filter-fields { display: grid; gap: 14px; }
+    .filter-modal-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 20px; border-top: 1px solid #e7eff0; background: #fbfefe; }
+    .filter-hint { color: #8aa0a5; font-size: 11px; }
+    .filter-modal-actions { display: flex; align-items: center; gap: 8px; }
+    .filter-modal-actions .filter-clear { padding: 0; border: 0; color: #587178; background: transparent; font-size: 12px; font-weight: 700; }
+    .filter-modal-actions .filter-clear:hover { color: #b42318; background: transparent; text-decoration: underline; }
+    .filter-modal-actions .filter-done { min-height: 34px; padding: 0 16px; border: 1px solid #0f766e; border-radius: 7px; color: #fff; background: #0f766e; font-size: 12px; font-weight: 700; }
+    .filter-modal-actions .filter-done:hover { border-color: #115e59; background: #115e59; }
+    #field-toggle .tool-icon { display: inline-block; transition: transform .15s ease; }
+    #field-toggle.is-open .tool-icon { transform: rotate(180deg); }
     @keyframes preview-footnote-fade-in { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
     @media (max-width: 900px) {
       .admin { height: auto; min-height: 100vh; }
@@ -312,20 +332,15 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
           <div class="list-tools-wrap" id="list-tools-wrap">
             <div class="list-tools">
               <button id="sort-toggle" type="button" aria-expanded="false" aria-controls="sort-popover"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="M5 2v12M5 2 2.5 4.5M5 2l2.5 2.5M11 14V2m0 12 2.5-2.5M11 14 8.5 11.5" /></svg></span><span>排序</span></button>
-              <button id="filter-toggle" type="button" aria-expanded="false" aria-controls="filter-popover"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="M2 3h12L9.5 8v4.5L6.5 14V8L2 3Z" /></svg></span><span>筛选</span><span class="filter-badge" id="filter-summary">0</span></button>
+              <button id="filter-toggle" type="button" aria-expanded="false" aria-controls="filter-modal"><span class="tool-icon" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="M2 3h12L9.5 8v4.5L6.5 14V8L2 3Z" /></svg></span><span>筛选</span><span class="filter-badge" id="filter-summary">0</span></button>
             </div>
-          <div class="popover" id="filter-popover" role="dialog" aria-label="筛选内容" hidden>
-            <div class="popover-heading"><strong>筛选内容</strong><span>选择后立即生效</span></div>
-            <div class="filter-fields" id="filter-fields"></div>
-            <div class="popover-footer"><span id="filter-hint" class="popover-empty">当前没有筛选条件</span><button id="clear-filters" type="button">清空筛选</button></div>
-          </div>
           <div class="popover" id="sort-popover" role="dialog" aria-label="排序内容" hidden>
             <div class="popover-heading"><strong>排序方式</strong><span>选择后立即生效</span></div>
             <div class="sort-options" id="sort-options"></div>
           </div>
           </div>
         </div>
-        <div class="toolbar"><button id="new-entry" type="button">＋ 新建</button><button id="refresh" type="button">⟳ 刷新</button></div>
+        <div class="toolbar"><button id="new-entry" type="button">＋ 新建</button><button id="field-toggle" type="button" aria-expanded="false" aria-controls="metadata"><span class="tool-icon" aria-hidden="true">▾</span><span class="field-toggle-label">展开字段</span></button></div>
         <div id="entry-list" class="entry-list"></div>
       </aside>
 
@@ -334,7 +349,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
           <div><h2 id="editor-title">编辑内容</h2><p id="editor-description">选择左侧条目，或新建一篇内容。</p></div>
            <div class="status-actions"><span id="status" class="status">等待编辑</span><button id="immersive-exit" class="secondary immersive-exit" type="button" aria-pressed="false" aria-label="退出沉浸式编辑" title="退出沉浸式编辑（Esc）">退出沉浸式编辑</button><button id="save" class="primary" type="button">立即保存</button><button id="delete" class="delete-button" type="button" disabled title="新文章尚未保存">删除文章</button></div>
         </div>
-        <section id="metadata" class="metadata"></section>
+        <section id="metadata" class="metadata" hidden></section>
         <div class="editor-workspace">
           <div class="editor-column">
             <div class="editor-label"><strong class="editor-label-title"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="1" /><path d="M5.5 5.5h5v5h-5z" /></svg><span>Markdown 内容</span></strong><span>实时预览</span></div>
@@ -388,6 +403,24 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
         <button class="delete-modal-cancel" id="delete-modal-cancel" type="button">取消</button>
         <button class="delete-modal-confirm" id="delete-modal-confirm" type="button">删除</button>
       </div>
+    </section>
+  </div>
+
+  <div class="filter-modal" id="filter-modal" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="filter-modal-title">
+    <div class="filter-modal-backdrop" data-filter-close></div>
+    <section class="filter-modal-card">
+      <div class="filter-modal-header">
+        <div><h3 id="filter-modal-title">筛选内容</h3><p>先选择一级分类，再缩小到对应二级。</p></div>
+        <button class="filter-modal-close" id="filter-close" type="button" aria-label="关闭筛选" title="关闭">×</button>
+      </div>
+      <div class="filter-modal-body"><div class="filter-fields" id="filter-fields"></div></div>
+      <footer class="filter-modal-footer">
+        <span id="filter-hint" class="filter-hint">当前没有筛选条件</span>
+        <div class="filter-modal-actions">
+          <button id="clear-filters" class="filter-clear" type="button">清空筛选</button>
+          <button id="filter-done" class="filter-done" type="button">完成</button>
+        </div>
+      </footer>
     </section>
   </div>
 
@@ -606,13 +639,15 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
          activePreviewFootnoteClose?.();
          return true;
        }
-       const hasPopover = !$('filter-popover').hidden || !$('sort-popover').hidden;
+       const filterOpen = $('filter-modal') && !$('filter-modal').hidden;
+       const hasPopover = Boolean($('sort-popover') && !$('sort-popover').hidden);
        const hasCustomSelect = document.querySelector('.custom-select.open');
        const hasMultiselect = document.querySelector('[data-multiselect] .multiselect-menu:not([hidden])');
+       if (filterOpen) closeFilterModal();
        if (hasPopover) closePopovers();
        if (hasCustomSelect) closeCustomSelects();
        if (hasMultiselect) closeMultiselectMenus();
-       return hasPopover || Boolean(hasCustomSelect) || Boolean(hasMultiselect);
+       return filterOpen || hasPopover || Boolean(hasCustomSelect) || Boolean(hasMultiselect);
      }
 
     function restoreEditorPosition(snapshot) {
@@ -692,19 +727,55 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     }
 
     function closePopovers() {
-      [['filter-popover', 'filter-toggle'], ['sort-popover', 'sort-toggle']].forEach(([popoverId, toggleId]) => {
-        $(popoverId).hidden = true;
-        $(toggleId).setAttribute('aria-expanded', 'false');
-      });
+      const sortPopover = $('sort-popover');
+      if (sortPopover) sortPopover.hidden = true;
+      const sortToggle = $('sort-toggle');
+      if (sortToggle) sortToggle.setAttribute('aria-expanded', 'false');
     }
 
     function togglePopover(popoverId, toggleId) {
-      const shouldOpen = $(popoverId).hidden;
+      const node = $(popoverId);
+      if (!node) return;
+      const shouldOpen = node.hidden;
       closePopovers();
       if (shouldOpen) {
-        $(popoverId).hidden = false;
+        node.hidden = false;
         $(toggleId).setAttribute('aria-expanded', 'true');
       }
+    }
+
+    function openFilterModal() {
+      const modal = $('filter-modal');
+      if (!modal) return;
+      closePopovers();
+      closeCustomSelects();
+      modal.hidden = false;
+      modal.setAttribute('aria-hidden', 'false');
+      $('filter-toggle').setAttribute('aria-expanded', 'true');
+      renderFilters();
+      window.requestAnimationFrame(() => $('filter-fields')?.querySelector('.custom-select-trigger')?.focus());
+    }
+
+    function closeFilterModal() {
+      const modal = $('filter-modal');
+      if (!modal || modal.hidden) return;
+      closeCustomSelects();
+      modal.hidden = true;
+      modal.setAttribute('aria-hidden', 'true');
+      $('filter-toggle').setAttribute('aria-expanded', 'false');
+    }
+
+    function toggleFieldsGroup() {
+      const panel = $('metadata');
+      const button = $('field-toggle');
+      if (!panel || !button) return;
+      const expanded = !panel.hidden;
+      panel.hidden = expanded;
+      const open = !expanded;
+      button.setAttribute('aria-expanded', String(open));
+      button.classList.toggle('is-open', open);
+      const label = button.querySelector('.field-toggle-label');
+      if (label) label.textContent = open ? '收起字段' : '展开字段';
     }
 
     function updateMultiselectLabel(fieldId) {
@@ -744,6 +815,23 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       updateMultiselectLabel(fieldId);
     }
 
+    function positionFilterMenu(trigger, menu) {
+      if (!trigger || !menu) return;
+      const rect = trigger.getBoundingClientRect();
+      menu.hidden = false;
+      // 固定定位到触发器正下方，脱离 modal 容器层级，避免被卡片/窗口高度裁剪
+      menu.style.position = 'fixed';
+      menu.style.left = `${rect.left}px`;
+      menu.style.width = `${trigger.offsetWidth}px`;
+      menu.style.bottom = 'auto';
+      menu.style.maxHeight = `${Math.min(220, window.innerHeight - 16)}px`;
+      const menuHeight = menu.offsetHeight || menu.scrollHeight || 200;
+      const spaceBelow = window.innerHeight - rect.bottom - 8;
+      const spaceAbove = rect.top - 8;
+      const openUp = spaceBelow < menuHeight && spaceAbove > spaceBelow;
+      menu.style.top = openUp ? `${Math.max(8, rect.top - menuHeight - 6)}px` : `${rect.bottom + 6}px`;
+    }
+
     function renderFilters() {
       const config = activeCollection();
       if (!config) return;
@@ -755,11 +843,36 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
           (Array.isArray(value) ? value : [value]).filter(Boolean).forEach((item) => values.add(String(item)));
         });
         const options = [...values].sort((left, right) => compareText(left, right));
-        return `<label class="filter-field"><span>${escapeHtml(field.label)}</span><select data-filter="${escapeHtml(field.id)}"><option value="">全部</option>${options.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join('')}</select></label>`;
+        const selectId = `filter-select-${field.id}`;
+        const optionMarkup = ['<option value="">全部</option>']
+          .concat(options.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`)).join('');
+        // 与「内容归类」保持同一套自定义下拉结构，避免原生浏览器样式
+        return `<div class="filter-field"><span>${escapeHtml(field.label)}</span><div class="custom-select" data-custom-select="${selectId}"><select class="custom-select-native" id="${selectId}" data-filter="${escapeHtml(field.id)}" aria-hidden="true" tabindex="-1">${optionMarkup}</select><button class="custom-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="${escapeHtml(field.label)}"><span class="custom-select-label">全部</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke-linecap="round" stroke-linejoin="round" /></svg></button><div class="custom-select-menu" role="listbox" hidden></div></div></div>`;
       }).join('');
-      $('filter-fields').querySelectorAll('select').forEach((select) => {
+      // 初始化筛选自定义下拉、恢复当前筛选值并绑定变更
+      $('filter-fields').querySelectorAll('[data-custom-select]').forEach((root) => {
+        const id = root.dataset.customSelect;
+        const select = $(id);
+        const trigger = root.querySelector('.custom-select-trigger');
+        const menu = root.querySelector('.custom-select-menu');
+        trigger.onclick = (event) => {
+          event.stopPropagation();
+          if (select.disabled) return;
+          const shouldOpen = menu.hidden;
+          closeCustomSelects(root);
+          if (shouldOpen) {
+            menu.hidden = false;
+            positionFilterMenu(trigger, menu);
+          } else {
+            menu.hidden = true;
+          }
+          root.classList.toggle('open', shouldOpen);
+          trigger.setAttribute('aria-expanded', String(shouldOpen));
+        };
+        menu.onclick = (event) => event.stopPropagation();
         select.value = state.filters[select.dataset.filter] || '';
-        select.onchange = () => { state.filters[select.dataset.filter] = select.value; renderEntries(); };
+        select.addEventListener('change', () => { state.filters[select.dataset.filter] = select.value; renderEntries(); });
+        syncCustomSelect(id);
       });
       updateFilterSummary();
     }
@@ -868,10 +981,21 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       if (!parent) return;
       let optionGroups = {};
       try { optionGroups = JSON.parse(select.dataset.optionGroups); } catch { return; }
-      const options = optionGroups[parent.value] || [];
-      const currentValue = preferredValue || select.value;
+      const parentValue = parent.value;
+      const options = (parentValue && optionGroups[parentValue]) || [];
+      const previousValue = preferredValue || select.value;
+      const emptyText = parentValue ? '该分类下暂无二级分类' : '请先选择一级分类';
+      // 一级分类未选或其下无合法二级时：清空并禁用。
+      if (!parentValue || options.length === 0) {
+        select.innerHTML = `<option value="">${escapeHtml(emptyText)}</option>`;
+        select.value = '';
+        select.disabled = true;
+        syncCustomSelect(select.id);
+        return;
+      }
       select.innerHTML = options.map((option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('');
-      select.value = options.includes(currentValue) ? currentValue : (options[0] || '');
+      select.disabled = false;
+      select.value = options.includes(previousValue) ? previousValue : (options[0] || '');
       syncCustomSelect(select.id);
     }
 
@@ -879,7 +1003,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       document.querySelectorAll('select[data-dependent-select]').forEach((select) => {
         const parent = $(`field-${select.dataset.dependsOn}`);
         if (!parent) return;
-        parent.onchange = () => { refreshDependentSelect(select); markDirty(); };
+        parent.addEventListener('change', () => { refreshDependentSelect(select); markDirty(); });
         refreshDependentSelect(select);
       });
     }
@@ -899,7 +1023,13 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       if (field.type === 'select') {
         const selectId = `field-${field.id}`;
         const dependent = field.dependsOn ? ` data-dependent-select="true" data-depends-on="${escapeHtml(field.dependsOn)}" data-option-groups="${escapeHtml(JSON.stringify(field.optionsBy || {}))}"` : '';
-        return `<label class="field"><span>${escapeHtml(field.label)}${required}</span><div class="custom-select" data-custom-select="${selectId}"><select class="custom-select-native" id="${selectId}"${dependent}${requiredAttribute}${ariaRequired} aria-hidden="true" tabindex="-1">${field.options.map((option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('')}</select><button class="custom-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="${escapeHtml(field.label)}"${ariaRequired}><span class="custom-select-label">${escapeHtml(field.options[0] || '')}</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke-linecap="round" stroke-linejoin="round" /></svg></button><div class="custom-select-menu" role="listbox" hidden></div></div></label>`;
+        // 依赖字段（如知识库的二级分类）初始不铺开全部选项，等一级分类选定后再按映射填充；
+        // 无依赖的普通下拉则直接列出全部选项。
+        const optionsMarkup = field.dependsOn
+          ? `<option value="">请先选择一级分类</option>`
+          : field.options.map((option) => `<option value="${escapeHtml(option)}">${escapeHtml(option)}</option>`).join('');
+        const initialValue = field.dependsOn ? '' : (field.options[0] || '');
+        return `<label class="field"><span>${escapeHtml(field.label)}${required}</span><div class="custom-select" data-custom-select="${selectId}"><select class="custom-select-native" id="${selectId}"${dependent}${requiredAttribute}${ariaRequired} aria-hidden="true" tabindex="-1">${optionsMarkup}</select><button class="custom-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="${escapeHtml(field.label)}"${ariaRequired}><span class="custom-select-label">${escapeHtml(initialValue)}</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke-linecap="round" stroke-linejoin="round" /></svg></button><div class="custom-select-menu" role="listbox" hidden></div></div></label>`;
       }
       const tag = field.type === 'textarea' || field.type === 'tags' ? 'textarea' : 'input';
       const type = field.type === 'date' ? ' type="date"' : '';
@@ -1789,9 +1919,14 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     }
 
     $('search').oninput = renderEntries;
-    $('filter-toggle').onclick = () => togglePopover('filter-popover', 'filter-toggle');
+    $('filter-toggle').onclick = openFilterModal;
     $('sort-toggle').onclick = () => togglePopover('sort-popover', 'sort-toggle');
      $('clear-filters').onclick = () => { state.filters = {}; renderFilters(); renderEntries(); };
+     $('filter-close').onclick = closeFilterModal;
+     $('filter-done').onclick = closeFilterModal;
+     $('filter-modal').onclick = (event) => {
+       if (event.target === event.currentTarget || (event.target instanceof Element && event.target.matches('[data-filter-close]'))) closeFilterModal();
+     };
      $('immersive-toggle').onclick = () => setImmersiveMode(!document.body.classList.contains('is-immersive'));
     $('immersive-exit').onclick = () => setImmersiveMode(false);
     immersiveMedia.addEventListener('change', placeImmersiveToggle);
@@ -1807,7 +1942,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
          setImmersiveMode(false);
        }
      });
-    $('refresh').onclick = () => loadEntries().catch((error) => setStatus(error.message, 'error'));
+    $('field-toggle').onclick = toggleFieldsGroup;
     $('new-entry').onclick = createNew;
     $('save').onclick = () => { void saveEntry({ force: true }); };
     $('delete').onclick = openDeleteModal;

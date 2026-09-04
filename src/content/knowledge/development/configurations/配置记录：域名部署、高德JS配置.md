@@ -3,7 +3,7 @@ title: "配置记录：自定义域名 - 高德地图 API 联动"
 date: "2026-07-05"
 updated: "2026-08-15"
 slug: "static-site-deployment-config"
-category: "开发与实践"
+category: "开发"
 subcategory: "配置记录"
 description: ""
 ---

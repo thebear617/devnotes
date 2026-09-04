@@ -19,7 +19,7 @@
 
 ## 文件边界
 
-- `src/content/knowledge/`：知识库 Markdown；按 `programming`、`research`、`reflections`、`vibe-coding`、`vibe-working` 子目录归档，以 `kind` 保留旧链接兼容，以 `category` 区分五个一级分类
+- `src/content/knowledge/`：知识库 Markdown；按一级领域（`development/`、`practice/`、`research/`、`reflections/`）归档，一级领域下再按二级分类建子目录；`category` 区分一级领域（开发/实践/科研/随想），`subcategory` 表示二级（开发用角色如基础知识/综述/学习资源/配置记录/工具使用心得，实践用产出模态如 PPT/网页/图表/视频/报告，二级必须属于对应的一级）
 - `src/content/timeline/`：开发时间线条目
 - `src/pages/`：板块路由与详情页
 - `src/styles/global.css`：全站样式

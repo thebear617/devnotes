@@ -1,10 +1,10 @@
 ---
-title: 典型案例：Agent 制作 PPT
+title: PPT：Agent 制作
 date: '2026-07-26'
 updated: '2026-08-02'
 slug: agent-ppt-creation-practice
-category: 开发与实践
-subcategory: 典型案例
+category: 实践
+subcategory: PPT
 description: 如何用 Agent 快速制作高质量的 PPT
 ---
 

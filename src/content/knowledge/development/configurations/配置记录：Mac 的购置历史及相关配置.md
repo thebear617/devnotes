@@ -2,7 +2,7 @@
 title: "配置记录：Mac 的购置历史及相关配置"
 date: "2026-08-31"
 updated: "2026-08-31"
-category: "开发与实践"
+category: "开发"
 subcategory: "配置记录"
 description: "Mac 设备购置与保修信息，macOS 定时提醒配置"
 slug: "mac-purchase-and-config"

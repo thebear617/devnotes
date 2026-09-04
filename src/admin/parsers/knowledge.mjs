@@ -1,19 +1,31 @@
 import { isDate, parseFrontmatter, serializeMarkdown } from './frontmatter.mjs';
 
-const categories = ['开发与实践', '科研', '随想'];
-const subcategories = ['基础知识', '典型案例', '学习资源', '配置记录', '综述', '随笔', '时刻'];
+const subcategoriesByCategory = {
+  '开发': ['基础知识', '综述', '学习资源', '配置记录', '工具使用心得'],
+  '实践': ['PPT', '网页', '图表', '视频', '报告'],
+  '科研': ['综述'],
+  '随想': ['随笔', '时刻'],
+};
+const categories = Object.keys(subcategoriesByCategory);
+const subcategories = Object.values(subcategoriesByCategory).flat();
 const fieldOrder = ['title', 'date', 'updated', 'category', 'subcategory', 'description', 'slug'];
 const categoryDirectories = {
-  '开发与实践': 'development',
+  '开发': 'development',
+  '实践': 'practice',
   '科研': 'research',
   '随想': 'reflections',
 };
 const subcategoryDirectories = {
   '基础知识': 'fundamentals',
-  '典型案例': 'cases',
   '学习资源': 'resources',
   '配置记录': 'configurations',
+  '工具使用心得': 'tools',
   '综述': 'overviews',
+  'PPT': 'ppt',
+  '网页': 'web',
+  '图表': 'chart',
+  '视频': 'video',
+  '报告': 'report',
   '随笔': 'essays',
   '时刻': 'moments',
 };
@@ -40,7 +52,7 @@ function expectedPath(frontmatter, relativePath) {
 export const knowledgeParser = {
   id: 'knowledge',
   label: '知识库',
-  description: '开发实践、科研与个人随想。',
+  description: '开发、实践、科研与个人随想。',
   root: 'knowledge',
   defaultPath: 'development/fundamentals/new-knowledge.md',
   pathStrategy: {
@@ -55,13 +67,13 @@ export const knowledgeParser = {
     '文件与发布': '文件路径决定保存位置，日期用于发布信息。',
   },
   defaultFrontmatter: {
-    title: '', date: '', updated: '', category: '开发与实践', subcategory: '基础知识', description: '', slug: '',
+    title: '', date: '', updated: '', category: '开发', subcategory: '基础知识', description: '', slug: '',
   },
   fields: [
     { id: 'title', label: '标题', type: 'text', required: true, section: '内容核心' },
     { id: 'description', label: '摘要', type: 'textarea', section: '内容核心' },
     { id: 'category', label: '一级分类', type: 'select', options: categories, required: true, filterable: true, section: '内容归类' },
-    { id: 'subcategory', label: '二级分类', type: 'select', options: subcategories, required: true, filterable: true, section: '内容归类' },
+    { id: 'subcategory', label: '二级分类', type: 'select', options: subcategories, optionsBy: subcategoriesByCategory, dependsOn: 'category', required: true, filterable: true, section: '内容归类' },
     { id: 'date', label: '发布日期', type: 'date', required: true, section: '文件与发布' },
     { id: 'updated', label: '更新日期（保存时自动更新）', type: 'date', readonly: true, section: '文件与发布' },
     { id: 'slug', label: 'slug', type: 'text', required: true, section: '文件与发布' },
@@ -76,7 +88,7 @@ export const knowledgeParser = {
     if (!isDate(frontmatter.date)) errors.push('发布日期必须使用 YYYY-MM-DD');
     if (frontmatter.updated && !isDate(frontmatter.updated)) errors.push('更新日期必须使用 YYYY-MM-DD');
     if (!categories.includes(frontmatter.category)) errors.push('一级分类不在当前 schema 允许范围内');
-    if (!subcategories.includes(frontmatter.subcategory)) errors.push('二级分类不能为空且必须在当前 schema 允许范围内');
+    if (!subcategoriesByCategory[frontmatter.category]?.includes(frontmatter.subcategory)) errors.push('二级分类不属于当前一级分类');
     if (!frontmatter.slug?.trim()) errors.push('slug 不能为空');
     if (!relativePath || !relativePath.endsWith('.md')) errors.push('路径必须是 Markdown 文件');
     const expected = expectedPath(frontmatter, relativePath);

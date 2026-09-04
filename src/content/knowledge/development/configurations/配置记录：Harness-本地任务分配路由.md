@@ -2,7 +2,7 @@
 title: "配置记录：Harness-本地任务分配路由"
 date: '2026-08-16'
 updated: '2026-08-16'
-category: 开发与实践
+category: 开发
 subcategory: 配置记录
 description: 记录本地 harness 的任务分配路由。
 slug: local-harness-task-routing

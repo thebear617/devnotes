@@ -2,7 +2,7 @@
 title: "配置记录：OpenCode - 模型路由"
 date: '2026-08-05'
 updated: '2026-08-14'
-category: 开发与实践
+category: 开发
 subcategory: 配置记录
 description: 记录当前 OpenCode Go 当前的路由策略。
 slug: opencode-model-routing-config

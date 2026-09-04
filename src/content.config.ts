@@ -2,8 +2,14 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
-const knowledgeCategories = ['开发与实践', '科研', '随想'] as const;
-const knowledgeSubcategories = ['基础知识', '典型案例', '学习资源', '配置记录', '综述', '随笔', '时刻'] as const;
+const knowledgeSubcategoriesByCategory = {
+  '开发': ['基础知识', '综述', '学习资源', '配置记录', '工具使用心得'],
+  '实践': ['PPT', '网页', '图表', '视频', '报告'],
+  '科研': ['综述'],
+  '随想': ['随笔', '时刻'],
+} as const;
+const knowledgeCategories = Object.keys(knowledgeSubcategoriesByCategory) as [keyof typeof knowledgeSubcategoriesByCategory, ...(keyof typeof knowledgeSubcategoriesByCategory)[]];
+const knowledgeSubcategories = Object.values(knowledgeSubcategoriesByCategory).flat() as [string, ...string[]];
 const knowledgeCollection = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/knowledge' }),
   schema: z.object({
@@ -14,6 +20,15 @@ const knowledgeCollection = defineCollection({
     subcategory: z.enum(knowledgeSubcategories),
     description: z.string().default(''),
     slug: z.string(),
+  }).superRefine((data, ctx) => {
+    const allowed = knowledgeSubcategoriesByCategory[data.category] as readonly string[];
+    if (!allowed.includes(data.subcategory)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['subcategory'],
+        message: `二级分类“${data.subcategory}”不属于一级分类“${data.category}”`,
+      });
+    }
   }).transform(data => ({
     ...data,
     updated: data.updated || data.date,
