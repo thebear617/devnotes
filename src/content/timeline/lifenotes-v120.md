@@ -1,7 +1,7 @@
 ---
 title: '常识笔记 v1.2.0：分类体系与后台更新'
 date: '2026-08-23'
-updated: '2026-08-23'
+updated: "2026-08-23 22:41"
 description: '重构常识笔记的一级、二级分类体系，迁移内容目录并完善本地 Markdown 编辑器。'
 category: 常识笔记
 subcategory: [架构, 内容, 功能]

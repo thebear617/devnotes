@@ -1,4 +1,4 @@
-import { isDate, parseFrontmatter, serializeMarkdown } from './frontmatter.mjs';
+import { isDate, isDateOrDateTime, parseFrontmatter, serializeMarkdown } from './frontmatter.mjs';
 
 const categories = ['开发笔记', '常识笔记', '游戏笔记', '熊窝', '猪窝', '猫猫', '科研笔记', '聊天站', '工具', 'skill'];
 const subcategories = ['功能', '内容', '视觉', '架构', '修复'];
@@ -24,7 +24,7 @@ export const timelineParser = {
     { id: 'category', label: '一级分类', type: 'select', options: categories, required: true, filterable: true, section: '内容归类' },
     { id: 'subcategory', label: '二级分类', type: 'multiselect', options: subcategories, required: true, filterable: true, section: '内容归类' },
     { id: 'date', label: '发布日期', type: 'date', required: true, section: '文件与发布' },
-    { id: 'updated', label: '更新日期（保存时自动更新）', type: 'date', readonly: true, section: '文件与发布' },
+    { id: 'updated', label: '更新时间（保存时自动更新）', type: 'text', readonly: true, section: '文件与发布' },
   ],
   parse: parseFrontmatter,
   serialize(frontmatter, body) {
@@ -34,7 +34,7 @@ export const timelineParser = {
     const errors = [];
     if (!frontmatter.title?.trim()) errors.push('标题不能为空');
     if (!isDate(frontmatter.date)) errors.push('发布日期必须使用 YYYY-MM-DD');
-    if (frontmatter.updated && !isDate(frontmatter.updated)) errors.push('更新日期必须使用 YYYY-MM-DD');
+    if (frontmatter.updated && !isDateOrDateTime(frontmatter.updated)) errors.push('更新日期必须使用 YYYY-MM-DD 或 YYYY-MM-DD HH:mm');
     if (!categories.includes(frontmatter.category)) errors.push('一级分类不在当前 schema 允许范围内');
     if (!Array.isArray(frontmatter.subcategory) || frontmatter.subcategory.length === 0 || frontmatter.subcategory.some((value) => !subcategories.includes(value))) {
       errors.push('时间线分类必须是功能、内容、视觉、架构或修复');

@@ -2,6 +2,8 @@ import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
 import { glob } from 'astro/loaders';
 
+const updatedAtSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2})?$/, 'updated 必须使用 YYYY-MM-DD 或 YYYY-MM-DD HH:mm');
+
 const knowledgeSubcategoriesByCategory = {
   '开发': ['基础知识', '综述', '学习资源', '配置记录', '工具使用心得'],
   '实践': ['PPT', '网页', '图表', '视频', '报告'],
@@ -15,7 +17,7 @@ const knowledgeCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.string(),
-    updated: z.string().optional(),
+    updated: updatedAtSchema.optional(),
     category: z.enum(knowledgeCategories),
     subcategory: z.enum(knowledgeSubcategories),
     description: z.string().default(''),
@@ -61,7 +63,7 @@ const timelineCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.string(),
-    updated: z.string().optional(),
+    updated: updatedAtSchema.optional(),
     category: z.enum(timelineCategories),
     subcategory: z.array(z.enum(timelineSubcategories)).min(1),
     description: z.string().default(''),
@@ -84,7 +86,7 @@ const debugCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.string(),
-    updated: z.string().optional(),
+    updated: updatedAtSchema.optional(),
     slug: z.string(),
     category: z.enum(debugCategories),
     subcategory: z.enum(debugSubcategoryValues),

@@ -120,6 +120,10 @@ export function isDate(value) {
   return /^\d{4}-\d{2}-\d{2}$/.test(String(value || ''));
 }
 
+export function isDateOrDateTime(value) {
+  return /^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2})?$/.test(String(value || ''));
+}
+
 export function validUrl(value) {
   try {
     const url = new URL(String(value));

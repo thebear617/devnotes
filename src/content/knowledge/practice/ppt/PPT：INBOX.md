@@ -1,29 +1,29 @@
 ---
-title: PPT：Agent 制作
-date: '2026-07-26'
-updated: '2026-08-02'
-slug: agent-ppt-creation-practice
-category: 实践
-subcategory: PPT
-description: 如何用 Agent 快速制作高质量的 PPT
+title: "PPT：INBOX"
+date: "2026-07-26"
+updated: "2026-09-04 23:34"
+category: "实践"
+subcategory: "PPT"
+description: "PPT的草稿箱，未实践过和未验证过的提示词｜心得｜资源存放点"
+slug: "agent-ppt-creation-practice"
 ---
 
-# 案例集合
+# 手搓PPT
+## 一、人物照 → 立体首图（PPT 形状相交 + 纹理填充）
 
-## 一、论文 → PPT（GPT-5.6 + Image2）
 
-### 1. 核心思路
+只用 PPT 自带的形状相交 + 图片纹理填充，几步做出「人物从背景中浮现」的立体质感。核心是拿自定义形状当「切刀」裁剪图片，再加一层灰化半透明原图做底色——不需要 PS，不需要 AI 生成，完全在 PPT 内完成。技法来自 B 站 PPT橙子的[演示视频](https://www.bilibili.com/video/BV1ExKw6REZZ/)。
 
-参考[这个视频](https://www.bilibili.com/video/BV1mgNj6MEuX/)和[飞书文档](https://wievf29s6ca.feishu.cn/wiki/L8mOwmm0KiApwZkfy8JcN7tonHg)的思路：先让 Image2 产出高视觉完成度的图像版 PPT（不可编辑），再用 GPT-5.5/5.6 逐页逆向还原为可编辑的 .pptx 文件。整个流水线：
+![效果图](/images/ppt-skills/古法PPT-首图-1.jpg)
 
-```text
-论文 + 参考风格图
-  → Step 1: 生成四套风格预览缩略图（Image2）
-  → Step 2: 选定风格，生成完整图像版 PPT（Image2）
-  → Step 3: 逐页还原为可编辑 .pptx（GPT-5.5/5.6）
-```
 
-### 2. 提示词
+# Agent-PPT
+
+## 一、论文讲解PPT
+
+参考[这个视频](https://www.bilibili.com/video/BV1mgNj6MEuX/)和[飞书文档](https://wievf29s6ca.feishu.cn/wiki/L8mOwmm0KiApwZkfy8JcN7tonHg)的思路：先让 Image2 产出高视觉完成度的图像版 PPT（不可编辑），再用 GPT-5.5/5.6 逐页逆向还原为可编辑的 .pptx 文件。
+
+
 
 **Step 1：生成风格预览**
 
@@ -70,77 +70,11 @@ description: 如何用 Agent 快速制作高质量的 PPT
 第一页（封面页），请开始还原。
 ```
 
-> **后续页面**：上一页确认无误后，发送 `继续下一页` 并附上图片即可。
 
-### 3. 注意事项
 
-<ol>
-<li>
-<span class="tip-label">必须显式指定 image2 模型</span>
-<div class="tip-detail">
 
-在连续对话中，GPT 容易"忘记"用 image2 生图。每次要求生成 PPT 页面时，必须在提示词中重新声明"使用 image2 模型"，否则会退化为纯文本大纲或朴素表格。
 
-错误示例：
-> 生成第三套风格
-
-正确示例：
-> 请使用最新的 image2 模型，生成第三套风格的完整 PPT
-
-</div>
-</li>
-<li>
-<span class="tip-label">逐页还原比一次还原更可靠</span>
-<div class="tip-detail">
-
-还原为可编辑格式时，让 GPT 一页一页处理，每页输出一个小 .pptx 文件，最后手动合并。一次还原整个 PPT 容易因上下文过长导致后半部分质量下降。
-
-</div>
-</li>
-<li>
-<span class="tip-label">两种可编辑转换方案对比</span>
-<div class="tip-detail">
-
-| 方案 | 工具 | 速度 | 质量 | 适用场景 |
-|------|------|------|------|----------|
-| PDF 转 PPT | WPS | 快（秒级） | 一般，元素可能错位 | 排版不复杂、需要快速出稿 |
-| GPT 逐页还原 | GPT-5.5/5.6 + python-pptx | 慢（约 5–10 分钟/页） | 高，99% 还原度 | 学术汇报、正式场合、对版式要求高 |
-
-也可以使用 Codex CLI 执行相同逻辑（优势是直接写本地文件，不需要下载），但经实测，Codex 生成速度比 GPT Web 端慢得多（一页约 17–20 分钟 vs Web 端约 5 分钟）。
-
-</div>
-</li>
-</ol>
-
-### 4. 使用建议
-
-- **图像先行，文本后还原**：先用生图模型锁定视觉完成度，再用语言模型逆向工程为可编辑格式——比直接让语言模型生成 PPT 效果好一个数量级。
-- **四套预览是决策缓冲**：不要只生成一套，让 GPT 同时出四套预览再选，避免"生成完才发现风格不对"的返工。
-- **"使用 image2"是魔术字**：单靠这句话就能让输出从朴素文本表格切换到海报级视觉，但必须在每次对话中重复声明。
-- **逐页还原比一次还原可靠得多**：把一个大任务拆成一页一个小任务，每页确认后再继续，上下文不混乱，质量可控。
-- **转换方案有 trade-off**：WPS 方案牺牲质量换速度，GPT 还原方案牺牲时间换精度——按场景选方案，不是一刀切。
-- **可迁移骨架**：这套"生图模型出视觉 → 语言模型还原为可编辑格式"的思路，可以迁移到任何"需要高质量版式输出但最终要可编辑"的场景。把源资料换成报告、提案、简历，把目标换成海报、信息图、数据看板，逻辑完全一样。提示词骨架如下：
-
-```text
-请使用最新的 image2 模型，基于以下资料【论文 / 报告 / 提案】，为我生成一份【学术汇报 / 商业提案 / 项目汇报】PPT。
-
-流程：
-1. 先生成 {N} 套不同风格的预览缩略图，供我选择；
-2. 选定风格后，生成包含以下页面的完整图像版：
-   - 封面页
-   - 【背景 / 问题 / 现状】
-   - 【方法 / 方案 / 思路】
-   - 【数据 / 结果 / 对比】
-   - 【总结 / 后续步骤】
-3. 最终将图像版逐页还原为可编辑的 .pptx 文件。
-
-约束：
-- 所有内容必须基于原始资料，不得编造数据；
-- 图表需标注来源或注明"根据原文数据生成"；
-- 每页生成前，再次声明"使用 image2 模型"。
-```
-
-## 二、调研 → PPT（桌面 Agent + Skills）
+## 二、产品分析PPT
 
 ### 1. 核心思路
 
@@ -152,11 +86,14 @@ description: 如何用 Agent 快速制作高质量的 PPT
 调用 ppt-master skill 做一个 PPT，PPT 主题介绍各大 AI 模型厂商的 Agent 桌面端应用以及特点和差异，以及价格：Codex、Claude Code、Kimi Work、Trae Work、WorkBuddy、豆包、QoderWork。在 5–8 页内讲明白，我要第二天跟全公司的领导汇报。风格酷的你自己定，出完整整地第一版给我。
 ```
 
-# 优质资源合集
 
-## 一、生成 PPT
 
-以下资源来自[彼得潘AI](https://space.bilibili.com/1315561/)对 7 个中文 AI 博主 PPT skill 的实测评测：
+## 三、优质资源合集/todo
+
+
+### 1.生成 PPT
+
+评测视频见 [从夯到拉锐评一下中文 AI 博主的 PPT skill](https://www.bilibili.com/video/BV1yXE96gEjE/)
 
 | Skill | 产出模态 | 评测评价 | 当前 Star |
 |-------|---------|----------|----------|
@@ -168,11 +105,12 @@ description: 如何用 Agent 快速制作高质量的 PPT
 | [乔木 Anything to NotebookLM](https://github.com/joeseesun/qiaomu-anything-to-notebooklm) | NotebookLM 幻灯片（纯图片） | **NPC**。不是真 PPT，只是 NotebookLM 幻灯片，设计无规范 | 5.6k |
 | [Louis HTML PPT Skill](https://github.com/lewislulu/html-ppt-skill) | HTML | **NPC**。素材库丰富，演讲者模式 + 逐字稿 + 计时器实用，但排版与字体糟糕 | 7.4k |
 
-排名体系：**夯 > 人上人 > 顶级 > NPC**。评测视频见 [从夯到拉锐评一下中文 AI 博主的 PPT skill](https://www.bilibili.com/video/BV1yXE96gEjE/)。
+### 2.修改 PPT
 
-## 二、修改 PPT
 
-以下资源来自同作者对「已有 PPT 让 AI 帮忙美化」场景的实测，拿一份大学期末作业 PPT 逐个测试各 skill 的美化能力：
+
+评测视频见 [改 PPT 作业版](https://www.bilibili.com/video/BV1zgKZ6VE7x/)。
+
 
 | Skill | 产出模态 | 评测评价 | 当前 Star |
 |-------|---------|----------|----------|
@@ -185,4 +123,6 @@ description: 如何用 Agent 快速制作高质量的 PPT
 | [张咋啦 Front-end Slides](https://github.com/zarazhangrui/frontend-slides) | HTML | **NPC**（上期顶级）。风格中等、排版逊色、完成度不够，稳定性不强。动效太快反而干扰讲解 | 26.4k |
 | [乔木 Anything to NotebookLM](https://github.com/joeseesun/qiaomu-anything-to-notebooklm) | NotebookLM 幻灯片（纯图片） | **NPC**。几乎没有 PPT 设计规则和视觉规范，成品不如豆包。纯图片，无二次操作空间 | 5.6k |
 
-排名体系：**巅峰夯 > 夯 > 人上人 > 顶级 > NPC**。评测视频见 [改 PPT 作业版](https://www.bilibili.com/video/BV1zgKZ6VE7x/)。
+
+
+

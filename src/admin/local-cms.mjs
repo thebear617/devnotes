@@ -178,6 +178,12 @@ function currentLocalDate() {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
+function currentLocalDateTime() {
+  const date = new Date();
+  const pad = (value) => String(value).padStart(2, '0');
+  return `${currentLocalDate()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 async function readBody(request) {
   let raw = '';
   for await (const chunk of request) raw += chunk;
@@ -277,7 +283,7 @@ export default function localCms() {
             const targetPath = normalizeRelativePath(postParser, data.path);
             const previousPath = data.previousPath ? normalizeRelativePath(postParser, data.previousPath) : null;
             if (data.previousPath && !previousPath) return json(response, 400, { error: '原文章路径不在允许的内容目录内' });
-            const frontmatter = { ...(data.frontmatter || {}), updated: currentLocalDate() };
+            const frontmatter = { ...(data.frontmatter || {}), updated: currentLocalDateTime() };
             const errors = postParser.validate(frontmatter, targetPath);
             if (errors.length || !targetPath) return json(response, 400, { errors: errors.length ? errors : ['文章路径不在允许的内容目录内'] });
             const targetFile = safePath(postParser, targetPath);

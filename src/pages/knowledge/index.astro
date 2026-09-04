@@ -1,9 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { entryTimestamp } from '../../data/dates.js';
 
 const entries = await getCollection('knowledge');
-entries.sort((a, b) => new Date(b.data.updated || b.data.date).getTime() - new Date(a.data.updated || a.data.date).getTime());
+entries.sort((a, b) => entryTimestamp(b.data.updated || b.data.date) - entryTimestamp(a.data.updated || a.data.date));
 
 const PRIMARY_CATEGORIES = ['开发', '实践', '科研', '随想'];
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
@@ -101,6 +102,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
             data-title={entry.data.title}
             data-date={entry.data.date}
             data-updated={entry.data.updated || entry.data.date}
+            data-updated-ts={entryTimestamp(entry.data.updated || entry.data.date)}
             data-search={[entry.data.title, entry.data.description, entry.data.category, entry.data.subcategory].filter(Boolean).join(' ')}
           >
             <div class="blog-card-title">{entry.data.title}</div>
@@ -371,7 +373,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
         || originalOrder.get(a) - originalOrder.get(b);
     }
 
-    const updatedDifference = (Date.parse(b.dataset.updated || '') || 0) - (Date.parse(a.dataset.updated || '') || 0);
+    const updatedDifference = (Number(b.dataset.updatedTs) || 0) - (Number(a.dataset.updatedTs) || 0);
     return updatedDifference || originalOrder.get(a) - originalOrder.get(b);
   }
 

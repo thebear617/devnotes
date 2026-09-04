@@ -1,7 +1,7 @@
 ---
 title: "熊窝 v0.30.0：任务看板 - 在线新增与删除任务"
 date: '2026-09-01'
-updated: '2026-09-01'
+updated: "2026-09-01 23:31"
 description: '任务看板新增「新增任务」弹窗，新增与删除经 dev server 直接写回 todo-data.ts，任务清单回归单一来源。'
 subcategory: [功能, 视觉]
 category: 熊窝

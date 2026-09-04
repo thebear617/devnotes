@@ -461,7 +461,9 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     const activeCollection = () => state.collections.find((item) => item.id === state.collectionId);
     const clone = (value) => JSON.parse(JSON.stringify(value));
-    const today = () => new Date().toISOString().slice(0, 10);
+    const pad2 = (value) => String(value).padStart(2, '0');
+    const today = () => { const now = new Date(); return `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`; };
+    const nowStamp = () => { const now = new Date(); return `${today()} ${pad2(now.getHours())}:${pad2(now.getMinutes())}`; };
     const setStatus = (message, kind = '') => { $('status').textContent = message; $('status').className = `status ${kind}`; };
 
     function managedPathStrategy(config = activeCollection()) {
@@ -1204,7 +1206,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
             const config = activeCollection();
             const frontmatter = clone(config.defaultFrontmatter);
             frontmatter.date = today();
-            frontmatter.updated = today();
+            frontmatter.updated = nowStamp();
             setFormValue(frontmatter, '', config.defaultPath);
             renderEntries();
           }
@@ -1413,7 +1415,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       const config = activeCollection();
       const frontmatter = clone(config.defaultFrontmatter);
       frontmatter.date = today();
-      frontmatter.updated = today();
+      frontmatter.updated = nowStamp();
       state.selectedPath = '';
       state.dirty = false;
       setFormValue(frontmatter, '', config.defaultPath);

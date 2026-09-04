@@ -1,11 +1,11 @@
 ---
-title: "综述：人工智能-vibe版"
+title: "综述：vibe-coding"
 date: "2026-08-26"
-updated: "2026-08-28"
+updated: "2026-09-05 00:08"
 category: "开发"
 subcategory: "综述"
 description: "Agentic Work 指南及观点收集"
-slug: "ai-overview-vibe"
+slug: "vibe-coding-overview"
 ---
 
 # 观点收录
@@ -99,18 +99,6 @@ Agentic Work分为Agentic Coding（[^Vibe-Coding]）和 Agentic Work（[^Vibe-Wo
   5. 运营管理：跨应用完成业务流程、维护
   
   
-
-## 现有技术
-
-### computer-use
- 1. 共享屏幕：授权后能直接看到WPS打开的文件
- 2. 实时字幕翻译
-
-
-### 多模态输出
- 1. 会议纪要：飞书妙记转写（可以听懂方言）->其他 AI整理
- 2. 网页插件：网页内容及视频总结
-
 
 
 

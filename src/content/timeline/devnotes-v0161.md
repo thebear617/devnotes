@@ -1,7 +1,7 @@
 ---
 title: '开发笔记 v0.16.1：本地 CMS - 文章删除与路径重命名'
 date: '2026-08-27'
-updated: '2026-08-27'
+updated: "2026-08-27 14:27"
 description: '为本地 Markdown CMS 增加可恢复删除，并修复文章文件路径改名后的重复创建。'
 category: 开发笔记
 subcategory: [功能, 修复]

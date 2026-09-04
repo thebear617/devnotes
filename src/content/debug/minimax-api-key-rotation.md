@@ -1,7 +1,7 @@
 ---
 title: "MiniMax：API Key - 更换"
 date: "2026-08-02"
-updated: "2026-08-29"
+updated: "2026-08-29 22:37"
 slug: "minimax-api-key-rotation"
 category: "开发工具"
 subcategory: "Agent"

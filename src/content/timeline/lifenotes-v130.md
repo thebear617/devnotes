@@ -1,7 +1,7 @@
 ---
 title: '常识笔记 v1.3.0：内容目录与 Schema 统一'
 date: '2026-08-28'
-updated: '2026-08-28'
+updated: "2026-08-28 16:30"
 description: '统一常识笔记七个领域的内容字段与英文双层目录，移除无用元数据，并对齐本地 CMS 的编辑布局与交互。'
 category: 常识笔记
 subcategory: [架构, 内容, 视觉]

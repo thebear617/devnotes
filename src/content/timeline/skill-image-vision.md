@@ -1,7 +1,7 @@
 ---
 title: "image-vision：图片附件 - 查看与识别"
 date: "2026-08-02"
-updated: "2026-08-29"
+updated: "2026-08-29 22:35"
 category: "skill"
 subcategory: ["功能"]
 description: "历史记录：新增全局 Agent Skill ~/.config/opencode/skills/image-vision/SKILL.md，把\"纯文本模型看不了图片附件\"的问题封装成可自动触发的技能；其中的 MiniMax 视觉工具链当前已临时停用。"

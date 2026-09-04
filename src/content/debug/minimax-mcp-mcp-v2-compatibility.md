@@ -1,7 +1,7 @@
 ---
 title: "MiniMax：MCP - SDK 版本不兼容"
 date: "2026-07-29"
-updated: "2026-08-29"
+updated: "2026-08-29 22:37"
 slug: "minimax-mcp-sdk-version-compatibility"
 category: "开发工具"
 subcategory: "Agent"

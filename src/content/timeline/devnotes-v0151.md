@@ -1,7 +1,7 @@
 ---
 title: "开发笔记 v0.15.1：内容与后台 - 月记重构与编辑体验"
 date: '2026-08-18'
-updated: '2026-08-18'
+updated: "2026-08-18 18:25"
 description: '将个人随笔从周记合并为月记，并完善本地 CMS 的 Markdown 编辑快捷键、保存行为和热更新状态恢复。'
 subcategory: [内容, 功能, 架构]
 category: 开发笔记

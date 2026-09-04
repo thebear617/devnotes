@@ -1,7 +1,7 @@
 ---
 title: '开发笔记 v0.16.0：后台编辑器与内容更新'
 date: '2026-08-23'
-updated: '2026-08-23'
+updated: "2026-08-23 22:41"
 description: '更新开发知识内容，并完善 Markdown 编辑器的公式渲染、滚动定位和预览回跳。'
 category: 开发笔记
 subcategory: [功能, 内容, 修复]

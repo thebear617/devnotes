@@ -1,7 +1,7 @@
 ---
 title: "CodexBar：供应商 - 如何查看火山方舟 Coding Plan 用量"
 date: "2026-08-29"
-updated: "2026-08-31"
+updated: "2026-08-31 18:21"
 slug: "codexbar-doubao-coding-plan-usage"
 category: "开发工具"
 subcategory: "Agent"

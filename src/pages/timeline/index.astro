@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { entryTimestamp } from '../../data/dates.js';
 
 const entries = await getCollection('timeline');
 const resolved = entries.map(e => ({
@@ -104,6 +105,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
           data-category={e.data.category}
           data-title={e.data.title}
           data-updated={e.data.updated}
+          data-updated-ts={entryTimestamp(e.data.updated)}
           data-subcategory={e.secondaryCategories.join(',')}
           data-search={[e.data.title, e.data.description, e.data.category, ...e.data.subcategory].filter(Boolean).join(' ').toLowerCase()}
         >
@@ -411,7 +413,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
         || originalOrder.get(a) - originalOrder.get(b);
     }
 
-    const updatedDifference = (Date.parse(b.dataset.updated || '') || 0) - (Date.parse(a.dataset.updated || '') || 0);
+    const updatedDifference = (Number(b.dataset.updatedTs) || 0) - (Number(a.dataset.updatedTs) || 0);
     return updatedDifference || originalOrder.get(a) - originalOrder.get(b);
   }
 

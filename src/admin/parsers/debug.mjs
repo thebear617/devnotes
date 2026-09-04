@@ -1,4 +1,4 @@
-import { isDate, parseFrontmatter, serializeMarkdown } from './frontmatter.mjs';
+import { isDate, isDateOrDateTime, parseFrontmatter, serializeMarkdown } from './frontmatter.mjs';
 
 const subcategoriesByCategory = {
   '站点与应用': ['UI/UX', '内容数据', '构建部署', '架构渲染'],
@@ -29,7 +29,7 @@ export const debugParser = {
     { id: 'category', label: '一级分类', type: 'select', options: categories, required: true, filterable: true, section: '内容归类' },
     { id: 'subcategory', label: '二级分类', type: 'select', options: subcategories, optionsBy: subcategoriesByCategory, dependsOn: 'category', required: true, filterable: true, section: '内容归类' },
     { id: 'date', label: '发布日期', type: 'date', required: true, section: '文件与发布' },
-    { id: 'updated', label: '更新日期（保存时自动更新）', type: 'date', readonly: true, section: '文件与发布' },
+    { id: 'updated', label: '更新时间（保存时自动更新）', type: 'text', readonly: true, section: '文件与发布' },
     { id: 'slug', label: 'slug', type: 'text', required: true, section: '文件与发布' },
   ],
   parse: parseFrontmatter,
@@ -40,7 +40,7 @@ export const debugParser = {
     const errors = [];
     if (!frontmatter.title?.trim()) errors.push('标题不能为空');
     if (!isDate(frontmatter.date)) errors.push('发布日期必须使用 YYYY-MM-DD');
-    if (frontmatter.updated && !isDate(frontmatter.updated)) errors.push('更新日期必须使用 YYYY-MM-DD');
+    if (frontmatter.updated && !isDateOrDateTime(frontmatter.updated)) errors.push('更新日期必须使用 YYYY-MM-DD 或 YYYY-MM-DD HH:mm');
     if (!frontmatter.slug?.trim()) errors.push('slug 不能为空');
     if (!categories.includes(frontmatter.category)) errors.push('一级分类不在当前 schema 允许范围内');
     if (!subcategoriesByCategory[frontmatter.category]?.includes(frontmatter.subcategory)) errors.push('二级分类不属于当前一级分类');
