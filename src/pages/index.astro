@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="0;url=/notes/">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <title>开发笔记</title>
-</head>
-<body>
-  <p>跳转中... <a href="/notes/">点击这里</a></p>
-</body>
-</html>
+---
+return Astro.redirect(import.meta.env.BASE_URL + 'knowledge/', 301);
+---

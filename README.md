@@ -66,7 +66,7 @@ npm install
 npm run dev
 ```
 
-日常开发服务器固定为 `http://localhost:4323`；CMS 位于 <http://localhost:4323/admin/>，访问根路径后会进入 Debug 库。同一仓库只保留一个普通 `npm run dev` 实例。
+日常开发服务器固定为 `http://localhost:4323`；CMS 位于 <http://localhost:4323/admin/>，访问根路径会进入知识库。同一仓库只保留一个普通 `npm run dev` 实例。
 
 Agent 需要浏览器验收时，另开空闲端口运行：
 
