@@ -1,7 +1,7 @@
 {
   "name": "devnotes",
   "type": "module",
-  "version": "0.17.3",
+  "version": "0.17.4",
   "scripts": {
     "dev": "astro dev --port 4323",
     "dev:verify": "node scripts/start-isolated-cms-dev.mjs",
