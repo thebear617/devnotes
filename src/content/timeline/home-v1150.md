@@ -27,6 +27,12 @@ subcategory: [视觉, 功能, 架构]
 - Home 版本由 `1.14.0` 升至 `1.15.0`。
 - `npm run build` 成功构建 21 个页面；`git diff --check` 通过。
 
+## v1.15.1 补丁
+
+- 在不改变日程和财务业务数据的前提下，补充猪窝侧边栏插图与暖色品牌配色。
+- 品牌区改为整体居中，并移除桌面端右侧折叠按钮；移动端关闭入口保留。
+- 主视图的「睡眠均值」改为按 `#area/study`、`#area/dev`、`#area/research` 语义标签统计的「学习均值」，并为 8 月、9 月已有明确日程补充标签。
+
 ## UI 设计图留档
 
 以下为本次日程和财务三视图重构的三张成品 UI 留档：主视图、会员订阅视图、收支记录视图。
@@ -35,4 +41,5 @@ subcategory: [视觉, 功能, 架构]
   <img src="/images/timeline/home-v1150/ui-01.png" alt="猪窝 v1.15.0 日程和财务主视图" loading="lazy" />
   <img src="/images/timeline/home-v1150/ui-02.png" alt="猪窝 v1.15.0 会员订阅视图" loading="lazy" />
   <img src="/images/timeline/home-v1150/ui-03.png" alt="猪窝 v1.15.0 收支记录视图" loading="lazy" />
+  <img src="/images/timeline/home-v1150/ui-04.png" alt="猪窝 v1.15.1 侧边栏插图与配色参考" loading="lazy" />
 </div>
