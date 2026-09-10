@@ -1,12 +1,14 @@
 ---
-title: "基础知识：UI 设计与审美"
+title: "网页：UI审美积累"
 date: "2026-08-18"
-category: "开发"
-subcategory: "基础知识"
-description: "UI 设计与审美相关的经验积累。"
+updated: "2026-09-09 17:52"
+category: "实践"
+subcategory: "网页"
+description: "UI 设计与审美相关的经验积累"
 slug: "ui-design-aesthetics"
 ---
 
+todo
 ## 一、视觉层面的取舍
 
 ### 1. 减少不必要的框线
@@ -28,3 +30,5 @@ slug: "ui-design-aesthetics"
 [^chatnotes-v040-stack]: 来源：[ChatNotes v0.4.0：重构阅读区与卡片视觉](https://github.com/thebear617/chatnotes/commit/ca7e03ce85e032936076a35239a716755afa7d0c)。对应 `WorkspaceShell.tsx` 中移除“工作区视图”标签，以及 `app/globals.css` 中新增的 `.conversation-reading-card-stack::before` 与 `.conversation-reading-card-stack::after`。
 
 [^chatnotes-v040-debug]: 来源：[ChatNotes v0.4.0：重构阅读区与卡片视觉](https://github.com/thebear617/chatnotes/commit/ca7e03ce85e032936076a35239a716755afa7d0c)。代码中通过叠层伪元素的背景色、透明度和旋转角度共同调试视觉层级，因此可抽象出“先调颜色，再调位置”的工作顺序。
+
+
