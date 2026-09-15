@@ -9,6 +9,16 @@ subcategory: [内容, 架构]
 
 猫猫手册 v0.16.0 完成第一轮 API 数据对齐与内容层补齐：以 API 的 99 条记录为目标名单，保留 7 条仅存在于现有网站的猫咪档案，形成 106 条正式记录。
 
+## API 来源
+
+本次数据来自小小喵扎特（Meowzart）API，原始只读请求和接口参数记录在[西电猫猫爬虫.txt](/Users/mokaiche/Downloads/05-猫猫素材/scripts/西电猫猫爬虫.txt)中。接口基址为 [`https://api.meowzart.com`](https://api.meowzart.com)，使用 `societyId=649`、`category=cat` 获取西电猫咪档案。
+
+- 猫咪列表：`/api/v1/pet/society/list`
+- 单只猫详情：`/api/v1/pet/{petId}`
+- 猫咪动态：`/api/v1/content/contents?types=cat-line,article&tags=:pet:{petId}`
+
+上述 TXT 文档是本轮导出脚本的来源依据；网站实际保存的是 API 返回的原始 JSON 快照和整理后的本地数据，不依赖运行时实时请求接口。
+
 ## 档案数据补齐
 
 - 保留现有网站字段名，补齐性格、故事描述、关系、别名、动态、来源编号和来源图片等结构化字段。
