@@ -46,3 +46,7 @@ category: 熊窝
 ![熊窝 v0.31.0 关系管理主视图](/images/timeline/personal-v0310/ui-01.png)
 
 ![熊窝 v0.31.0 关系管理数据看板视图](/images/timeline/personal-v0310/ui-02.png)
+
+下图为本次微调前的旧版关系管理界面（分组与筛选 Tab、关系热度、重要度、标记已联系等），一并留档以便对照重构前后的差异。
+
+![熊窝 v0.31.0 微调前的关系管理 UI 视图](/images/timeline/personal-v0310/ui-03.png)
