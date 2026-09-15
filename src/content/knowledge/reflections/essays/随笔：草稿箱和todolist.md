@@ -1,7 +1,7 @@
 ---
 title: "随笔：草稿箱和todolist"
 date: "2026-09-04"
-updated: "2026-09-10 12:50"
+updated: "2026-09-15 14:35"
 category: "随想"
 subcategory: "随笔"
 description: "内容中转和草稿，暂存处｜所有 idea、未开始的设计思路的存放、所有要中转的东西"
@@ -10,15 +10,55 @@ slug: "Drafts"
 
 ## 草稿箱
 
+🉐是讲故事，科研是讲故事，瓦也是讲故事（枪法只是讲好故事的其中一环，排位比的是两边的人哪边更会讲故事，更愿意听故事），面试也是讲故事｜听故事的人可以是面试官、审稿人、队友，第一种故事要讲的贴合需求，第二种故事讲得要严谨，第三种故事讲得要简短明确，责任到人
 
-1. [帖子](https://www.xiaohongshu.com/explore/6aa10fd8000000002b000cf3?2. xsec_token=CBdMp5B9EDnFSNlaB1DzGnieWQq-yt39vJm0Ysgk3maVk=&xsec_source=app_share)说如何用GPT[^批量做3D模型]
+界面-插画素材：大头漂亮橘的 AI稿
+界面-画 logo 的 skill-https://www.xiaohongshu.com/explore/6a852907000000002500ce2d?xsec_token=CBGeK3N6MjEXsaj3_Ahd6BlNypRcCESDXfeRahckw3nVM=&xsec_source=app_share
+
+界面-心得：
+1. 要积累自己的插图
+2. 要积累顶部栏审美
+3. 比例很关键：画布比例，组件比例等
+    先是画布比例（定整体宽高），接着是顶部栏｜内容区｜脚栏比例，考虑内容区是否需要再上下分行，再考虑内容区的左右分列
+
+旅行计划-TREK-github 上的一款旅行规划工具
+
+
+- 科研-特征融合和特征对齐不是同一个东西，是面对两种不同下游任务的特征处理策略，前者针对多模态信息融合，后者则过多的是对比学习，为了下游表征对齐（OVS）
+- 科研-去了解MOE MOA MOT
+- 科研-闭集分割追求的是一边分，开集分割追求的是两头靠
+
+---
+猫猫网站：现在的 CRM 可以用来管理赞助，然后可以用两个域名，对内显示一部分页面，对外显示另一部分页面
+搜一些文案：“三行短诗 猫咪”
+
+德-Texas Hold'em Hyperdrive79 ｜https://www.xiaohongshu.com/discovery/item/6a973b3e000000002700ac3c?source=webshare&xhsshare=pc_web&xsec_token=CBVM1c6KCJLlswDT3_hdv1gPx9ST9aYAM-vrY4PJ-f4H4=&xsec_source=pc_share
+
+德-牌力速查表-https://www.xiaohongshu.com/explore/6aa73e11000000000d02635d?xsec_token=CB4JxLyaYTl95Uc_OU0rtNVF4UsaPwEB-d34skLo1qyZA=&xsec_source=app_share
+
+装修-https://www.xiaohongshu.com/user/profile/5c87b12a0000000011017ca9?xsec_token=ABN7VLeLHyXq7Vx8NdKqRmImtEUN2ISt0VGFMwAFRUWnk=&xsec_source=pc_user 看房博主，很多好看的大别野
+
+装修-很喜欢它的厨房转角橱柜设计-https://www.xiaohongshu.com/explore/6a82d2d400000000270221cd?xsec_token=CBazIOgBbASVX8w3ef9uwywvWqiNGOMb_ZtWcz0eewyYE=&xsec_source=app_share
+
+前端-如何解决 AI 的手机没有美感（提供了三个skill）-https://www.xiaohongshu.com/explore/6a8c38bd000000002800b363?xsec_token=CB7I6AvIclgs70ckTvkeU4NxIbgG3WYskr-220ttgADL4=&xsec_source=app_share
+
+看代码-能根据项目代码绘制系统图的skill-网页｜接口|缓存｜数据库（https://www.xiaohongshu.com/explore/6aa8a0da000000000d02525d?xsec_token=CBLag-yA-GvgOLiLXXgVyew0IG-_CfyaxFiKB8psxuEdw=&xsec_source=app_share）
+
+
+做 ppt-从图复现成可编辑 ppt 组件-https://www.xiaohongshu.com/explore/6aa22800000000002b003a14?xsec_token=CB6-qPyctGyQjxfk9CYX-Fg3fS5LauGHHPcrTy57LQgxc=&xsec_source=app_share
+
+
+做 ppt-PPT-Master skill 的实操演示： https://www.bilibili.com/video/BV18PtB6wEZ5/?share_source=copy_web&vd_source=03f4c4c1219f23af84f99d441d39f961
+
+---
+
+
+1. [帖子](https://www.xiaohongshu.com/explore/6aa10fd8000000002b000cf3?2.xsec_token=CBdMp5B9EDnFSNlaB1DzGnieWQq-yt39vJm0Ysgk3maVk=&xsec_source=app_share)说如何用GPT[^批量做3D模型]
 2. [见面小花束](https://www.xiaohongshu.com/discovery/item/68be48b6000000001d02798e?source=webshare&xhsshare=pc_web&xsec_token=ABWCnDUcXs0AJrE39c5gHQDKN05_ns_ts8l6l8ytUJo7o=&xsec_source=pc_share)
 3. [护肤教程](https://www.bilibili.com/video/BV19Dtd6XEY3/)
 4. [装修心得-厨房，全屋智能，抽拉鞋柜](https://www.xiaohongshu.com/explore/6a952264000000000502a8cf?xsec_token=CB1tAYP428Zk8aNXtzNPDkx_6lTcbzbtAv34430t9h1nA=&xsec_source=app_share)
-5. [德扑 GTO](https://www.xiaohongshu.com/explore/6a8715bf000000002702ea55?xsec_token=CBJAr-v_1iwLeyeBN7C3YTPB9VCNPXu27Vbsove2dHeKY=&xsec_source=app_share)
-- 模型一：GTO-169种组合（是一个很好推断别人范围的牌力矩阵）
-- 模型二：投注为当前池的 1/n=当前牌型获取概率的 1/n
-6. [德扑术语](https://www.xiaohongshu.com/explore/6a526675000000001700ae99?xsec_token=CBQkIpKztvkimZ5XmUX3NXJ8RrWihQSSagyBddUiNcdsY=&xsec_source=app_share)
+5. [街舞-poping 演示](https://www.xiaohongshu.com/explore/68667dea000000001301308e?xsec_token=CBKG801RuRZP-lKvxqg7jw8ekf6Vq2MPzvQDRPs8bfYc0=&xsec_source=app_share)
+
 [^批量做3D模型]:
   不要让 Codex 做模型，让它做“生产模型的机器”。
   ① 先用少量母模型（通过gpt-image生产参考图）固定风格、比例、材质和面数规范。
@@ -28,19 +68,11 @@ slug: "Drafts"
   一条 Prompt → 一条 Pipeline → N Models
   感觉这才是 Codex + Blender 更值得玩的方向。
 
+7. [用AI检索文献](https://www.xiaohongshu.com/explore/6a9a84df000000001203d8e9?xsec_token=CBRLGLi0kA1i6T4im-5K7O7ANeUHUALhS4TWI2mY_vrw8=&xsec_source=app_share)
 
+8. [高中毕业后进入零工市场田野调查,记录西安零工生存实](https://www.bilibili.com/video/BV1t3b26pEve/?share_source=copy_web&vd_source=03f4c4c1219f23af84f99d441d39f961)
 ---
-
-设计思路：是否能把前端开发这块组件化，给自己建立一个 codex 库，以后任何形式的站点其他都是我这些前端组件的排列组合了？
-
-
----
-1. 文章提出的方法：他没有在dino的基础上加分割头，以往的dino v2 V3, 它是不是都要加一个分割头才能完成分割任务的呢？
-2. 按理来说，Sam其实不算是一个自监督的大模型，因为它在这个预训练阶段用到了这个掩码及标注，所以说它算是一种视觉基础大模型，但是它不算是这个严格的算是自监督的预训练大模型，是吗？像dino或者ma. E这种才算是是吗？
-3. insid3的Q1:能否直接用mask，而不加上参考图？（但这是不是就不算上下文分割了）
-
-
----
+、
 
 
 
@@ -72,6 +104,15 @@ slug: "Drafts"
       - 服务编排：Docker / 进程管理
   4. 增强 Codex 的生图能力: 可参考的接入实现为[88API-image-gen](https://github.com/blackdm666/88API-image-gen)。
 3. 
+
+
+
+
+
+
+
+
+
 
 
 
