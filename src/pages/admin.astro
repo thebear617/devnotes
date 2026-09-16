@@ -184,6 +184,36 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .editor-jump-button:focus-visible { outline: 2px solid rgba(20, 184, 166, .24); outline-offset: 2px; }
     .editor-jump-button:active { transform: scale(.94); }
     .editor-jump-button svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+    .editor-toc { position: absolute; top: 52px; right: 14px; z-index: 5; display: flex; flex-direction: column; width: min(260px, calc(50% - 28px)); max-height: min(62vh, 520px); overflow: hidden; border: 1px solid rgba(20, 100, 105, .22); border-radius: 12px; background: rgba(255, 255, 255, .7); box-shadow: 0 10px 28px rgba(15, 63, 70, .1); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+    .editor-toc:hover, .editor-toc:focus-within { border-color: rgba(20, 100, 105, .24); background: rgba(255, 255, 255, .88); box-shadow: 0 10px 28px rgba(15, 63, 70, .1); }
+    .editor-toc[hidden] { display: none; }
+    .editor-toc.is-collapsed { width: auto; max-height: none; }
+    .editor-toc.is-collapsed .editor-toc-nav { display: none; }
+    .editor-toc-heading { display: flex; min-height: 36px; padding: 0; border-bottom: 1px solid rgba(20, 100, 105, .13); color: rgba(33, 67, 74, .88); }
+    .editor-toc.is-collapsed .editor-toc-heading { border-bottom: 0; }
+    .editor-toc-title { min-width: 0; overflow: hidden; font-size: 11px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .editor-toc-toggle { display: flex; width: 100%; min-height: 36px; align-items: center; justify-content: flex-start; padding: 0 12px; border: 0; border-radius: 0; color: inherit; background: transparent; font: inherit; font-size: 11px; font-weight: 800; line-height: 1; text-align: left; }
+    .editor-toc-toggle:hover, .editor-toc-toggle:focus-visible { color: #0f766e; background: rgba(231, 248, 245, .8); }
+    .editor-toc-toggle:focus-visible { outline: 2px solid rgba(20, 184, 166, .24); outline-offset: -2px; }
+    .editor-toc.is-collapsed { min-width: 112px; border-radius: 999px; background: rgba(255, 255, 255, .88); box-shadow: 0 5px 16px rgba(15, 63, 70, .08); }
+    .editor-toc.is-collapsed:hover, .editor-toc.is-collapsed:focus-within { background: rgba(255, 255, 255, .96); }
+    .editor-toc.is-collapsed .editor-toc-heading { min-height: 34px; }
+    .editor-toc.is-collapsed .editor-toc-toggle { min-height: 34px; justify-content: center; padding: 0 13px; border-radius: 999px; text-align: center; }
+    .editor-toc.is-collapsed .editor-toc-title { color: rgba(33, 67, 74, .86); font-size: 11px; }
+    .editor-toc-nav { min-height: 0; padding: 6px; overflow-y: auto; overscroll-behavior: contain; }
+    .editor-toc-group { display: grid; grid-template-rows: auto auto; }
+    .editor-toc-sublist { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .2s ease; }
+    .editor-toc-sublist > .editor-toc-children { min-height: 0; overflow: hidden; }
+    .editor-toc-group[data-expanded="true"] > .editor-toc-sublist, .editor-toc-group:hover > .editor-toc-sublist { grid-template-rows: 1fr; }
+    .editor-toc-link { position: relative; display: block; width: 100%; padding: 5px 7px; border: 0; border-left: 2px solid rgba(20, 100, 105, .18); border-radius: 0 5px 5px 0; color: rgba(91, 114, 128, .86); background: transparent; font: inherit; font-size: 11px; line-height: 1.45; text-align: left; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; transition: border-color .15s, color .15s, background-color .15s; }
+    .editor-toc-group.has-children > .editor-toc-link::after { position: absolute; right: 7px; color: currentColor; content: "⌄"; font-size: 11px; opacity: .55; }
+    .editor-toc-link.depth-1 { padding-left: 4px; color: rgba(33, 67, 74, .94); font-size: 13px; font-weight: 800; }
+    .editor-toc-link.depth-2 { padding-left: 14px; color: rgba(33, 67, 74, .86); font-size: 11.5px; font-weight: 700; }
+    .editor-toc-link.depth-3 { padding-left: 28px; font-size: 10.5px; }
+    .editor-toc-link.depth-4 { padding-left: 42px; font-size: 10px; }
+    .editor-toc-link:hover, .editor-toc-link:focus-visible { border-left-color: rgba(94, 234, 212, .95); color: #21434a; background: rgba(231, 248, 245, .72); }
+    .editor-toc-link:focus-visible { outline: 2px solid rgba(20, 184, 166, .24); outline-offset: -2px; }
+    .editor-toc-link.active { border-left-color: #0f9488; color: #0f766e; background: rgba(231, 248, 245, .78); font-weight: 800; }
     .editor-footer { justify-content: space-between; gap: 8px; min-height: 32px; padding: 0 12px; border-top: 1px solid #e1eaec; color: #91a4a8; font-size: 10px; }
     .preview { min-height: 0; overflow: auto; padding: 15px var(--editor-content-gap) calc(15px + var(--editor-caret-space)) 15px; color: #334155; background: #fff; font-size: 13px; line-height: 1.75; transition: opacity .15s; }
     .preview.is-loading { opacity: .62; }
@@ -278,6 +308,14 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       .editor-sync-controls { display: none; }
       .editor-column + .editor-column { border-top: 1px solid #e1eaec; border-left: 0; }
       .link-row { grid-template-columns: 1fr 1fr auto; }
+    }
+
+    @media (max-width: 1180px) {
+      .editor-toc { right: 10px; width: min(240px, calc(100% - 24px)); }
+    }
+
+    @media (max-width: 900px) {
+      .editor-toc { top: 48px; max-height: min(52vh, 400px); }
     }
 
     body.is-immersive { overflow: hidden; }
@@ -463,6 +501,10 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
             <button class="editor-sync-button" id="sync-to-preview" type="button" aria-label="定位到预览" title="Markdown → 预览"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h10M8.5 4l4 4-4 4" /></svg></button>
             <button class="editor-sync-button" id="sync-to-source" type="button" aria-label="定位到 Markdown" title="预览 → Markdown"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 8h-10M7.5 4l-4 4 4 4" /></svg></button>
           </div>
+          <aside class="editor-toc" id="editor-toc" hidden aria-label="文章目录">
+            <div class="editor-toc-heading"><button class="editor-toc-toggle" id="editor-toc-toggle" type="button" aria-expanded="true" aria-label="收起目录" title="收起目录"><span class="editor-toc-title">本文目录</span></button></div>
+            <nav class="editor-toc-nav" id="editor-toc-nav" aria-label="文章标题"></nav>
+          </aside>
         </div>
       </main>
     </div>
@@ -532,6 +574,10 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     let activePreviewFootnoteClose = null;
     let deleteReturnFocus = null;
     let deletePromise = null;
+    let editorTocItems = [];
+    let editorTocActiveIndex = -1;
+    let editorTocOpen = immersiveMedia.matches;
+    let editorTocScrollFrame = 0;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
     const activeCollection = () => state.collections.find((item) => item.id === state.collectionId);
@@ -705,7 +751,9 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
        }
        if (focus) (enabled ? $('body') : button).focus({ preventScroll: true });
        placeImmersiveToggle();
-     }
+       if (enabled) editorTocOpen = immersiveMedia.matches;
+       updateEditorTocVisibility();
+    }
 
     function closeEscapeLayers() {
       if (!$('delete-modal').hidden) {
@@ -1556,6 +1604,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
           selectedPreviewSourceRange = null;
           pendingScrollRestore = null;
           $('preview').classList.remove('is-loading');
+          renderEditorToc();
           return;
         }
         previewFootnoteCleanup();
@@ -1566,6 +1615,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
             $('preview').innerHTML = data.html || '<p class="preview-placeholder">暂无预览</p>';
             enhancePreviewImages();
             enhancePreviewFootnotes();
+            renderEditorToc();
             selectedPreviewNode = null;
             selectedPreviewSourceRange = null;
             if (pendingScrollRestore) {
@@ -1579,6 +1629,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
             $('preview').innerHTML = `<p class="preview-placeholder">预览失败：${escapeHtml(error.message)}</p>`;
             selectedPreviewNode = null;
             selectedPreviewSourceRange = null;
+            renderEditorToc();
           }
         } finally {
           if (requestId === state.previewId) $('preview').classList.remove('is-loading');
@@ -1835,6 +1886,167 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       if (!startLine || !endLine) return null;
       return { start: sourceLineOffset(startLine), end: sourceLineOffset(endLine, true), startLine, endLine };
     }
+    const editorTocHeadingSelector = 'h1[data-source-start], h2[data-source-start], h3[data-source-start]';
+    function updateEditorTocVisibility() {
+      const toc = $('editor-toc');
+      if (!toc) return;
+      const visible = document.body.classList.contains('is-immersive') && editorTocItems.length > 0;
+      toc.hidden = !visible;
+      toc.classList.toggle('is-collapsed', visible && !editorTocOpen);
+      const toggle = $('editor-toc-toggle');
+      if (toggle) {
+        toggle.setAttribute('aria-expanded', String(visible && editorTocOpen));
+        toggle.setAttribute('aria-label', editorTocOpen ? '收起目录' : '展开目录');
+        toggle.title = editorTocOpen ? '收起目录' : '展开目录';
+      }
+    }
+    function setActiveEditorToc(index) {
+      if (index < 0 || index >= editorTocItems.length) return;
+      const changed = editorTocActiveIndex !== index;
+      editorTocActiveIndex = index;
+      const activePath = new Set([index, ...editorTocItems[index].ancestors]);
+      editorTocItems.forEach((item, itemIndex) => {
+        const active = itemIndex === index;
+        item.link?.classList.toggle('active', active);
+        if (active) item.link?.setAttribute('aria-current', 'location');
+        else item.link?.removeAttribute('aria-current');
+        if (item.group) item.group.dataset.expanded = String(item.depth === 1 || activePath.has(itemIndex));
+      });
+      if (changed) editorTocItems[index].link?.scrollIntoView({ block: 'nearest' });
+    }
+    function buildEditorTocTree(items) {
+      const roots = [];
+      const stack = [];
+      items.forEach((item) => {
+        item.children = [];
+        item.ancestors = [];
+        while (stack.length && stack.at(-1).depth >= item.depth) stack.pop();
+        if (stack.length) {
+          const parent = stack.at(-1);
+          item.ancestors = [...parent.ancestors, parent.index];
+          parent.children.push(item);
+        } else {
+          roots.push(item);
+        }
+        stack.push(item);
+      });
+      return roots;
+    }
+    function createEditorTocNode(item) {
+      const group = document.createElement('div');
+      group.className = `editor-toc-group${item.children.length ? ' has-children' : ''}`;
+      group.dataset.tocIndex = String(item.index);
+      group.dataset.expanded = String(item.depth === 1);
+      item.group = group;
+
+      const link = document.createElement('button');
+      link.className = `editor-toc-link depth-${item.depth}`;
+      link.type = 'button';
+      link.textContent = item.text;
+      link.title = item.text;
+      link.setAttribute('aria-label', `跳转到：${item.text}`);
+      link.onclick = () => jumpToEditorTocItem(item.index);
+      item.link = link;
+      group.append(link);
+
+      if (item.children.length) {
+        const sublist = document.createElement('div');
+        sublist.className = 'editor-toc-sublist';
+        const children = document.createElement('div');
+        children.className = 'editor-toc-children';
+        item.children.forEach((child) => children.append(createEditorTocNode(child)));
+        sublist.append(children);
+        group.append(sublist);
+      }
+      return group;
+    }
+    function renderEditorToc() {
+      const nav = $('editor-toc-nav');
+      if (!nav) return;
+      const nextItems = Array.from($('preview').querySelectorAll(editorTocHeadingSelector))
+        .map((node) => {
+          const range = previewRange(node);
+          const text = node.textContent.trim().replace(/\s+/g, ' ');
+          const depth = Number(node.tagName.slice(1));
+          return range && text ? { node, text, depth, startLine: range.startLine, endLine: range.endLine, index: 0, link: null, group: null, children: [], ancestors: [] } : null;
+        })
+        .filter(Boolean);
+
+      const canReuseTree = editorTocItems.length === nextItems.length
+        && editorTocItems.every((item, index) => item.startLine === nextItems[index].startLine && item.depth === nextItems[index].depth);
+      if (canReuseTree) {
+        nextItems.forEach((next, index) => {
+          const current = editorTocItems[index];
+          current.node = next.node;
+          current.text = next.text;
+          current.endLine = next.endLine;
+          if (current.link) {
+            current.link.textContent = next.text;
+            current.link.title = next.text;
+            current.link.setAttribute('aria-label', `跳转到：${next.text}`);
+          }
+        });
+        updateEditorTocVisibility();
+        updateEditorTocFromSource();
+        return;
+      }
+
+      editorTocItems = nextItems;
+      editorTocItems.forEach((item, index) => { item.index = index; });
+      editorTocActiveIndex = -1;
+      nav.replaceChildren();
+      buildEditorTocTree(editorTocItems).forEach((item) => nav.append(createEditorTocNode(item)));
+      updateEditorTocVisibility();
+      updateEditorTocFromSource();
+    }
+    function editorTocIndexForLine(line) {
+      if (!editorTocItems.length) return -1;
+      let index = 0;
+      editorTocItems.forEach((item, itemIndex) => {
+        if (item.startLine <= line) index = itemIndex;
+      });
+      return index;
+    }
+    function updateEditorTocFromSource() {
+      if (!editorTocItems.length) return;
+      const body = $('body');
+      const lineHeight = Number.parseFloat(getComputedStyle(body).lineHeight) || 21;
+      const line = Math.max(1, Math.floor(Math.max(0, body.scrollTop - 6) / lineHeight) + 1);
+      setActiveEditorToc(editorTocIndexForLine(line));
+    }
+    function updateEditorTocFromPreview() {
+      const preview = $('preview');
+      if (!editorTocItems.length || !preview.clientHeight) return;
+      const containerTop = preview.getBoundingClientRect().top;
+      const activeLine = containerTop + Math.min(72, preview.clientHeight * 0.32);
+      let index = 0;
+      editorTocItems.forEach((item, itemIndex) => {
+        if (item.node.getBoundingClientRect().top <= activeLine) index = itemIndex;
+      });
+      if (preview.scrollTop + preview.clientHeight >= preview.scrollHeight - 1) {
+        const containerBottom = containerTop + preview.clientHeight;
+        editorTocItems.forEach((item, itemIndex) => {
+          if (item.node.getBoundingClientRect().top <= containerBottom) index = itemIndex;
+        });
+      }
+      setActiveEditorToc(index);
+    }
+    function scheduleEditorTocUpdate(update) {
+      window.cancelAnimationFrame(editorTocScrollFrame);
+      editorTocScrollFrame = window.requestAnimationFrame(update);
+    }
+    function jumpToEditorTocItem(index) {
+      const item = editorTocItems[index];
+      const range = item ? previewRange(item.node) : null;
+      if (!item || !range) return;
+      const body = $('body');
+      const lineHeight = Number.parseFloat(getComputedStyle(body).lineHeight) || 21;
+      body.focus({ preventScroll: true });
+      body.setSelectionRange(range.start, range.start);
+      body.scrollTo({ top: Math.max(0, (item.startLine - 1) * lineHeight - body.clientHeight * 0.22), behavior: 'smooth' });
+      setActiveEditorToc(index);
+      highlightPreviewBlock(item.node);
+    }
     function capturePreviewSelection() {
       const preview = $('preview');
       const selection = window.getSelection();
@@ -2045,9 +2257,17 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
      $('filter-modal').onclick = (event) => {
        if (event.target === event.currentTarget || (event.target instanceof Element && event.target.matches('[data-filter-close]'))) closeFilterModal();
      };
-     $('immersive-toggle').onclick = () => setImmersiveMode(!document.body.classList.contains('is-immersive'));
+    $('immersive-toggle').onclick = () => setImmersiveMode(!document.body.classList.contains('is-immersive'));
     $('immersive-exit').onclick = () => setImmersiveMode(false);
-    immersiveMedia.addEventListener('change', placeImmersiveToggle);
+    immersiveMedia.addEventListener('change', (event) => {
+      placeImmersiveToggle();
+      editorTocOpen = event.matches;
+      updateEditorTocVisibility();
+    });
+    $('editor-toc-toggle').onclick = () => {
+      editorTocOpen = !editorTocOpen;
+      updateEditorTocVisibility();
+    };
     placeImmersiveToggle();
     document.addEventListener('click', (event) => { if (!event.target.closest('#list-tools-wrap')) closePopovers(); });
     document.addEventListener('click', (event) => { if (!event.target.closest('[data-custom-select]')) closeCustomSelects(); });
@@ -2070,6 +2290,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     $('delete-modal').onclick = (event) => { if (!deletePromise && (event.target === event.currentTarget || (event.target instanceof Element && event.target.matches('[data-delete-close]')))) closeDeleteModal(); };
     $('body').addEventListener('keydown', handleBodyKeydown);
     $('body').oninput = handleBodyInput;
+    $('body').addEventListener('scroll', () => scheduleEditorTocUpdate(updateEditorTocFromSource), { passive: true });
+    $('preview').addEventListener('scroll', () => scheduleEditorTocUpdate(updateEditorTocFromPreview), { passive: true });
     function scrollBodyToEdge(edge) {
       const body = $('body');
       body.focus({ preventScroll: true });
