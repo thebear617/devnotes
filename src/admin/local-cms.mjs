@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import remarkBreaks from 'remark-breaks';
 import remarkMath from 'remark-math';
 import remarkFootnoteIndent from '../plugins/remark-footnote-indent.mjs';
 import rehypeKatex from 'rehype-katex';
@@ -19,7 +20,7 @@ const ROOT = process.env.CMS_CONTENT_ROOT ? path.resolve(process.env.CMS_CONTENT
 const DEV_SERVER_LOCK = path.resolve(process.cwd(), '.astro', 'devnotes-dev-server.lock');
 const execFileAsync = promisify(execFile);
 const markdownProcessor = createMarkdownProcessor({
-  remarkPlugins: [remarkFootnoteIndent, remarkMath],
+  remarkPlugins: [remarkFootnoteIndent, remarkBreaks, remarkMath],
   rehypePlugins: [rehypeKatex, rehypeMark, rehypeTableWrap, rehypePopover, rehypeSourcePosition],
   remarkRehype: { handlers: { footnoteReference: footnoteReferenceWithLabel } },
 });

@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { unified } from '@astrojs/markdown-remark';
+import remarkBreaks from 'remark-breaks';
 import remarkMath from 'remark-math';
 import remarkFootnoteIndent from './src/plugins/remark-footnote-indent.mjs';
 import rehypeKatex from 'rehype-katex';
@@ -16,7 +17,7 @@ export default defineConfig({
   vite: { server: { strictPort: true }, plugins: [localCms()] },
   markdown: {
     processor: unified({
-      remarkPlugins: [remarkFootnoteIndent, remarkMath],
+      remarkPlugins: [remarkFootnoteIndent, remarkBreaks, remarkMath],
       rehypePlugins: [rehypeKatex, rehypeMark, rehypeTableWrap, rehypePopover],
       remarkRehype: {
       handlers: { footnoteReference: footnoteReferenceWithLabel },

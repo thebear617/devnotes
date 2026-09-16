@@ -576,7 +576,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     let deletePromise = null;
     let editorTocItems = [];
     let editorTocActiveIndex = -1;
-    let editorTocOpen = immersiveMedia.matches;
+    let editorTocOpen = false;
     let editorTocScrollFrame = 0;
 
     const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -751,7 +751,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
        }
        if (focus) (enabled ? $('body') : button).focus({ preventScroll: true });
        placeImmersiveToggle();
-       if (enabled) editorTocOpen = immersiveMedia.matches;
+       editorTocOpen = enabled;
        updateEditorTocVisibility();
     }
 
@@ -1890,7 +1890,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     function updateEditorTocVisibility() {
       const toc = $('editor-toc');
       if (!toc) return;
-      const visible = document.body.classList.contains('is-immersive') && editorTocItems.length > 0;
+      const visible = editorTocItems.length > 0;
       toc.hidden = !visible;
       toc.classList.toggle('is-collapsed', visible && !editorTocOpen);
       const toggle = $('editor-toc-toggle');
@@ -2259,9 +2259,9 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
      };
     $('immersive-toggle').onclick = () => setImmersiveMode(!document.body.classList.contains('is-immersive'));
     $('immersive-exit').onclick = () => setImmersiveMode(false);
-    immersiveMedia.addEventListener('change', (event) => {
+    immersiveMedia.addEventListener('change', () => {
       placeImmersiveToggle();
-      editorTocOpen = event.matches;
+      editorTocOpen = document.body.classList.contains('is-immersive');
       updateEditorTocVisibility();
     });
     $('editor-toc-toggle').onclick = () => {

@@ -1,7 +1,7 @@
 ---
 title: "随笔：草稿箱和todolist"
 date: "2026-09-04"
-updated: "2026-09-15 14:35"
+updated: "2026-09-15 23:49"
 category: "随想"
 subcategory: "随笔"
 description: "内容中转和草稿，暂存处｜所有 idea、未开始的设计思路的存放、所有要中转的东西"
@@ -10,7 +10,10 @@ slug: "Drafts"
 
 ## 草稿箱
 
-🉐是讲故事，科研是讲故事，瓦也是讲故事（枪法只是讲好故事的其中一环，排位比的是两边的人哪边更会讲故事，更愿意听故事），面试也是讲故事｜听故事的人可以是面试官、审稿人、队友，第一种故事要讲的贴合需求，第二种故事讲得要严谨，第三种故事讲得要简短明确，责任到人
+
+
+
+思考-0913-🉐是讲故事，科研是讲故事，瓦也是讲故事（枪法只是讲好故事的其中一环，排位比的是两边的人哪边更会讲故事，更愿意听故事），面试也是讲故事｜听故事的人可以是面试官、审稿人、队友，第一种故事要讲的贴合需求，第二种故事讲得要严谨，第三种故事讲得要简短明确，责任到人
 
 界面-插画素材：大头漂亮橘的 AI稿
 界面-画 logo 的 skill-https://www.xiaohongshu.com/explore/6a852907000000002500ce2d?xsec_token=CBGeK3N6MjEXsaj3_Ahd6BlNypRcCESDXfeRahckw3nVM=&xsec_source=app_share
@@ -24,13 +27,14 @@ slug: "Drafts"
 旅行计划-TREK-github 上的一款旅行规划工具
 
 
-- 科研-特征融合和特征对齐不是同一个东西，是面对两种不同下游任务的特征处理策略，前者针对多模态信息融合，后者则过多的是对比学习，为了下游表征对齐（OVS）
 - 科研-去了解MOE MOA MOT
-- 科研-闭集分割追求的是一边分，开集分割追求的是两头靠
+
 
 ---
 猫猫网站：现在的 CRM 可以用来管理赞助，然后可以用两个域名，对内显示一部分页面，对外显示另一部分页面
 搜一些文案：“三行短诗 猫咪”
+
+德-todo-做一个界面，以169矩阵为入口，基础信息为每种手牌的胜率｜拿到的概率，然后参考那个界面做每个元素的详情页
 
 德-Texas Hold'em Hyperdrive79 ｜https://www.xiaohongshu.com/discovery/item/6a973b3e000000002700ac3c?source=webshare&xhsshare=pc_web&xsec_token=CBVM1c6KCJLlswDT3_hdv1gPx9ST9aYAM-vrY4PJ-f4H4=&xsec_source=pc_share
 
@@ -104,6 +108,9 @@ slug: "Drafts"
       - 服务编排：Docker / 进程管理
   4. 增强 Codex 的生图能力: 可参考的接入实现为[88API-image-gen](https://github.com/blackdm666/88API-image-gen)。
 3. 
+
+
+
 
 
 
