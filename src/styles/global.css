@@ -1568,13 +1568,33 @@ body.filter-open {
   margin: .75rem 0;
 }
 
-.blog-article-body mark {
-  padding: .05em .2em;
-  border-radius: 3px;
-  background: #fef08a;
+/* ==文字== 高亮：柔和多色渐变横向流动 + 闪光点漂移（后台预览 .preview mark 用同一套参数） */
+.blog-article-body mark,
+.tl-detail-body mark {
+  padding: .08em .3em;
+  border-radius: 4px;
   color: inherit;
+  background-color: #ffe27a;
+  background-image:
+    radial-gradient(circle at 14% 26%, rgba(255, 255, 255, .96) 0 1.7px, transparent 2.8px),
+    radial-gradient(circle at 68% 78%, rgba(255, 255, 255, .84) 0 1.4px, transparent 2.4px),
+    radial-gradient(circle at 88% 22%, rgba(255, 255, 255, .72) 0 1.1px, transparent 2px),
+    linear-gradient(100deg, #ffe27a, #9fe8c8, #b3d8ff, #f8c6e2, #ffe27a);
+  background-size: 26px 26px, 37px 37px, 51px 51px, 200% 100%;
+  background-position: 0 0, 0 0, 0 0, 0% 50%;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+  animation: article-mark-shimmer 7s linear infinite;
+}
+
+@keyframes article-mark-shimmer {
+  from { background-position: 0 0, 0 0, 0 0, 0% 50%; }
+  to { background-position: 26px 26px, 37px 37px, 51px 51px, 200% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-article-body mark,
+  .tl-detail-body mark { animation: none; }
 }
 
 .blog-article-body code {

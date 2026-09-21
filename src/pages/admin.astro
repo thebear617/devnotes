@@ -225,6 +225,10 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     .preview blockquote { margin: .6rem 0; padding: .65rem 1rem; border: 1px solid rgba(13, 148, 136, .16); border-left: 3px solid #0d9488; border-radius: 0 8px 8px 0; background: #f0fdfa; color: #35605f; font-size: .85rem; line-height: 1.65; }
     .preview blockquote > p { margin: 0; }
     .preview blockquote > p + p { margin-top: .6rem; }
+    /* ==文字== 高亮：柔和多色渐变横向流动 + 闪光点漂移，与前台的 .blog-article-body mark 保持一致 */
+    .preview mark { padding: .08em .3em; border-radius: 4px; color: inherit; background-color: #ffe27a; background-image: radial-gradient(circle at 14% 26%, rgba(255, 255, 255, .96) 0 1.7px, transparent 2.8px), radial-gradient(circle at 68% 78%, rgba(255, 255, 255, .84) 0 1.4px, transparent 2.4px), radial-gradient(circle at 88% 22%, rgba(255, 255, 255, .72) 0 1.1px, transparent 2px), linear-gradient(100deg, #ffe27a, #9fe8c8, #b3d8ff, #f8c6e2, #ffe27a); background-size: 26px 26px, 37px 37px, 51px 51px, 200% 100%; background-position: 0 0, 0 0, 0 0, 0% 50%; box-decoration-break: clone; -webkit-box-decoration-break: clone; animation: preview-mark-shimmer 7s linear infinite; }
+    @keyframes preview-mark-shimmer { from { background-position: 0 0, 0 0, 0 0, 0% 50%; } to { background-position: 26px 26px, 37px 37px, 51px 51px, 200% 50%; } }
+    @media (prefers-reduced-motion: reduce) { .preview mark { animation: none; } }
     .preview ol { list-style-type: decimal; }
     .preview ol ol { list-style-type: lower-alpha; }
     .preview ol ol ol { list-style-type: lower-roman; }
@@ -2357,5 +2361,5 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       }
     }).catch((error) => setStatus(error.message, 'error'));
   </script>
-  <script type="module" src="/src/admin/agent-chat.mjs" data-agent-entry-site="devnotes"></script>
+  <script type="module" src="/src/admin/agent-chat.mjs?agent-ui-v=20260917-2" data-agent-entry-site="devnotes"></script>
 </> : <p>本地 CMS 仅在 Astro 开发服务器中可用。</p>}
