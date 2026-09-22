@@ -1,6 +1,6 @@
 import { isDate, isDateOrDateTime, parseFrontmatter, serializeMarkdown } from './frontmatter.mjs';
 
-const categories = ['开发笔记', '常识笔记', '游戏笔记', '熊窝', '猪窝', '猫猫', '科研笔记', '聊天站', '工具', 'skill'];
+const categories = ['开发笔记', '常识笔记', '游戏笔记', '熊窝', '猪窝', '猫猫', '科研笔记', '聊天站', 'APP', '工具', 'skill'];
 const subcategories = ['功能', '内容', '视觉', '架构', '修复'];
 const fieldOrder = ['title', 'date', 'updated', 'category', 'subcategory', 'description'];
 

@@ -18,6 +18,10 @@ SITES = {
     "reanotes": "科研笔记",
     "lifenotes": "常识笔记",
     "cats": "猫猫",
+    "agent-desk": "APP",
+}
+SITE_DISPLAY_NAMES = {
+    "agent-desk": "Agent Desk",
 }
 ZH_TO_REPO = {zh: repo for repo, zh in SITES.items()}
 
@@ -174,7 +178,8 @@ def collect_additions():
     notes = []
     new_sites = []
 
-    for repo, zh in SITES.items():
+    for repo, category_name in SITES.items():
+        display_name = SITE_DISPLAY_NAMES.get(repo, category_name)
         commits = repo_version_commits(repo)
         if not commits:
             continue
@@ -183,8 +188,8 @@ def collect_additions():
         if not existing:
             newest_ver = max(commits)
             newest_full = commits[newest_ver][0]
-            notes.append(f"  {repo} ({zh}) → 时间线无记录（仓库最新 {newest_full}）")
-            new_sites.append({"repo": repo, "zh": zh})
+            notes.append(f"  {repo} ({display_name}) → 时间线无记录（仓库最新 {newest_full}）")
+            new_sites.append({"repo": repo, "zh": display_name})
             continue
 
         # Keep one timeline milestone for each major.minor; patch releases share it.
@@ -199,20 +204,20 @@ def collect_additions():
             matter = parse_subject(subject)
             timeline_category = category(subject)
             description = one_sentence(matter)
-            body = body_rest(full_body) or f"{zh}升级到 {full_ver}：{matter}。"
+            body = body_rest(full_body) or f"{display_name}升级到 {full_ver}：{matter}。"
             entry_id = f"{repo}-v{full_ver[1:].replace('.', '')}"
             additions.append({
-                "repo": repo, "zh": zh, "full_ver": full_ver,
+                "repo": repo, "zh": display_name, "category": category_name, "full_ver": full_ver,
                 "major_minor": list(v), "sha": sha, "old_sha": old_sha,
                 "date": date, "subject": subject, "matter": matter,
                 "id": entry_id,
-                "title": f"{zh} {full_ver}：{matter}",
+                "title": f"{display_name} {full_ver}：{matter}",
                 "description": description,
                 "subcategory": [timeline_category] if timeline_category else [],
                 "body": body,
                 "file_stats": file_stats(repo, old_sha, sha),
             })
-            notes.append(f"  {repo} ({zh}) → 版本缺口 {full_ver} → 将新增")
+            notes.append(f"  {repo} ({display_name}) → 版本缺口 {full_ver} → 将新增")
 
     additions.sort(key=lambda item: (item["date"], parse_ver(item["full_ver"])), reverse=True)
     return additions, notes, new_sites
@@ -230,7 +235,7 @@ def entry_to_markdown(entry):
         f"date: {yaml_quote(entry['date'])}\n"
         f"updated: {yaml_quote(entry['date'])}\n"
         f"description: {yaml_quote(entry['description'])}\n"
-        f"category: {entry['zh']}\n"
+        f"category: {entry['category']}\n"
         f"subcategory: [{subcategories}]\n"
         "---\n\n"
         f"{entry['body'].rstrip()}\n"
@@ -245,7 +250,8 @@ def print_status():
     all_versions = timeline_all_versions()
     print("站点        时间轴最高      仓库最新")
     print("-" * 44)
-    for repo, zh in SITES.items():
+    for repo, category_name in SITES.items():
+        display_name = SITE_DISPLAY_NAMES.get(repo, category_name)
         commits = repo_version_commits(repo)
         existing = all_versions.get(repo, set())
         current = max(existing) if existing else None
@@ -258,7 +264,7 @@ def print_status():
         else:
             newest_text = "（无）"
             flag = ""
-        print(f"{repo:<10} {current_text:<14} {newest_text}{flag}")
+        print(f"{display_name:<16} {current_text:<14} {newest_text}{flag}")
 
 
 def write_entries(additions):

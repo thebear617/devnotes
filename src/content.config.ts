@@ -46,6 +46,7 @@ const timelineCategories = [
   '猫猫',
   '科研笔记',
   '聊天站',
+  'APP',
   '工具',
   'skill',
 ] as const;
