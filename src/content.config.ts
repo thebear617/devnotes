@@ -6,7 +6,7 @@ const updatedAtSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2})?$/
 
 const knowledgeSubcategoriesByCategory = {
   '开发': ['基础知识', '综述', '学习资源', '配置记录', '工具使用心得'],
-  '实践': ['PPT', '网页', '图表', '视频', '报告'],
+  '实践': ['PPT', '网页', '图表', '视频', '报告', 'APP'],
   '科研': ['综述'],
   '随想': ['随笔', '时刻'],
 } as const;

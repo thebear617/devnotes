@@ -2,7 +2,7 @@ import { isDate, isDateOrDateTime, parseFrontmatter, serializeMarkdown } from '.
 
 const subcategoriesByCategory = {
   '开发': ['基础知识', '综述', '学习资源', '配置记录', '工具使用心得'],
-  '实践': ['PPT', '网页', '图表', '视频', '报告'],
+  '实践': ['PPT', '网页', '图表', '视频', '报告', 'APP'],
   '科研': ['综述'],
   '随想': ['随笔', '时刻'],
 };
@@ -26,6 +26,7 @@ const subcategoryDirectories = {
   '图表': 'chart',
   '视频': 'video',
   '报告': 'report',
+  'APP': 'app',
   '随笔': 'essays',
   '时刻': 'moments',
 };
