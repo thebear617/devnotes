@@ -15,7 +15,7 @@ slug: "AI-Gateway-settings"
 
 **统一网关入口**
 ```bash
-cd /Users/mokaiche/Documents/htmls/devnotes-ai-gateway
+cd /Users/mokaiche/Documents/htmls/agent-desk
 npm run dev
 
 ```
@@ -23,4 +23,3 @@ npm run dev
 ```bash
 opencode serve --hostname 127.0.0.1 --port 4330
 ```
-
