@@ -1,7 +1,7 @@
 ---
 title: "PPT：SOP - 大组会文献分享"
 date: "2026-09-03"
-updated: "2026-09-16 13:34"
+updated: "2026-09-21 11:03"
 category: "实践"
 subcategory: "PPT"
 description: "如何制作大组会分享文献型 PPT 的 SOP，具体到每一步，哪一步可以使用 AI"
@@ -82,6 +82,13 @@ Q4:他们都有代码仓库吗？如果有，可以根据代码仓库的 star �
 
 
 
+---
+
+| 范式路线                                         | 代表方法               | 核心范式                                                                                  | 优势与局限                                                                                                        |
+| -------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| **Task-specific Supervision / Fine-tuning**  | **SegIC、DiffewS**  | 在预训练 VFM上训练 segmentation decoder 或进行 fine-tuning             | 引入显式分割能力域内性能强；但模型与训练分布耦合，跨域/ 跨粒度泛化受限                                                           |
+| **Training-free Multi-VFM Pipeline**         | **Matcher、GF-SAM** | 利用 DINO 建立跨图对应，再通过 SAM 将匹配结果转为 Mask                          | 无需下游训练、泛化更强；但多模型多阶段，匹配与分割相互解耦                                        |
+| **Training-free Single Self-supervised VFM** | **INSID3（本文）**     | 利用 DINOv3 同时完成跨图匹配与图内分割，无 decoder、无 fine-tuning、无模型组合| 单模型、training-free、粒度适应更灵活；但依赖 DINOv3 特征质量，且仍需 Mask 参考标注 |
 
 
 
