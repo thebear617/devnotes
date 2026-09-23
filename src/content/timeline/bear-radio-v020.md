@@ -1,13 +1,15 @@
 ---
-title: 'Agent Desk v0.2.0：悬浮窗标签化改版、UI 热更新通道与 Codex 会话增强'
+title: 'Bear Radio v0.2.0：悬浮窗标签化改版、UI 热更新通道与 Codex 会话增强'
 date: '2026-09-23'
 updated: '2026-09-23'
-description: 'Agent Desk v0.2.0 将悬浮窗改为浏览器式标签交互并打通 UI 热更新链路，接入会话标题随原生侧改名自动同步。'
+description: 'Bear Radio v0.2.0 将悬浮窗改为浏览器式标签交互并打通 UI 热更新链路，接入会话标题随原生侧改名自动同步。'
 subcategory: [功能, 架构, 视觉]
 category: APP
 ---
 
 悬浮窗完成标签化改版，并打通「改文件即生效」的 UI 热更新链路。
+
+本版本同时完成应用更名，统一为 Bear Radio（熊电台）；本地项目目录、远端仓库和 macOS App 名称同步统一。
 
 **桌面 UI**
 - 会话条改浏览器标签式：扁平内容自适应标签、竖线分隔、小 × 关闭、悬停浮层显示会话详情
@@ -30,6 +32,6 @@ category: APP
 
 ## UI 设计图留档
 
-![悬浮窗标签化改版主视图](/images/timeline/agent-desk-v020/ui-01-main.png)
+![悬浮窗标签化改版主视图](/images/timeline/bear-radio-v020/ui-01-main.png)
 
 主视图全景：浏览器式标签栏（后端品牌图标 + 竖线分隔 + 小 × 关闭）、大容器统一淡绿底色、精简后的输入框（20px 附件 / 发送按钮），右上角为 Gateway 在线状态。

@@ -18,10 +18,10 @@ SITES = {
     "reanotes": "科研笔记",
     "lifenotes": "常识笔记",
     "cats": "猫猫",
-    "agent-desk": "APP",
+    "bear-radio": "APP",
 }
 SITE_DISPLAY_NAMES = {
-    "agent-desk": "Agent Desk",
+    "bear-radio": "Bear Radio",
 }
 ZH_TO_REPO = {zh: repo for repo, zh in SITES.items()}
 

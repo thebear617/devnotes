@@ -1,13 +1,13 @@
 ---
-title: 'Agent Desk v0.1.0：首个本地多 Agent macOS 应用'
+title: 'Bear Radio v0.1.0：首个本地多 Agent macOS 应用'
 date: '2026-09-22'
 updated: '2026-09-22'
-description: 'Agent Desk v0.1.0 将本地 Agent Gateway、原生插件会话与 macOS 桌面浮窗整合为一个可持续使用的本地多 Agent 应用。'
+description: 'Bear Radio v0.1.0 将本地 Agent Gateway、原生插件会话与 macOS 桌面浮窗整合为一个可持续使用的本地多 Agent 应用。'
 subcategory: [功能, 架构, 视觉]
 category: APP
 ---
 
-Agent Desk v0.1.0 是本地多 Agent macOS 应用的首个可用版本。它保留 Agent Gateway 作为内部服务层，同时把多个原生 Agent 会话统一带入一个可全局唤醒的桌面客户端。
+Bear Radio v0.1.0 是本地多 Agent macOS 应用的首个可用版本。它保留 Agent Gateway 作为内部服务层，同时把多个原生 Agent 会话统一带入一个可全局唤醒的桌面客户端。
 
 ## 本地 Agent 会话接入
 
@@ -17,7 +17,7 @@ Agent Desk v0.1.0 是本地多 Agent macOS 应用的首个可用版本。它保�
 
 ## 桌面客户端与交互
 
-- 提供原生 macOS Agent Desk 浮窗，支持全局快捷键、窗口拖拽、缩放和红黄绿窗口控制。
+- 提供原生 macOS Bear Radio 浮窗，支持全局快捷键、窗口拖拽、缩放和红黄绿窗口控制。
 - 支持普通窗口层级与“始终置顶”之间切换，不再强制占据所有应用前面。
 - 输入框支持附件、暂停当前回复，以及在 Agent 处理期间继续输入并排队发送。
 

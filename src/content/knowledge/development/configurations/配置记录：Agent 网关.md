@@ -15,7 +15,7 @@ slug: "AI-Gateway-settings"
 
 **统一网关入口**
 ```bash
-cd /Users/mokaiche/Documents/htmls/agent-desk
+cd /Users/mokaiche/Documents/htmls/bear-radio
 npm run dev
 
 ```
