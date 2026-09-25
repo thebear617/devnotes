@@ -51,3 +51,13 @@ category: APP
 - 增加 Codex、Claude Code、CodeBuddy CLI、CodeBuddy VSCode 插件直连、原生历史写回、模型错配和 Gateway 会话管理测试。
 - 补充 CLI、Codex 和 CodeBuddy 的模拟服务夹具，覆盖流式消息、最终消息和模型选择路径。
 - 更新 Bear Radio Node 包版本和 macOS App 版本至 0.4.0。
+
+## UI 设计图留档
+
+以下截图记录 v0.4.0 的主会话页、初始页和创建会话页。
+
+<div class="timeline-ui-archive">
+  <img src="/images/timeline/bear-radio-v040/ui-01-main.png" alt="熊电台 v0.4.0 主会话页" loading="lazy" />
+  <img src="/images/timeline/bear-radio-v040/ui-02-empty.png" alt="熊电台 v0.4.0 初始页" loading="lazy" />
+  <img src="/images/timeline/bear-radio-v040/ui-03-create-session.png" alt="熊电台 v0.4.0 创建会话页" loading="lazy" />
+</div>
