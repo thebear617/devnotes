@@ -1,15 +1,13 @@
 ---
-title: '熊电台 v0.4.0：绘画区体验与多 Agent 会话适配升级'
+title: '熊电台 v0.4.0：前端 UI 优化｜Codex 与 Claude Code 输出适配｜CodeBuddy 插件会话适配｜四个后端模型选择'
 date: '2026-09-25'
 updated: '2026-09-25'
-description: '熊电台 v0.4.0 完成绘画区布局、消息元信息和模型选择体验升级，并重点实现 Codex / Claude Code 输出适配与 CodeBuddy VSCode 原生会话的模型控制、双向同步。'
+description: '熊电台 v0.4.0 完成前端 UI 优化、Codex 与 Claude Code 输出适配、CodeBuddy VSCode 原生会话双向同步，以及 Claude Code、OpenCode、Codex、CodeBuddy 四个后端的模型选择。'
 subcategory: [功能, 视觉, 架构]
 category: APP
 ---
 
-# 熊电台 v0.4.0：绘画区体验与多 Agent 会话适配升级
-
-## 1. 前端部分
+## 1. 前端 UI 优化
 
 - 修复 Markdown 链接渲染：支持链接地址包含括号、尖括号格式，以及链接文字和地址被换行拆开的情况。
 - 重做顶部栏与标签页布局：标题栏、会话标签合并为一行；新建入口改为线性图标并移动到右上角；重新调整关闭、最小化、标签页和新建按钮的对齐与点击区域；移除无意义的悬停气泡。
@@ -20,16 +18,14 @@ category: APP
 - 增加 Markdown 复制按钮和复制完成勾选动效，并在输入区增加当前模型选择器，支持显示模型切换状态和失败回滚。
 - 移除“几个本地会话”和低价值网关状态提示，保留必要的错误反馈。
 
-## 2. 后端部分
-
-### 2.1 Codex 与 Claude Code 输出适配
+## 2.1 Codex 与 Claude Code 输出适配
 
 - Claude Code 默认只展示最终一轮回复，过滤中间过程和不需要展示的思考内容。
 - Codex 按 agent message 和消息阶段处理流式输出，只展示最终回答阶段，忽略 commentary 阶段，兼容新旧消息格式。
 - 过滤 `<oai-mem-citation>` 等协议元数据，避免内部引用、rollout ID 和系统标签进入用户气泡。
 - 增加最终回复事件和持久化处理，避免流式内容与最终结果重复显示。
 
-### 2.2 CodeBuddy VSCode 插件会话适配
+## 2.2 CodeBuddy VSCode 插件会话适配
 
 - 读取 CodeBuddy VSCode 插件本地原生会话索引、消息文件、请求记录、`selectedModelId`、`modelMap`、chat mode、模型、积分、token 和用时。
 - 支持发现、接入和恢复已有的 CodeBuddy 插件会话，保留原生 session ID，并同步原生会话标题和历史上下文。
@@ -41,6 +37,14 @@ category: APP
 - 实现同一原生会话的双向同步：VSCode 插件发送的消息可被熊电台读取，熊电台发送的消息在 VSCode 刷新后可见。
 - 支持 CodeBuddy CLI 通过 ACP 切换模型，支持插件绘画会话选择模型，并保持会话状态、实际请求模型和回复显示模型一致。
 - 补充 CodeBuddy 专属元信息展示和历史恢复能力，包括实际模型、回复用时、积分消耗及部分 token 使用情况。
+
+## 2.3 四个后端模型选择
+
+- Claude Code 使用可用模型目录和会话模型参数切换模型，下一轮请求使用新的模型。
+- OpenCode 从本地服务读取 provider/model 目录，并在下一次 prompt 中显式传入所选模型。
+- Codex 通过 app-server 的模型列表和原生 thread 参数切换模型。
+- CodeBuddy CLI 通过 ACP 会话配置切换模型，CodeBuddy VSCode 插件会话通过直连请求显式指定模型。
+- Gateway 统一暴露模型列表、默认模型、模型选择能力和切换结果，让四个后端共用绘画区的模型选择入口。
 
 ## 3. 验证与工程维护
 
