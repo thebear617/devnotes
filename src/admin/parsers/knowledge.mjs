@@ -1,7 +1,7 @@
 import { isDate, isDateOrDateTime, parseFrontmatter, serializeMarkdown } from './frontmatter.mjs';
 
 const subcategoriesByCategory = {
-  '开发': ['基础知识', '综述', '学习资源', '配置记录', '工具使用心得'],
+  '开发': ['综述', '学习资源', '配置记录', '工具使用心得'],
   '实践': ['PPT', '网页', '图表', '视频', '报告', 'APP'],
   '科研': ['综述'],
   '随想': ['随笔', '时刻'],
@@ -16,7 +16,6 @@ const categoryDirectories = {
   '随想': 'reflections',
 };
 const subcategoryDirectories = {
-  '基础知识': 'fundamentals',
   '学习资源': 'resources',
   '配置记录': 'configurations',
   '工具使用心得': 'tools',
@@ -55,7 +54,7 @@ export const knowledgeParser = {
   label: '知识库',
   description: '开发、实践、科研与个人随想。',
   root: 'knowledge',
-  defaultPath: 'development/fundamentals/new-knowledge.md',
+  defaultPath: 'development/overviews/new-knowledge.md',
   pathStrategy: {
     categoryField: 'category',
     subcategoryField: 'subcategory',
@@ -68,7 +67,7 @@ export const knowledgeParser = {
     '文件与发布': '文件路径决定保存位置，日期用于发布信息。',
   },
   defaultFrontmatter: {
-    title: '', date: '', updated: '', category: '开发', subcategory: '基础知识', description: '', slug: '',
+    title: '', date: '', updated: '', category: '开发', subcategory: '综述', description: '', slug: '',
   },
   fields: [
     { id: 'title', label: '标题', type: 'text', required: true, section: '内容核心' },

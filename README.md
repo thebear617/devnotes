@@ -92,7 +92,6 @@ npm run preview
 
 ```text
 # 开发：知识、理论、工具与环境
-development/fundamentals/    # 基础知识
 development/overviews/       # 综述
 development/resources/       # 学习资源
 development/configurations/  # 配置记录
@@ -124,7 +123,7 @@ src/content/knowledge/development/overviews/综述：传统全栈开发.md
 title: 文章标题
 date: '2026-07-20'
 category: 开发 # 开发 | 实践 | 科研 | 随想
-subcategory: 基础知识 # 视 category 联动：开发(基础知识/综述/学习资源/配置记录/工具使用心得)；实践(PPT/网页/图表/视频/报告)；科研(综述)；随想(随笔/时刻)
+subcategory: 综述 # 视 category 联动：开发(综述/学习资源/配置记录/工具使用心得)；实践(PPT/网页/图表/视频/报告)；科研(综述)；随想(随笔/时刻)
 description: 用于知识库列表的简短摘要
 slug: traditional-full-stack-development # 必填；用于生成知识库详情页 URL
 ---
@@ -132,7 +131,7 @@ slug: traditional-full-stack-development # 必填；用于生成知识库详情�
 
 正文使用标准 Markdown，可以直接插入标题、列表、代码块、引用、链接和表格。知识库列表按 `updated`（若有）或 `date` 从新到旧排列，`updated` 支持 `YYYY-MM-DD HH:mm` 分钟级格式，本地 CMS 保存时自动写入。
 
-知识库标题统一使用 `内容类型：主题对象 - 具体内容` 格式，内容类型前缀应与 `subcategory` 对应：开发下的基础/综述/资源等直接写“类型：主题”，实践按模态写，例如 `基础知识：计算机网络`、`综述：世界模型`、`配置记录：OpenCode 模型路由`、`工具使用心得：Agentic IDE`、`PPT：传统方法制作`、`网页：纯前端开发`、`图表：专业制作`、`视频：调研转`、`报告：文献调研数据分类`；需要区分对象与主题时在主题后用短破折号。
+知识库标题统一使用 `内容类型：主题对象 - 具体内容` 格式，内容类型前缀应与 `subcategory` 对应：开发下的综述/资源等直接写“类型：主题”，实践按模态写，例如 `综述：世界模型`、`配置记录：OpenCode 模型路由`、`工具使用心得：Agentic IDE`、`PPT：传统方法制作`、`网页：纯前端开发`、`图表：专业制作`、`视频：调研转`、`报告：文献调研数据分类`；需要区分对象与主题时在主题后用短破折号。
 
 `category` 表示一级领域（`开发`、`实践`、`科研`、`随想`），`subcategory` 表示二级分类（开发=角色，实践=产出模态）；两者都是必填枚举，并与文件所在目录保持一致，二级必须属于对应的一级。
 
