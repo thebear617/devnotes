@@ -1,0 +1,22 @@
+---
+interface Board {
+  id: string;
+  name: string;
+  href: string;
+}
+
+interface Props {
+  boards: Board[];
+  current: string;
+}
+
+const { boards, current } = Astro.props;
+---
+
+<nav class="wall-tabs" aria-label="开发笔记领域">
+  {boards.map((board) => (
+    <a class:list={['wall-tab', { 'is-active': board.id === current }]} href={board.href} aria-current={board.id === current ? 'page' : undefined}>
+      {board.name}
+    </a>
+  ))}
+</nav>

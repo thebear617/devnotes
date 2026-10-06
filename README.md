@@ -1,13 +1,12 @@
 # 开发笔记 · DevNotes
 
-个人开发知识库，用于整理跨产品、跨技术栈和跨语言的使用心得、实践经验、学习内容与价格信息。
+个人开发知识库，用于整理跨产品、跨技术栈和跨语言的使用心得、实践经验、学习内容与开发记录。
 
-当前站点包含四个板块：
+当前站点包含三个板块：
 
 - **开发时间线**：记录个人项目、站点与开发工具的版本演进；
 - **Debug 库**：开发调试、问题排查与工具经验，支持按一级、二级分类筛选和关键词搜索；
 - **知识库**：统一收录开发与实践、科研和个人随笔；按一级领域与二级内容角色筛选，并支持关键词搜索；
-- **价格矩阵**：AI 编程产品及模型服务的订阅价格对比。
 
 ## 技术栈
 
@@ -34,15 +33,12 @@ devnotes/
 │   │   ├── timeline/         # Markdown 开发时间线条目
 │   │   └── debug/            # Markdown Debug 库条目
 │   ├── data/
-│   │   ├── pricing.js        # 价格矩阵数据与来源链接
-│   │   ├── models.js         # AI 模型排行榜数据
-│   │   ├── tools.js          # AI 编程工具排行榜数据
+│   │   ├── cover-themes.js   # 瀑布流封面主题映射
 │   │   └── dates.js          # 日期解析工具函数
 │   ├── layouts/
-│   │   └── Layout.astro      # 全站布局、侧栏与移动端导航
+│   │   └── Layout.astro      # 全站布局、顶部导航与移动端导航
 │   ├── pages/
-│   │   ├── notes.astro       # Debug 库
-│   │   ├── pricing.astro     # 价格矩阵
+│   │   ├── notes.astro       # Debug 库瀑布流
 │   │   ├── knowledge/        # 知识库列表与详情页
 │   │   └── timeline/         # 时间线列表与独立详情页
 │   └── styles/
@@ -200,35 +196,6 @@ python3 scripts/sync-timeline.py
 ```
 
 hook 只提示缺口，不自动修改、提交或推送仓库。
-
-## 更新价格矩阵
-
-编辑 `src/data/pricing.js`：
-
-1. 在 `pricings` 中更新或添加套餐；
-2. 在 `pricingLinks` 中维护产品官网或价格页；
-3. 同步更新 `pricingMeta.updatedAt` 和核对说明；
-4. 运行 `npm run build`，确认数据和页面能够正常生成。
-
-价格采用手动维护并标注核对日期的方式。公开页面只用于辅助比较，最终价格以产品官网为准。
-
-## 同步 AI 模型数据
-
-模型排行榜数据位于 `src/data/models.js`，同步脚本位于 `scripts/sync-models.mjs`。参数量优先读取 DataLearner API，价格、上下文和能力字段由 OpenRouter 补充；默认不请求 Hugging Face，避免单个模型修正被网络超时拖慢。
-
-只修正指定模型：
-
-```bash
-node scripts/sync-models.mjs --only=moonshotai/kimi-k3
-```
-
-需要补充 Hugging Face 参数量时显式开启：
-
-```bash
-node scripts/sync-models.mjs --huggingface
-```
-
-`--include-provider=minimax` 可将 OpenRouter 中本地尚未收录的 MiniMax 模型加入排行榜；`--openrouter-file=/path/to/models.json` 可使用已下载的 API 快照；`--datalearner-file=/path/to/models.json` 可使用 DataLearner API 快照；`--skip-datalearner` 可临时关闭 DataLearner 数据源。
 
 ## 基础路径与部署
 

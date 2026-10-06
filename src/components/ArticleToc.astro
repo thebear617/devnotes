@@ -1,0 +1,40 @@
+---
+interface Props {
+  headings: Array<{ depth: number; slug: string; text: string }>;
+}
+
+const { headings } = Astro.props;
+const tocHeadings = headings.filter((heading) => heading.depth >= 1 && heading.depth <= 3);
+const sections = [];
+let currentSection;
+for (const heading of tocHeadings) {
+  if (heading.depth === 2) {
+    currentSection = { type: 'group', heading, children: [] };
+    sections.push(currentSection);
+  } else if (heading.depth === 3 && currentSection) {
+    currentSection.children.push(heading);
+  } else {
+    sections.push({ type: 'standalone', heading });
+  }
+}
+---
+
+{tocHeadings.length > 0 && (
+  <aside class="article-toc-column" aria-label="文章目录">
+    <details class="article-toc" open>
+      <summary>本文目录</summary>
+      <nav>
+        {sections.map((section) => section.type === 'group' ? (
+          <section class="article-toc-group" data-expanded="true">
+            <a href={`#${section.heading.slug}`} class="article-toc-link depth-2" data-heading-id={section.heading.slug}>{section.heading.text}</a>
+            <div class="article-toc-sublist"><div>
+              {section.children.map((heading) => <a href={`#${heading.slug}`} class={`article-toc-link depth-${heading.depth}`} data-heading-id={heading.slug}>{heading.text}</a>)}
+            </div></div>
+          </section>
+        ) : (
+          <a href={`#${section.heading.slug}`} class={`article-toc-link depth-${section.heading.depth}`} data-heading-id={section.heading.slug}>{section.heading.text}</a>
+        ))}
+      </nav>
+    </details>
+  </aside>
+)}

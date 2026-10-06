@@ -104,21 +104,7 @@ function trashDirectory() {
     : path.join(os.homedir(), '.local', 'share', 'Trash', 'files');
 }
 
-async function moveToTrash(filePath) {
-  if (process.platform === 'darwin') {
-    const script = [
-      'on run argv',
-      '  set targetFile to POSIX file (item 1 of argv) as alias',
-      '  tell application "Finder"',
-      '    delete targetFile',
-      '  end tell',
-      'end run',
-    ].join('\n');
-    await execFileAsync('/usr/bin/osascript', ['-e', script, filePath]);
-    return filePath;
-  }
-
-  const directory = trashDirectory();
+async function moveFileToDirectory(filePath, directory) {
   await fs.mkdir(directory, { recursive: true });
   const originalName = path.basename(filePath);
   const parsed = path.parse(originalName);
@@ -134,10 +120,11 @@ async function moveToTrash(filePath) {
       break;
     }
   }
+
   try {
     await fs.rename(filePath, target);
   } catch (error) {
-    if (error.code !== 'EXDEV') throw error;
+    if (!['EXDEV', 'EPERM', 'EACCES'].includes(error.code)) throw error;
     await fs.copyFile(filePath, target);
     try {
       await fs.unlink(filePath);
@@ -147,6 +134,43 @@ async function moveToTrash(filePath) {
     }
   }
   return target;
+}
+
+async function moveToTrash(filePath) {
+  if (process.platform === 'darwin') {
+    const script = [
+      'on run argv',
+      '  set targetFile to POSIX file (item 1 of argv) as alias',
+      '  tell application "Finder"',
+      '    delete targetFile',
+      '  end tell',
+      'end run',
+    ].join('\n');
+    try {
+      await execFileAsync('/usr/bin/osascript', ['-e', script, filePath]);
+      return filePath;
+    } catch (error) {
+      // Finder automation is not available in every local/dev environment
+      // (for example, headless sessions or machines without Automation access).
+      // Keep deletion recoverable by falling back to the filesystem Trash.
+      try {
+        await fs.access(filePath);
+      } catch {
+        throw error;
+      }
+    }
+  }
+
+  const directory = trashDirectory();
+  try {
+    return await moveFileToDirectory(filePath, directory);
+  } catch (error) {
+    if (process.platform !== 'darwin' || !['EPERM', 'EACCES', 'EXDEV'].includes(error.code)) throw error;
+    const fallbackDirectory = path.join(os.tmpdir(), 'devnotes-local-cms-trash');
+    const fallbackPath = await moveFileToDirectory(filePath, fallbackDirectory);
+    console.warn(`[local-cms] system Trash unavailable; moved deleted content to ${fallbackPath}`);
+    return fallbackPath;
+  }
 }
 
 async function walk(parser, relative = '') {

@@ -1,7 +1,7 @@
 ---
 title: "随笔：草稿箱和todolist"
 date: "2026-09-04"
-updated: "2026-09-21 15:51"
+updated: "2026-10-05 18:10"
 category: "随想"
 subcategory: "随笔"
 description: "内容中转和草稿，暂存处｜所有 idea、未开始的设计思路的存放、所有要中转的东西"
@@ -10,8 +10,32 @@ slug: "Drafts"
 
 ## 草稿箱
 
-SaaS / 博客落地页合集｜https://land-book.com/
+[瓦-微调](https://www.xiaohongshu.com/explore/6ac1f292000000000202972e?xsec_token=ABPkDIvuPYen743MJgF5IPCbHXB0a5FsPBMhOyKHT_WHE=&xsec_source=pc_feed)
+
+[恐怖片合集](https://www.xiaohongshu.com/explore/6ab0f00e000000003100d0c3?xsec_token=ABXpwkuGj5FptiT0gN_TiMy3XDc4ncIoo1MJR4QZpLEpI=&xsec_source=pc_feed)｜72部
+nice-music-[粤语版甲乙丙丁](https://www.bilibili.com/video/BV13dYu6aEMj/)
+
 ---
+
+送礼-万象城-莱斯特文创-生日礼物（有很多小机械装置，就是小贵）
+送礼-万象城-陕颂-西安文创特产，茶叶，镜子，冰箱贴都很不错
+
+
+
+
+
+
+
+todo-弄清楚什么是API｜SDK（Anthropic、OpenAI)｜HTTP，看那个教程（https://space.bilibili.com/427191943/lists?sid=8088328&spm_id_from=333.788.0.0）
+
+---
+
+ 画pipeline-找灵感图（3500 多张-3年顶会图）｜https://github.com/qwdwqfwq/topconf-paper-figure-gallery
+ JEV- 利用它来读论文 ｜https://github.com/YiLight0/paperfocus
+
+SaaS / 博客落地页合集｜https://land-book.com/
+
+
 
 2. 需求定位——[关于 ERP 的 15 个专业术语（写需求的时候可以明确到这些术语上）](https://www.xiaohongshu.com/explore/6996e86e000000001d0114df?xsec_token=CB6MUPi3GWIFQGQDsLwMmV92IR_ORf_2GI3jTxu75zUwg=&xsec_source=app_share)
 3. 前端——[复刻网页的 skill：web clone](https://www.xiaohongshu.com/explore/6aa95822000000002502df86?xsec_token=CBVGjaXAsF_NuE7Wy-VGWfB1xUlYi7fjQoJc2PZk_0v1M=&xsec_source=app_share)
@@ -134,6 +158,11 @@ SaaS / 博客落地页合集｜https://land-book.com/
       - 服务编排：Docker / 进程管理
   4. 增强 Codex 的生图能力: 可参考的接入实现为[88API-image-gen](https://github.com/blackdm666/88API-image-gen)。
 3. 
+
+
+
+
+
 
 
 

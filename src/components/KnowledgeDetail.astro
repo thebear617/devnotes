@@ -21,6 +21,11 @@ for (const heading of tocHeadings) {
 
 <main class="app-shell blog-page-shell">
   <a href={backHref} class="blog-back">← {backLabel}</a>
+  {tocHeadings.length > 0 && (
+    <button class="blog-toc-toggle" id="blogTocToggle" type="button" aria-label="打开文章目录" aria-expanded="false">
+      <span aria-hidden="true">☰</span>
+    </button>
+  )}
   <div class="blog-detail-layout">
     {tocHeadings.length > 0 && (
       <aside class="blog-toc-column" aria-label="文章目录">
@@ -61,6 +66,20 @@ for (const heading of tocHeadings) {
 </main>
 
 <script>
+  // Footnote definitions are rendered into <template> nodes. Their headings
+  // are part of Astro's static heading metadata, but they are not part of the
+  // visible article outline and should not appear in the side TOC.
+  const visibleHeadingIds = new Set(
+    Array.from(document.querySelectorAll('.blog-article-body h1[id], .blog-article-body h2[id], .blog-article-body h3[id]'))
+      .map(heading => heading.id),
+  );
+  document.querySelectorAll('.blog-toc-link').forEach(link => {
+    if (!visibleHeadingIds.has(link.dataset.headingId || '')) link.remove();
+  });
+  document.querySelectorAll('.blog-toc-group').forEach(group => {
+    if (!group.querySelector('.blog-toc-link')) group.remove();
+  });
+
   const tocLinks = Array.from(document.querySelectorAll('.blog-toc-link'));
   const articleHeadings = Array.from(document.querySelectorAll('.blog-article-body h1[id], .blog-article-body h2[id], .blog-article-body h3[id]'));
   const tocGroups = Array.from(document.querySelectorAll('.blog-toc-group'));

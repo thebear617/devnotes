@@ -1,0 +1,41 @@
+---
+const { headings = [] } = Astro.props;
+const tocHeadings = headings.filter((heading) => heading.depth >= 1 && heading.depth <= 3);
+const tocSections = [];
+let currentTocGroup;
+
+for (const heading of tocHeadings) {
+  if (heading.depth === 2) {
+    currentTocGroup = { type: 'group', heading, children: [] };
+    tocSections.push(currentTocGroup);
+  } else if (heading.depth === 3 && currentTocGroup) {
+    currentTocGroup.children.push(heading);
+  } else {
+    tocSections.push({ type: 'standalone', heading });
+  }
+}
+---
+
+{tocHeadings.length > 0 && (
+  <aside class="blog-toc-column" aria-label="文章目录">
+    <details class="blog-toc" open>
+      <summary>本文目录</summary>
+      <nav>
+        {tocSections.map((section) => section.type === 'group' ? (
+          <section class="blog-toc-group" data-expanded="true">
+            <div class="blog-toc-group-header">
+              <a href={`#${section.heading.slug}`} class="blog-toc-link depth-2" data-heading-id={section.heading.slug}>{section.heading.text}</a>
+            </div>
+            <div class="blog-toc-sublist">
+              <div>
+                {section.children.map((heading) => <a href={`#${heading.slug}`} class={`blog-toc-link depth-${heading.depth}`} data-heading-id={heading.slug}>{heading.text}</a>)}
+              </div>
+            </div>
+          </section>
+        ) : (
+          <a href={`#${section.heading.slug}`} class={`blog-toc-link depth-${section.heading.depth}`} data-heading-id={section.heading.slug}>{section.heading.text}</a>
+        ))}
+      </nav>
+    </details>
+  </aside>
+)}

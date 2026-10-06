@@ -1,0 +1,217 @@
+---
+import { entryTimestamp } from '../data/dates.js';
+import { coverRatio, coverTheme, coverTitleParts } from '../data/cover-themes.js';
+import BoardTabs from './BoardTabs.astro';
+
+interface WallEntry {
+  title: string;
+  description?: string;
+  date: string;
+  updated?: string;
+  category: string;
+  subcategory?: string;
+  href: string;
+}
+
+interface NavBoard {
+  id: string;
+  name: string;
+  href: string;
+}
+
+interface Props {
+  entries: WallEntry[];
+  title: string;
+  placeholder: string;
+  boardId: string;
+  boards: NavBoard[];
+}
+
+const { entries, title, placeholder, boardId, boards } = Astro.props;
+const visibleEntries = [...entries].sort((a, b) => {
+  const updated = entryTimestamp(b.updated || b.date) - entryTimestamp(a.updated || a.date);
+  return updated || a.title.localeCompare(b.title, 'zh-CN');
+});
+
+const categoryCounts = new Map<string, number>();
+for (const entry of visibleEntries) {
+  categoryCounts.set(entry.category, (categoryCounts.get(entry.category) || 0) + 1);
+}
+const categories = [...categoryCounts.keys()].sort((a, b) => a.localeCompare(b, 'zh-CN'));
+const cards = visibleEntries.map((entry) => {
+  const theme = coverTheme(entry.category);
+  return {
+    ...entry,
+    theme,
+    parts: coverTitleParts(entry.title, entry.subcategory),
+    ratio: coverRatio(entry.title),
+    dateTs: entryTimestamp(entry.date),
+    updatedTs: entryTimestamp(entry.updated || entry.date),
+  };
+});
+---
+
+<section class="note-wall-page" data-note-wall>
+  <header class="note-wall-header">
+    <div class="wall-mobile-topbar">
+      <BoardTabs boards={boards} current={boardId} />
+
+      <button class="wall-mobile-search-toggle" type="button" aria-label="打开搜索" aria-expanded="false" aria-controls="wall-search-panel" data-wall-search-toggle>
+        <svg class="wall-mobile-search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.7" cy="10.7" r="6.4"></circle><path d="m15.6 15.6 4.1 4.1"></path></svg>
+        <span class="wall-mobile-search-label">取消</span>
+      </button>
+
+      <div class="wall-search-frame" id="wall-search-panel">
+        <div class="wall-search-main">
+          <svg class="wall-search-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.7" cy="10.7" r="6.4"></circle><path d="m15.6 15.6 4.1 4.1"></path></svg>
+          <input type="search" class="wall-search-input" placeholder="搜索标题、描述或分类" autocomplete="off" aria-label={`搜索${title}`} data-wall-search-input />
+          <button class="wall-search-action" type="button" aria-label="搜索" data-wall-search-action>
+            <svg class="wall-search-action-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.4"></circle><path d="m15.6 15.6 4.1 4.1"></path></svg>
+            <span class="wall-search-action-clear" aria-hidden="true">✕</span>
+          </button>
+        </div>
+        <div class="wall-search-footer">
+          <span class="wall-search-divider" aria-hidden="true"></span>
+          <span class="wall-search-chip">{title}</span>
+          <span class="wall-search-hit" data-wall-hit>当前命中 {cards.length} 篇</span>
+        </div>
+      </div>
+    </div>
+
+    {categories.length > 0 && (
+      <div class="wall-filter-row" data-wall-filter-row>
+        <div class="wall-pills" role="group" aria-label="一级分类">
+          <button class="wall-pill is-active" type="button" data-wall-category="" aria-pressed="true">全部<small>{cards.length}</small></button>
+          {categories.map((category) => (
+            <button class="wall-pill" type="button" data-wall-category={category} aria-pressed="false">
+              {category}<small>{categoryCounts.get(category)}</small>
+            </button>
+          ))}
+        </div>
+        <button class="wall-pill wall-pill--sort" type="button" data-wall-sort-toggle aria-label="排序">↕<span>排序</span></button>
+      </div>
+    )}
+  </header>
+
+  {cards.length > 0 ? (
+    <div class="note-wall" data-wall-list>
+      {cards.map((card) => (
+        <a class="note-card" href={card.href} data-title={card.title} data-desc={card.description || ''} data-category={card.category} data-subcategory={card.subcategory || ''} data-date-ts={card.dateTs} data-updated-ts={card.updatedTs}>
+          <div class="note-cover" style={`--cover-bg:${card.theme.bg};--cover-ink:${card.theme.ink};--cover-accent:${card.theme.accent};--cover-quote:${card.theme.quote};--cover-ratio:${card.ratio}`}>
+            <span class="note-cover-quote" aria-hidden="true">“</span>
+            <strong class="note-cover-title">
+              {card.parts.lead && <span class="note-cover-line note-cover-line--lead">{card.parts.lead}</span>}
+              <span class="note-cover-line">{card.parts.main}</span>
+            </strong>
+            <span class="note-cover-rule" aria-hidden="true"></span>
+          </div>
+          <div class="note-card-body">
+            <strong class="note-card-title">{card.title}</strong>
+            {card.description && <p class="note-card-desc">{card.description}</p>}
+            <div class="note-card-tags"><span class="note-card-category">{card.category}</span>{card.subcategory && <span class="note-card-sub">{card.subcategory}</span>}</div>
+            <span class="note-card-date">{card.date}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  ) : (
+    <div class="placeholder-box"><strong>暂无可发布记录</strong><span>{placeholder}</span></div>
+  )}
+
+  <section class="empty-state wall-empty-state" data-wall-empty hidden>没有匹配的记录</section>
+
+  <div class="float-panel wall-sort-panel" data-wall-sort-panel hidden>
+    <div class="float-panel-header"><span class="float-panel-title">排序</span><button class="float-panel-close" type="button" data-wall-sort-close aria-label="关闭排序">✕</button></div>
+    <div class="float-panel-body"><div class="sort-options">
+      <button class="sort-option on" type="button" data-wall-sort="updated-desc"><span>↓</span><span>最新优先</span></button>
+      <button class="sort-option" type="button" data-wall-sort="updated-asc"><span>↑</span><span>最早优先</span></button>
+      <button class="sort-option" type="button" data-wall-sort="title-az"><span>A→Z</span><span>标题 A→Z</span></button>
+    </div></div>
+  </div>
+</section>
+
+<script>
+  function initNoteWall(root: HTMLElement) {
+    const list = root.querySelector<HTMLElement>('[data-wall-list]');
+    const empty = root.querySelector<HTMLElement>('[data-wall-empty]');
+    const input = root.querySelector<HTMLInputElement>('[data-wall-search-input]');
+    const action = root.querySelector<HTMLButtonElement>('[data-wall-search-action]');
+    const searchToggle = root.querySelector<HTMLButtonElement>('[data-wall-search-toggle]');
+    const hit = root.querySelector<HTMLElement>('[data-wall-hit]');
+    const cards = [...root.querySelectorAll<HTMLElement>('.note-card')];
+    if (!list) return;
+
+    const collator = new Intl.Collator('zh-CN', { numeric: true, sensitivity: 'base' });
+    let term = '';
+    let category = '';
+    let sortMode = 'updated-desc';
+
+    function setSearchOpen(open: boolean) {
+      root.classList.toggle('is-mobile-search-open', open);
+      searchToggle?.setAttribute('aria-expanded', String(open));
+      searchToggle?.setAttribute('aria-label', open ? '收起搜索' : '打开搜索');
+      if (open) window.setTimeout(() => input?.focus(), 0);
+      else { input?.blur(); searchToggle?.blur(); }
+    }
+
+    function sortCards(items: HTMLElement[]) {
+      return [...items].sort((a, b) => {
+        if (sortMode === 'title-az') return collator.compare(a.dataset.title || '', b.dataset.title || '');
+        const left = Number(a.dataset.updatedTs) || 0;
+        const right = Number(b.dataset.updatedTs) || 0;
+        return (sortMode === 'updated-asc' ? left - right : right - left) || collator.compare(a.dataset.title || '', b.dataset.title || '');
+      });
+    }
+
+    function apply() {
+      const matched = cards.filter((card) => {
+        if (category && card.dataset.category !== category) return false;
+        if (!term) return true;
+        return [card.dataset.title, card.dataset.desc, card.dataset.category, card.dataset.subcategory].filter(Boolean).join(' ').toLowerCase().includes(term);
+      });
+      cards.forEach((card) => { card.style.display = 'none'; });
+      sortCards(matched).forEach((card) => { list.append(card); card.style.display = ''; });
+      if (empty) empty.hidden = matched.length > 0;
+      if (hit) hit.textContent = `当前命中 ${matched.length} 篇`;
+    }
+
+    function syncAction() {
+      const hasTerm = Boolean(term);
+      action?.classList.toggle('has-term', hasTerm);
+      action?.setAttribute('aria-label', hasTerm ? '清除搜索' : '搜索');
+    }
+
+    searchToggle?.addEventListener('click', () => setSearchOpen(!root.classList.contains('is-mobile-search-open')));
+    input?.addEventListener('input', () => { term = input.value.trim().toLowerCase(); syncAction(); apply(); });
+    action?.addEventListener('click', () => {
+      if (!input) return;
+      if (!term) { input.focus(); return; }
+      input.value = ''; term = ''; syncAction(); input.focus(); apply();
+    });
+
+    root.querySelectorAll<HTMLElement>('[data-wall-category]').forEach((button) => button.addEventListener('click', () => {
+      root.querySelectorAll('[data-wall-category]').forEach((item) => { item.classList.remove('is-active'); item.setAttribute('aria-pressed', 'false'); });
+      button.classList.add('is-active'); button.setAttribute('aria-pressed', 'true'); category = button.dataset.wallCategory || ''; apply();
+    }));
+
+    const panel = root.querySelector<HTMLElement>('[data-wall-sort-panel]');
+    const sortToggle = root.querySelector<HTMLButtonElement>('[data-wall-sort-toggle]');
+    const closePanel = () => { if (!panel) return; panel.classList.remove('open'); sortToggle?.classList.remove('is-active'); window.setTimeout(() => { panel.hidden = true; }, 180); };
+    sortToggle?.addEventListener('click', () => { if (!panel) return; if (!panel.hidden) return closePanel(); panel.hidden = false; sortToggle.classList.add('is-active'); requestAnimationFrame(() => panel.classList.add('open')); });
+    root.querySelector('[data-wall-sort-close]')?.addEventListener('click', closePanel);
+    root.querySelectorAll<HTMLElement>('[data-wall-sort]').forEach((button) => button.addEventListener('click', () => { root.querySelectorAll('[data-wall-sort]').forEach((item) => item.classList.remove('on')); button.classList.add('on'); sortMode = button.dataset.wallSort || 'updated-desc'; closePanel(); apply(); }));
+    document.addEventListener('click', (event) => { const target = event.target as HTMLElement; if (!target.closest('[data-wall-sort-panel]') && !target.closest('[data-wall-sort-toggle]')) closePanel(); });
+
+    const ENTER = 160;
+    const EXIT = 6;
+    let frame = 0;
+    window.addEventListener('scroll', () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => { frame = 0; const current = root.classList.contains('is-scrolled'); const next = window.scrollY > (current ? EXIT : ENTER); if (next !== current) root.classList.toggle('is-scrolled', next); });
+    }, { passive: true });
+    syncAction();
+    apply();
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-note-wall]').forEach(initNoteWall);
+</script>

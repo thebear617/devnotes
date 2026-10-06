@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import LegacyToc from '../../components/LegacyToc.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -11,33 +12,35 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-const { Content } = await render(entry);
-const secondaryCategories = entry.data.subcategory;
+const { Content, headings } = await render(entry);
 const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.replace(/\/?$/, '/');
 ---
 
 <Layout>
-  <main class="app-shell">
+  <main class="app-shell blog-page-shell timeline-detail-page">
     <a href={`${base}timeline/`} class="blog-back">← 返回开发时间线</a>
+    {headings.length > 0 && (
+      <button class="blog-toc-toggle" id="blogTocToggle" type="button" aria-label="打开文章目录" aria-expanded="false">
+        <span aria-hidden="true">☰</span>
+      </button>
+    )}
 
-    <article class="tl-detail">
-      <div class="tl-detail-inner">
-        <header class="tl-detail-header">
-          <div>
-            <h1 class="tl-detail-title">{entry.data.title}</h1>
-            <p class="tl-detail-description">{entry.data.description}</p>
-            <p class="tl-detail-date">{entry.data.date}</p>
+    <div class="blog-detail-layout">
+      <article class="tl-detail timeline-detail-article">
+        <div class="tl-detail-inner">
+          <header class="tl-detail-header">
+            <div>
+              <h1 class="tl-detail-title">{entry.data.title}</h1>
+              <p class="tl-detail-description">{entry.data.description}</p>
+            </div>
+          </header>
+          <div class="tl-detail-body">
+            <Content />
           </div>
-          <div class="tl-tags">
-            <span class="tl-tag tl-tag-site">{entry.data.category}</span>
-            {secondaryCategories.map(category => <span class="tl-tag">{category}</span>)}
-          </div>
-        </header>
-        <div class="tl-detail-body">
-          <Content />
         </div>
-      </div>
-    </article>
+      </article>
+      <LegacyToc headings={headings} />
+    </div>
   </main>
 </Layout>
 
