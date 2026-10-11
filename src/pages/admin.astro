@@ -549,6 +549,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
   <script define:vars={{ base }}>
     const $ = (id) => document.getElementById(id);
     const apiBase = `${base}admin/api`;
+    const MAX_NOTE_IMAGE_BYTES = 2 * 1024 * 1024;
      const SORT_OPTIONS = [
       { value: 'updated-desc', label: '最近更新' },
       { value: 'date-desc', label: '发布日期' },
@@ -564,6 +565,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     let previewTimer = 0;
     let autoSaveTimer = 0;
     let savePromise = null;
+    const pendingImageUploads = new Set();
     const AUTO_SAVE_DELAY = 900;
     let selectedPreviewNode = null;
     let selectedPreviewSourceRange = null;
@@ -589,6 +591,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     const pad2 = (value) => String(value).padStart(2, '0');
     const today = () => { const now = new Date(); return `${now.getFullYear()}-${pad2(now.getMonth() + 1)}-${pad2(now.getDate())}`; };
     const nowStamp = () => { const now = new Date(); return `${today()} ${pad2(now.getHours())}:${pad2(now.getMinutes())}`; };
+    const newDraftAssetKey = () => `draft-${globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`}`;
+    let draftAssetKey = newDraftAssetKey();
     const setStatus = (message, kind = '') => { $('status').textContent = message; $('status').className = `status ${kind}`; };
 
     function managedPathStrategy(config = activeCollection()) {
@@ -623,10 +627,20 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       if (!strategy) return;
       $('entry-path').value = derivedEntryPath();
     }
+    function hasIncompleteManagedImageReference(source) {
+      const matches = String(source || '').match(/\/images\/(?:notes|timeline)\/[^\s)"'<>]*/g) || [];
+      return matches.some((pathname) => {
+        const separator = pathname.lastIndexOf('/');
+        if (separator < 0) return false;
+        let fileName = pathname.slice(separator + 1);
+        try { fileName = decodeURIComponent(fileName); } catch { return true; }
+        return !/^[\p{L}\p{N}][\p{L}\p{N}._-]*\.(?:jpg|jpeg|png|webp|gif)$/iu.test(fileName);
+      });
+    }
     function scheduleAutoSave() {
       window.clearTimeout(autoSaveTimer);
       autoSaveTimer = 0;
-      if (!state.dirty) return;
+      if (!state.dirty || pendingImageUploads.size || hasIncompleteManagedImageReference($('body').value)) return;
       autoSaveTimer = window.setTimeout(() => {
         autoSaveTimer = 0;
         void saveEntry();
@@ -635,7 +649,8 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     const markDirty = () => {
       state.dirty = true;
       state.draftVersion += 1;
-      setStatus('等待自动保存', 'saving');
+      const hasIncompleteImage = hasIncompleteManagedImageReference($('body').value);
+      setStatus(hasIncompleteImage ? '图片文件名不能为空，请完成后再保存' : '等待自动保存', hasIncompleteImage ? 'error' : 'saving');
       rememberEditorDraft();
       scheduleAutoSave();
     };
@@ -1468,6 +1483,93 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       handleBodyChange();
     }
 
+    function clipboardImageFile(event) {
+      return [...(event.clipboardData?.items || [])]
+        .filter((item) => item.kind === 'file' && item.type.startsWith('image/'))
+        .map((item) => item.getAsFile())
+        .find(Boolean) || null;
+    }
+
+    function imageAltFromFile(file) {
+      const name = String(file.name || '')
+        .replace(/\.[^/.]+$/, '')
+        .replace(/[\[\]\\\r\n]/g, ' ')
+        .trim();
+      return name || '粘贴图片';
+    }
+
+    function imageAssetContext() {
+      const collection = state.collectionId;
+      if (collection === 'timeline') {
+        const entryPath = state.selectedPath || '';
+        const fileName = entryPath.split('/').pop()?.replace(/\.md$/i, '').trim();
+        return { collection, assetKey: fileName || draftAssetKey };
+      }
+      const slug = $(`field-slug`)?.value.trim();
+      return { collection, assetKey: slug || draftAssetKey };
+    }
+
+    async function uploadPastedImage(file) {
+      if (file.size > MAX_NOTE_IMAGE_BYTES) throw new Error('大于这个尺寸，请进行压缩处理');
+      const context = imageAssetContext();
+      const query = new URLSearchParams(context);
+      const response = await fetch(`${apiBase}/asset?${query}`, {
+        method: 'POST',
+        headers: { 'Content-Type': file.type || 'application/octet-stream' },
+        body: file,
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || '图片上传失败');
+      if (!data.path) throw new Error('图片上传成功，但服务器没有返回图片地址');
+      return data.path;
+    }
+
+    function handleBodyPaste(event) {
+      const file = clipboardImageFile(event);
+      if (!file) return;
+      event.preventDefault();
+
+      const body = $('body');
+      const marker = `<!-- cms-image-upload-${Date.now()}-${Math.random().toString(36).slice(2)} -->`;
+      const task = { promise: null };
+      pendingImageUploads.add(task);
+      const start = body.selectionStart;
+      const end = body.selectionEnd;
+      runEditorEdit(() => {
+        body.focus();
+        body.setRangeText(marker, start, end, 'end');
+      });
+
+      task.promise = (async () => {
+        try {
+          const imagePath = await uploadPastedImage(file);
+          const markerStart = body.value.indexOf(marker);
+          if (markerStart < 0) {
+            setStatus('图片已上传，但插入位置已被修改', 'error');
+            return;
+          }
+          const markdown = `![${imageAltFromFile(file)}](${imagePath})`;
+          runEditorEdit(() => {
+            body.focus();
+            body.setRangeText(markdown, markerStart, markerStart + marker.length, 'end');
+          });
+        } catch (error) {
+          const markerStart = body.value.indexOf(marker);
+          if (markerStart >= 0) {
+            runEditorEdit(() => {
+              body.focus();
+              body.setRangeText('', markerStart, markerStart + marker.length, 'end');
+            });
+          }
+          setStatus(error.message === '大于这个尺寸，请进行压缩处理' ? error.message : `图片上传失败：${error.message}`, 'error');
+        } finally {
+          pendingImageUploads.delete(task);
+          if (state.dirty) scheduleAutoSave();
+        }
+      })();
+      void task.promise;
+    }
+
     function indentBodySelection() {
       const body = $('body');
       const start = body.selectionStart;
@@ -1544,6 +1646,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       frontmatter.date = today();
       frontmatter.updated = nowStamp();
       state.selectedPath = '';
+      draftAssetKey = newDraftAssetKey();
       state.dirty = false;
       setFormValue(frontmatter, '', config.defaultPath);
       renderEntries();
@@ -1552,6 +1655,9 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     }
 
     async function saveEntry({ force = false } = {}) {
+      if (pendingImageUploads.size) {
+        await Promise.all([...pendingImageUploads].map((task) => task.promise).filter(Boolean));
+      }
       if (savePromise) return savePromise;
       if (!state.dirty && !force) return true;
       window.clearTimeout(autoSaveTimer);
@@ -1563,6 +1669,10 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
       const previousPath = state.selectedPath;
       const frontmatter = getFormValue();
       const body = $('body').value;
+      if (hasIncompleteManagedImageReference(body)) {
+        setStatus('图片文件名不能为空，请完成后再保存', 'error');
+        return false;
+      }
       $('save').disabled = true;
       setStatus('自动保存中…', 'saving');
       const promise = (async () => {
@@ -1604,6 +1714,16 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
         if (!body.trim()) {
           previewFootnoteCleanup();
           $('preview').innerHTML = '<p class="preview-placeholder">Markdown 预览会显示在这里</p>';
+          selectedPreviewNode = null;
+          selectedPreviewSourceRange = null;
+          pendingScrollRestore = null;
+          $('preview').classList.remove('is-loading');
+          renderEditorToc();
+          return;
+        }
+        if (hasIncompleteManagedImageReference(body)) {
+          previewFootnoteCleanup();
+          $('preview').innerHTML = '<p class="preview-placeholder">图片文件名不能为空，请完成后再保存</p>';
           selectedPreviewNode = null;
           selectedPreviewSourceRange = null;
           pendingScrollRestore = null;
@@ -2293,6 +2413,7 @@ const base = import.meta.env.BASE_URL === '/' ? '/' : import.meta.env.BASE_URL.r
     $('delete-modal-confirm').onclick = () => { void deleteCurrentEntry(); };
     $('delete-modal').onclick = (event) => { if (!deletePromise && (event.target === event.currentTarget || (event.target instanceof Element && event.target.matches('[data-delete-close]')))) closeDeleteModal(); };
     $('body').addEventListener('keydown', handleBodyKeydown);
+    $('body').addEventListener('paste', handleBodyPaste);
     $('body').oninput = handleBodyInput;
     $('body').addEventListener('scroll', () => scheduleEditorTocUpdate(updateEditorTocFromSource), { passive: true });
     $('preview').addEventListener('scroll', () => scheduleEditorTocUpdate(updateEditorTocFromPreview), { passive: true });

@@ -13,7 +13,8 @@ for (const name of ['astro.config.mjs', 'public', 'node_modules', 'package.json'
   const source = path.join(projectRoot, name);
   try {
     await lstat(source);
-    await symlink(source, path.join(verificationRoot, name));
+    if (name === 'public') await cp(source, path.join(verificationRoot, name), { recursive: true });
+    else await symlink(source, path.join(verificationRoot, name));
   } catch (error) {
     if (error.code !== 'ENOENT') throw error;
   }
@@ -23,7 +24,13 @@ console.log(`DevNotes 隔离验收服务工作目录：${verificationRoot}`);
 const astro = path.join(projectRoot, 'node_modules', '.bin', 'astro');
 const child = spawn(astro, ['dev', '--root', verificationRoot, ...process.argv.slice(2)], {
   cwd: projectRoot,
-  env: { ...process.env, CMS_CONTENT_ROOT: path.join(verificationRoot, 'src', 'content'), CMS_ISOLATED_DEV: '1' },
+  env: {
+    ...process.env,
+    CMS_CONTENT_ROOT: path.join(verificationRoot, 'src', 'content'),
+    CMS_ASSET_ROOT: path.join(verificationRoot, 'public'),
+    CMS_TRASH_ROOT: path.join(verificationRoot, '.trash'),
+    CMS_ISOLATED_DEV: '1',
+  },
   stdio: 'inherit',
 });
 
