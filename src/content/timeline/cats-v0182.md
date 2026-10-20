@@ -38,3 +38,13 @@ subcategory: [功能, 视觉, 内容]
 - 真实浏览器验证移动端视图字号、桌面端滚动搜索和筛选状态。
 
 正式发布提交：`96de4a1`。
+
+## UI 设计图留档
+
+本版本的视图、字体间距与分类调整留档：
+
+![PC 端猫猫灵感落地页](/images/timeline/cats-v0182/ui-01.png)
+
+![手机端猫猫档案落地页](/images/timeline/cats-v0182/ui-02.png)
+
+![手机端猫猫素材落地页](/images/timeline/cats-v0182/ui-03.png)

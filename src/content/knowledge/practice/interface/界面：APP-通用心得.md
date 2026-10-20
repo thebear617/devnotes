@@ -1,9 +1,9 @@
 ---
-title: "APP: 通用-心得"
+title: "界面：APP-通用心得"
 date: "2026-09-22"
-updated: "2026-09-23 19:31"
+updated: "2026-10-20"
 category: "实践"
-subcategory: "APP"
+subcategory: "界面"
 description: "网页与 APP 的区别"
 slug: "APP-General"
 ---

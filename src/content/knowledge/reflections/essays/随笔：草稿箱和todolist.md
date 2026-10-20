@@ -1,7 +1,7 @@
 ---
 title: "随笔：草稿箱和todolist"
 date: "2026-09-04"
-updated: "2026-10-05 18:10"
+updated: "2026-10-20 08:56"
 category: "随想"
 subcategory: "随笔"
 description: "内容中转和草稿，暂存处｜所有 idea、未开始的设计思路的存放、所有要中转的东西"
@@ -10,12 +10,65 @@ slug: "Drafts"
 
 ## 草稿箱
 
-[瓦-微调](https://www.xiaohongshu.com/explore/6ac1f292000000000202972e?xsec_token=ABPkDIvuPYen743MJgF5IPCbHXB0a5FsPBMhOyKHT_WHE=&xsec_source=pc_feed)
+### 博主
+
+博主-控猫术-[大猫阿冰](https://www.xiaohongshu.com/user/profile/5b5b3baaf7e8b920b261dfc1?xsec_token=YBPINOnY-1FHHI7AMfM2vmVCu80B1Vueox4JTUI-cMKMk=&xsec_source=app_share&xhsshare=WeixinSession&appuid=5d3325db0000000010021e25&apptime=1791351218&share_id=89cf4b6f64b541c08ef53095cf067e8b)
+博主-西安美食：君在西安｜小贝饿了
+博主-AI向教学：比特新语-bili｜[卡皮同学](
+https://www.xiaohongshu.com/user/profile/61fe1c150000000021023a2e?xsec_token=YBTHtKKHQ9Sj7-eBZ-oNcXT0RfNj5t3lMjREAzjvFMefY=&xsec_source=app_share&xhsshare=WeixinSession&appuid=5d3325db0000000010021e25&apptime=1792211988&share_id=3dcaee0f9549464f90f9611579069e05)-red｜落日非车-red ｜嘿-这里是江离
+
+
+### 熊窝
+
+todo：做完宝宝相册｜猫猫: 小程序，科普转成画廊（放视频）｜科研初稿 | 移动端/pc端中转站
+
+### 生活
+
+
+
+### 开发
+
+
+
+
+
+手绘图：Excalidraw｜drawio
+poster｜poster：canva
+原型/UI：figma
+字体：醒图手写体｜花少综艺的字体
+
+skill-排版公众号。可以直接发给自己的agent：请安装并使用 https://github.com/mayanbiao1234/TierFlow-Design 的公众号排版技能，将我接下来发给你的文章自动排版为适合微信公众号的精美 HTML；按内容选择主题，保留原文和图片，完成校验后给我带「复制到公众号」按钮的预览页。
+
+大厂设计规范组件库figma链接 : https://4l1vc7.axshare.com
+
+
+
+
+
+科研-transformer 的 7 个环节被 46 项工作在 2017～2026间改进-[可视化视频](https://www.xiaohongshu.com/explore/6ac4344700000000140025ba?xsec_token=CB3lJq06yw4RVwRCtaPmf41MA_QXVuyB7oMKJnF2DdYoY=&xsec_source=app_share)
+
+科研-涌现可以是[视频](https://www.bilibili.com/video/BV1CKa16mE83/)中的鸟群，蚁群，萤火虫，神经元，[视频](https://www.bilibili.com/video/BV1vXHr6eEoN)中讲的 scaling-law
+
+
+
+
+
+### 猫猫
+
+
+
+
+
+
+
+
+
+---
 
 [恐怖片合集](https://www.xiaohongshu.com/explore/6ab0f00e000000003100d0c3?xsec_token=ABXpwkuGj5FptiT0gN_TiMy3XDc4ncIoo1MJR4QZpLEpI=&xsec_source=pc_feed)｜72部
 nice-music-[粤语版甲乙丙丁](https://www.bilibili.com/video/BV13dYu6aEMj/)
 
----
+
 
 送礼-万象城-莱斯特文创-生日礼物（有很多小机械装置，就是小贵）
 送礼-万象城-陕颂-西安文创特产，茶叶，镜子，冰箱贴都很不错
@@ -56,10 +109,6 @@ SaaS / 博客落地页合集｜https://land-book.com/
 
 用户页-知识笔记检索：[YOLO｜图像处理等（它记笔记的方式很好，可以学）](https://www.xiaohongshu.com/user/profile/66c32def000000001d023433?xsec_token=ABFzm-z5NSGKmbh2ZEB1320SqcH6C7e-iuWYqRPRl-XwA=&xsec_source=pc_comment)
 
-
----
-
-[我们三咖啡馆](https://www.xiaohongshu.com/explore/6a18fe280000000007010518?xsec_token=CBi1KNG67jj1C8zb03uOYkafrHrtlVDhdDNBs8IeKgiWY=&xsec_source=app_share)-未央区
 
 ---
 
@@ -158,6 +207,12 @@ SaaS / 博客落地页合集｜https://land-book.com/
       - 服务编排：Docker / 进程管理
   4. 增强 Codex 的生图能力: 可参考的接入实现为[88API-image-gen](https://github.com/blackdm666/88API-image-gen)。
 3. 
+
+
+
+
+
+
 
 
 
